@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "paths": {
+      "@amityco/react-native-social-uikit-ocean": ["./src/index"],
+      // Kept so the example app's existing imports keep resolving after the
+      // package rename. Safe to drop once those are migrated.
       "@amityco/react-native-social-uikit": ["./src/index"]
     },
     "allowUnreachableCode": false,

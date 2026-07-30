@@ -2,14 +2,18 @@ import {
   createContext,
   useCallback,
   useEffect,
+  useRef,
   useState,
   type FC,
 } from 'react';
-import { Client, CommunityRepository } from '@amityco/ts-sdk-react-native';
+import { Client } from '@amityco/ts-sdk-react-native';
 import {
-  consumePendingVisitorJoin,
+  peekPendingVisitorJoin,
+  clearPendingVisitorJoin,
+  waitForPendingVisitorJoinHydration,
   notifyVisitorAutoJoinCompleted,
 } from '../stores/pendingVisitorJoin';
+import { joinCommunityWithRetry } from '../utils/joinCommunityWithRetry';
 import type { AuthContextInterface } from '../types/auth';
 import { Alert } from 'react-native';
 import type { IAmityUIkitProvider } from './AmityUIKitProvider';
@@ -90,31 +94,67 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
     );
   }, []);
 
+  // Guards against two effect runs racing the same pending join (e.g. the
+  // session re-establishes while a join is still in flight). Not state: it must
+  // update synchronously, and it should never trigger a render.
+  const isAutoJoiningRef = useRef(false);
+
   useEffect(() => {
     if (sessionState === 'established') {
       setIsConnected(true);
       onSdkReady();
-      // Same check as the Web UIKit's isVisitorOrBot in SDKProvider
-      const isSignedIn = Client.getCurrentUserType() === 'signed-in';
-      setIsVisitorOrBot(!isSignedIn);
+      // Same check as the Web UIKit's isVisitorOrBot in SDKProvider.
+      // getCurrentUserType() THROWS ('Connect client first') when the user type
+      // has not been populated yet, which can happen on the tick the session
+      // reports established. Unguarded, that exception aborted the rest of this
+      // effect and the auto-join below never ran.
+      let isSignedIn = false;
+      try {
+        isSignedIn = Client.getCurrentUserType() === 'signed-in';
+        setIsVisitorOrBot(!isSignedIn);
+      } catch {
+        // User type not resolved yet. Leave isVisitorOrBot at its current value
+        // (defaults to false) and skip the join — the next session-state event
+        // re-runs this effect with the type populated, and the pending id is
+        // still on record because nothing consumed it.
+        return;
+      }
 
       // Auto-join the community a visitor tapped Join on before signing in.
       // A visitor session can't join (read-only); now that the session is a
-      // signed-in one, consume the pending id and join so the community's posts
-      // appear in the feed. consume-once, so re-runs of this effect are safe.
-      if (isSignedIn) {
-        const pendingCommunityId = consumePendingVisitorJoin();
-        if (pendingCommunityId) {
-          CommunityRepository.joinCommunity(pendingCommunityId)
-            .then(() => {
+      // signed-in one, join so the community's posts appear in the feed.
+      //
+      // The id is PEEKED, not consumed: it is only cleared once the join has
+      // actually succeeded. Clearing up front (the previous behaviour) meant any
+      // transient network failure discarded the id permanently and the user was
+      // silently never joined — the intermittent failure this guards against.
+      if (isSignedIn && !isAutoJoiningRef.current) {
+        isAutoJoiningRef.current = true;
+        // Await hydration so a join recorded before an app restart is still
+        // found. Resolves immediately once hydration has settled.
+        waitForPendingVisitorJoinHydration()
+          .then(async () => {
+            const pendingCommunityId = peekPendingVisitorJoin();
+            if (!pendingCommunityId) return;
+
+            const joined = await joinCommunityWithRetry(pendingCommunityId, {
+              onFinalFailure: (joinError) =>
+                console.log('Auto-join community failed:', joinError),
+            });
+
+            if (joined) {
+              // Only now is it safe to drop the id.
+              clearPendingVisitorJoin();
               // Tell join-state-dependent screens (Explore) to re-fetch now
               // that the join is committed — they may have loaded before it.
               notifyVisitorAutoJoinCompleted();
-            })
-            .catch((error: unknown) =>
-              console.log('Auto-join community failed:', error)
-            );
-        }
+            }
+            // On failure the id stays pending, so the next session-established
+            // event (app foreground, reconnect) retries it.
+          })
+          .finally(() => {
+            isAutoJoiningRef.current = false;
+          });
       }
     }
   }, [sessionState]);

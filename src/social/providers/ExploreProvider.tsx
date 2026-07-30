@@ -1,6 +1,5 @@
 // ExploreContext.tsx
-import { createContext, useContext, ReactNode, useEffect } from 'react';
-import { CommunityRepository } from '@amityco/ts-sdk-react-native';
+import { createContext, useContext, ReactNode, useEffect, useRef } from 'react';
 
 import {
   useRecommendedCommunities,
@@ -11,6 +10,7 @@ import {
 } from '../hooks';
 import { onVisitorAutoJoinCompleted } from '../../core/stores/pendingVisitorJoin';
 import useAuth from '../../core/hooks/useAuth';
+import { joinCommunityWithRetry } from '../../core/utils/joinCommunityWithRetry';
 
 interface ExploreContextType {
   refresh: () => void;
@@ -38,6 +38,11 @@ export const ExploreProvider: React.FC<{ children: ReactNode }> = ({
   // auto-join below must not run for them (every call would fail with a
   // permission error). Signed-in users only.
   const { isVisitorOrBot } = useAuth();
+
+  // Community ids already attempted this session. The pinned query is a live
+  // collection, so it re-emits on any change; without this the effect would
+  // re-fire joins that are still in flight.
+  const attemptedJoinsRef = useRef<Set<string>>(new Set());
 
   const {
     onJoinCommunity: onJoinRecommendedCommunity,
@@ -97,17 +102,26 @@ export const ExploreProvider: React.FC<{ children: ReactNode }> = ({
     // every call would fail. Signed-in users only.
     if (isVisitorOrBot) return;
     if (!pinnedCommunities?.length) return;
-    pinnedCommunities.forEach(async (community) => {
+    pinnedCommunities.forEach((community) => {
       if (community.isJoined) return;
-      try {
-        // This SDK exposes joining via the repository (not community.join()).
-        await CommunityRepository.joinCommunity(community.communityId);
-      } catch (err) {
-        console.error(
-          `Auto-join failed for community ${community.communityId}:`,
-          err
-        );
-      }
+      // Already attempted this session — don't re-fire on every re-render of
+      // the pinned query. Without this, a live-collection update would restart
+      // joins that are still in flight.
+      if (attemptedJoinsRef.current.has(community.communityId)) return;
+      attemptedJoinsRef.current.add(community.communityId);
+
+      // Retries transient network failures; a single dropped request used to
+      // leave the user silently un-joined with only a console error.
+      joinCommunityWithRetry(community.communityId, {
+        onFinalFailure: (err) => {
+          console.error(
+            `Auto-join failed for community ${community.communityId}:`,
+            err
+          );
+          // Allow a later attempt (next mount / natural refresh) to try again.
+          attemptedJoinsRef.current.delete(community.communityId);
+        },
+      });
     });
   }, [pinnedCommunities, isVisitorOrBot]);
 

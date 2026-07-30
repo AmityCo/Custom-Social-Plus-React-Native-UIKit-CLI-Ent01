@@ -3,7 +3,7 @@ import {
   AmityUiKitSocial,
   AmityCreateProfilePage,
   AmityPageRenderer,
-} from '@amityco/react-native-social-uikit';
+} from '@amityco/react-native-social-uikit-ocean';
 import { useState } from 'react';
 import {
   Modal,
@@ -184,7 +184,7 @@ export default function VisitorScreen({
       // Secure mode: once `authUserId` is set, the provider re-logs-in as that
       // signed-in user and mints its token via getAuthToken(userId). (No effect
       // while in visitor mode — loginAsVisitor takes no token.)
-      getAuthToken={getAuthToken}
+      // getAuthToken={getAuthToken}
       fcmToken={fcmToken}
       behaviour={{
         AmityGlobalBehavior: {
@@ -208,7 +208,7 @@ export default function VisitorScreen({
               // Client.login. getAuthToken is inherited from the provider, but we
               // pass it here too to keep this page self-contained.
               enrollProfile={enrollProfile}
-              getAuthToken={getAuthToken}
+              // getAuthToken={getAuthToken}
               onCreated={({ userId, displayName, about, imageUrl }) => {
                 // Save succeeded. The page already ran Client.login internally;
                 // passing the returned userId + displayName to the provider
