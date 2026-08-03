@@ -106,7 +106,6 @@ yarn add \
   @react-navigation/stack \
   react-native-compressor \
   react-native-fs \
-  react-native-gesture-handler \
   react-native-get-random-values \
   react-native-haptic-feedback \
   react-native-image-picker \
