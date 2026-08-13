@@ -37,6 +37,7 @@ export { default as warning } from './warning';
 export { default as visitorLimit } from './visitorLimit';
 export { default as ban } from './ban';
 export { default as arrowLeft } from './arrowLeft';
+export { default as arrowBack } from './arrowBack';
 export { default as poll } from './poll';
 export { default as pen } from './pen';
 export { default as report } from './report';

@@ -2,6 +2,7 @@ import {
   AmityUiKitProvider,
   AmityUiKitSocial,
 } from '@amityco/react-native-social-uikit-ocean';
+import { useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import config from '../uikit.config.json';
 // ⚠️ TEST ONLY — remove with example/src/testAuth.ts before shipping.
@@ -39,7 +40,14 @@ export default function SignedInScreen({
   userId = '',
 }: SignedInScreenProps) {
   // ⚠️ TEST ONLY — remove with example/src/testAuth.ts before shipping.
-  const getAuthToken = makeTestGetAuthToken(apiRegion);
+  // Built lazily inside the callback so nothing is minted unless the UIKit
+  // actually asks for a token (i.e. only when `getAuthToken` is passed below).
+  const getAuthToken = useCallback(
+    (id: string) => makeTestGetAuthToken(apiRegion)(id),
+    [apiRegion]
+  );
+  // Referenced so the helper stays wired up while the prop below is disabled.
+  void getAuthToken;
 
   return (
     <AmityUiKitProvider
@@ -53,7 +61,15 @@ export default function SignedInScreen({
       // inferred type and the provider's expected type are nominally distinct.
       configs={config as any}
       fcmToken={fcmToken}
-      
+      behaviour={{
+        AmitySocialHomeTopNavigationComponentBehaviour: {
+          // Renders the back button in the social home header. The UIKit only
+          // shows it when this callback is provided.
+          onBack: () => {
+            console.log('[example] social home back pressed');
+          },
+        },
+      }}
     >
       <View style={styles.root}>
         <AmityUiKitSocial />

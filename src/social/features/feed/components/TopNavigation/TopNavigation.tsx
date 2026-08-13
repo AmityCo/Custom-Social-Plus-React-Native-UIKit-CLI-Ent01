@@ -1,5 +1,7 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FC, memo, useCallback } from 'react';
+import { SvgXml } from 'react-native-svg';
+import { arrowBack } from '../../../../../core/assets/icons';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -86,6 +88,15 @@ const AmitySocialHomeTopNavigationComponent: FC<
       flexDirection: 'row',
       alignItems: 'center',
     },
+    leftContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexShrink: 1,
+      gap: 8,
+    },
+    backButton: {
+      marginLeft: -4,
+    },
     iconBtn: {
       borderRadius: 50,
       backgroundColor: theme.colors.baseShade4,
@@ -125,6 +136,15 @@ const AmitySocialHomeTopNavigationComponent: FC<
     navigation,
   ]);
 
+  // The back button only exists when the host app supplies `onBack`. The social
+  // home page is usually a root screen with nothing to go back to, so there is
+  // no navigation fallback here.
+  const onBack = AmitySocialHomeTopNavigationComponentBehaviour.onBack;
+
+  const onPressBack = useCallback(() => {
+    onBack?.();
+  }, [onBack]);
+
   const onToggleCreateComponent = useCallback(() => {
     toggle();
   }, [toggle]);
@@ -155,12 +175,30 @@ const AmitySocialHomeTopNavigationComponent: FC<
         testID={componentConfig.accessibilityId}
         accessibilityLabel={componentConfig.accessibilityId}
       >
-        <TextKeyElement
-          pageID={pageId}
-          componentID={componentId}
-          elementID={ElementID.header_label}
-          style={styles.title}
-        />
+        <View style={styles.leftContainer}>
+          {onBack && (
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={onPressBack}
+              hitSlop={20}
+              testID="top_navigation/back_button"
+              accessibilityLabel="top_navigation/back_button"
+            >
+              <SvgXml
+                width="24"
+                height="24"
+                xml={arrowBack()}
+                color={theme.colors.base}
+              />
+            </TouchableOpacity>
+          )}
+          <TextKeyElement
+            pageID={pageId}
+            componentID={componentId}
+            elementID={ElementID.header_label}
+            style={styles.title}
+          />
+        </View>
 
         <View style={styles.flexContainer}>
           <TouchableOpacity

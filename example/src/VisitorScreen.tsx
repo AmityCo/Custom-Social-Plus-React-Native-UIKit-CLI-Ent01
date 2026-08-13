@@ -4,7 +4,7 @@ import {
   AmityCreateProfilePage,
   AmityPageRenderer,
 } from '@amityco/react-native-social-uikit-ocean';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -158,8 +158,7 @@ export default function VisitorScreen({
   // creates the user server-side and returns the communityId (used as userId).
   // getAuthToken then mints the secure-mode token for that communityId — the
   // page chains them: enrollProfile -> getAuthToken(communityId) -> Client.login.
-  const enrollProfile = makeTestEnrollProfile();
-  const getAuthToken = makeTestGetAuthToken(apiRegion);
+  const enrollProfile = useMemo(() => makeTestEnrollProfile(), []);
 
   const [view, setView] = useState<ViewName>('social');
   const [showGuidelines, setShowGuidelines] = useState(false);
@@ -169,6 +168,21 @@ export default function VisitorScreen({
   // changes).
   const [authUserId, setAuthUserId] = useState<string>();
   const [authDisplayName, setAuthDisplayName] = useState<string>();
+
+  // Secure-mode token minting, deferred until a userId actually exists.
+  //
+  // A visitor session has no userId — `Client.loginAsVisitor` takes no token —
+  // so there is nothing to mint a token *for* until enrollment resolves an id.
+  // The request is therefore issued lazily, from inside the callback, and only
+  // ever with the id the UIKit passes in.
+  const getAuthToken = useCallback(
+    (userId: string) => makeTestGetAuthToken(apiRegion)(userId),
+    [apiRegion]
+  );
+
+  // Withhold the callback entirely while in visitor mode, so the UIKit cannot
+  // reach for a token before there is an identity to mint one for.
+  const secureModeGetAuthToken = authUserId ? getAuthToken : undefined;
 
   return (
     // No `userId` -> visitor mode. Once `authUserId` is set, the provider
@@ -181,16 +195,23 @@ export default function VisitorScreen({
       // Cast: node_modules has two copies of the config type, so the JSON's
       // inferred type and the provider's expected type are nominally distinct.
       configs={config as any}
-      // Secure mode: once `authUserId` is set, the provider re-logs-in as that
-      // signed-in user and mints its token via getAuthToken(userId). (No effect
-      // while in visitor mode — loginAsVisitor takes no token.)
-      // getAuthToken={getAuthToken}
+      // Secure mode: only supplied once `authUserId` exists. While in visitor
+      // mode this is undefined, so no token is ever requested for a user that
+      // does not exist yet.
+      // getAuthToken={secureModeGetAuthToken}
       fcmToken={fcmToken}
       behaviour={{
         AmityGlobalBehavior: {
           // Visitor tried a gated action -> show the guidelines modal.
           handleVisitorUserAction: () => {
             setShowGuidelines(true);
+          },
+        },
+        AmitySocialHomeTopNavigationComponentBehaviour: {
+          // Renders the back button in the social home header. The UIKit only
+          // shows it when this callback is provided.
+          onBack: () => {
+            console.log('[example] social home back pressed');
           },
         },
       }}
@@ -208,7 +229,11 @@ export default function VisitorScreen({
               // Client.login. getAuthToken is inherited from the provider, but we
               // pass it here too to keep this page self-contained.
               enrollProfile={enrollProfile}
-              // getAuthToken={getAuthToken}
+              // Passed explicitly (not inherited from the provider, which
+              // withholds it in visitor mode): this page is the first point a
+              // real userId exists. useCreateProfile calls it only AFTER
+              // enrollProfile resolves the communityId.
+              getAuthToken={getAuthToken}
               onCreated={({ userId, displayName, about, imageUrl }) => {
                 // Save succeeded. The page already ran Client.login internally;
                 // passing the returned userId + displayName to the provider

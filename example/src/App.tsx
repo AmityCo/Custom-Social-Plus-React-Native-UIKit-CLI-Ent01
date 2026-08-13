@@ -14,9 +14,9 @@ import {
 import NetworkLogger from 'react-native-network-logger';
 import { LogBox } from 'react-native';
 
-const API_KEY = "b0ebeb5939def76019308d4a530b12ddd558dde5bf346e2e"; // Put your apiKey
-const API_REGION = "us"; // Put your apiRegion
-const API_ENDPOINT ="https://api.us.amity.co" //"https://api.{apiRegion}.amity.co"
+const API_KEY = ""; // Put your apiKey
+const API_REGION = ""; // Put your apiRegion
+const API_ENDPOINT ="" //"https://api.{apiRegion}.amity.co"
 
 
 type TabName = 'visitor' | 'signedIn';

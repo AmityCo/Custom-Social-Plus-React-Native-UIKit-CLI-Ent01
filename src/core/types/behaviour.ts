@@ -46,6 +46,12 @@ export interface IBehaviour {
     goToGlobalSearchPage?: () => void;
     goToMyCommunitiesSearchPage?: () => void;
     onPressCreate?: () => void;
+    /**
+     * Called when the back button in the social home header is pressed.
+     * The button is only rendered when this callback is provided — the social
+     * home page is typically a root screen, so there is no default back action.
+     */
+    onBack?: () => void;
   };
   AmityGlobalFeedComponentBehavior?: {
     goToPostDetailPage?: (arg?: string) => void;

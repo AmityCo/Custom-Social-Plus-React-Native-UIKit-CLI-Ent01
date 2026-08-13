@@ -16,6 +16,7 @@ import type { MyMD3Theme } from '../providers/AmityUIKitProvider';
 import { useTheme } from 'react-native-paper';
 import PostTypeChoiceModal from '../../social/components/legacy/PostTypeChoiceModal/PostTypeChoiceModal';
 import Toast from '../../social/components/legacy/Toast/Toast';
+import SnackbarToast from '../../social/components/Toast';
 import AmitySocialGlobalSearchPage from '../../social/screens/SocialGlobalSearch';
 import AmityMyCommunitiesSearchPage from '../../social/screens/MyCommunitiesSearch';
 import PostTargetSelection from '../../social/screens/PostTargetSelection';
@@ -226,6 +227,12 @@ export default function AmitySocialUIKitV4Navigator() {
         </Stack.Navigator>
         <PostTypeChoiceModal />
         <Toast />
+        {/* Redux toastSlice renderer (useToast). Mirrors AmityPageRenderer's
+            SnackbarToast: a page mounted there (e.g. AmityCreateProfilePage)
+            can dispatch a toast just before handing off to this tree (e.g. via
+            onCreated) — without a renderer here too, that toast has nowhere to
+            display once the handoff unmounts the source tree. */}
+        <SnackbarToast />
       </NavigationContainer>
     </NavigationIndependentTree>
   );
