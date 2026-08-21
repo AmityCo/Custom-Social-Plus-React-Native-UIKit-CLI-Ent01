@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { PollRepository } from '@amityco/ts-sdk-react-native';
+import { reportSwallowed } from '../../../../core/errorReporter';
 
 dayjs.extend(utc);
 
@@ -50,7 +51,7 @@ export const usePoll = (pollId: string, shouldFetch: boolean) => {
       try {
         PollRepository.getPoll(pollId, ({ data }) => setPollData(data));
       } catch (error) {
-        console.log(error);
+        reportSwallowed('usePoll', error);
       }
     })();
   }, [pollId, shouldFetch]);

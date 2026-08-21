@@ -53,7 +53,19 @@ export default function SignedInScreen({
       // inferred type and the provider's expected type are nominally distinct.
       configs={config as any}
       fcmToken={fcmToken}
-      
+      // Every error the UIKit hits: render crashes, failed reads/writes, and
+      // login / session / auth-token failures. Observer only - the UIKit still
+      // shows its own toasts and fallback screens. `handled` tells the errors a
+      // user already saw from the ones that were otherwise silent. A real host
+      // would forward these to Sentry / Crashlytics.
+      onError={(error) => {
+        console.log(
+          `[AmityUIKit] ${error.source} error (handled=${error.handled}, code=${
+            error.code ?? 'n/a'
+          }): ${error.message}`,
+          error.context ?? {}
+        );
+      }}
     >
       <View style={styles.root}>
         <AmityUiKitSocial />

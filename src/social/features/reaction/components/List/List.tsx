@@ -25,6 +25,7 @@ import { UserRepository } from '@amityco/ts-sdk-react-native';
 import { formatNumber } from '../../../../../core/utils/number';
 import { useTheme } from 'react-native-paper';
 import { MyMD3Theme } from '../../../../../core/providers/AmityUIKitProvider';
+import { reportSwallowed } from '../../../../../core/errorReporter';
 
 type AmityReactionListComponentType = {
   referenceId: string;
@@ -83,7 +84,7 @@ const AmityReactionListComponent: FC<AmityReactionListComponentType> = ({
           }));
           setReactors(reactorList);
         } catch (error) {
-          console.log(error);
+          reportSwallowed('ReactionList.fetch', error);
         }
       } else {
         setReactors([]);

@@ -18,6 +18,7 @@ import type { AuthContextInterface } from '../types/auth';
 import { Alert } from 'react-native';
 import type { IAmityUIkitProvider } from './AmityUIKitProvider';
 import { ERROR_CODE } from '../../core/constants';
+import { errorMessage, extractAmityCode, reportError } from '../errorReporter';
 import { onSdkReady } from '../routes/navigation';
 
 export const AuthContext = createContext<AuthContextInterface>({
@@ -76,7 +77,18 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
             }
           })
           .catch((err) => {
+            // Session renewal happens mid-session; falling back to a plain
+            // renew() can silently drop the user to a less-privileged session,
+            // so the host needs to know.
             console.log('getAuthToken (renewal) failed:', err);
+            reportError({
+              source: 'auth',
+              message: errorMessage(err, 'getAuthToken (renewal) failed'),
+              code: extractAmityCode(err),
+              cause: err,
+              context: { userId, phase: 'tokenRenewal' },
+              handled: false,
+            });
             renewal.renew();
           });
         return;
@@ -200,9 +212,31 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
         if (!response) return;
       }
     } catch (err) {
-      if (err?.message?.includes(ERROR_CODE.GLOBAL_BAN)) {
+      // Keep the original substring test for the ban decision. Deriving it from
+      // extractAmityCode would subtly change behaviour: that helper returns the
+      // first *known* code it finds, so a message carrying another code before
+      // the ban code would stop triggering the ban screen.
+      const isGloballyBanned = !!err?.message?.includes(ERROR_CODE.GLOBAL_BAN);
+      if (isGloballyBanned) {
         setIsGlobalBan(true);
       }
+      // Every other login failure used to be swallowed here - an invalid or
+      // rejected auth token, a getAuthToken() that threw, a network failure -
+      // leaving the host with no signal at all. Report them all; only the
+      // global-ban case puts something on screen by itself.
+      reportError({
+        source: 'auth',
+        message: errorMessage(err, 'Login failed'),
+        code: extractAmityCode(err),
+        cause: err,
+        context: {
+          userId,
+          isVisitorLogin: !userId,
+          usesAuthTokenCallback: !!getAuthToken,
+          hasStaticAuthToken: !!authToken,
+        },
+        handled: isGloballyBanned,
+      });
     }
 
     if (fcmToken) {
@@ -210,6 +244,14 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
         await Client.registerPushNotification(fcmToken);
       } catch (err) {
         console.log(err);
+        reportError({
+          source: 'sdk',
+          message: errorMessage(err, 'registerPushNotification failed'),
+          code: extractAmityCode(err),
+          cause: err,
+          context: { userId, phase: 'registerPushNotification' },
+          handled: false,
+        });
       }
     }
     // Depend on userId (and the other login params) so that when the host
@@ -235,7 +277,10 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
   };
   useEffect(() => {
     setIsVisitorUsageLimitReached(false);
-    login();
+    // login() rethrows for hosts that call it directly off the context, so the
+    // effect must swallow here or a failure becomes an unhandled rejection.
+    // handleConnect has already reported the error by this point.
+    login().catch(() => {});
   }, [userId]);
 
   const logout = async () => {
@@ -246,6 +291,15 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
       const errorText =
         (e as Error)?.message ?? 'Error while handling request!';
 
+      reportError({
+        source: 'auth',
+        message: errorText,
+        code: extractAmityCode(e),
+        cause: e,
+        context: { userId, phase: 'logout' },
+        // Surfaced to the user by the Alert below.
+        handled: true,
+      });
       Alert.alert(errorText);
     }
   };

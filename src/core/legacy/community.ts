@@ -2,6 +2,7 @@ import {
   CommunityPostSettings,
   CommunityRepository,
 } from '@amityco/ts-sdk-react-native';
+import { reportSwallowed } from '../errorReporter';
 
 export interface ICreateCommunity {
   description: string;
@@ -97,7 +98,7 @@ export async function checkCommunityPermission(
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log('error:', error);
+    reportSwallowed('legacy.community', error);
   }
 }
 

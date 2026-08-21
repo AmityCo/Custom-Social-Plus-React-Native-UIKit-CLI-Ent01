@@ -7,6 +7,7 @@ import { TimeWindowTracker } from './TimeWindowTracker';
 import AdAssetCache, { AdAsset } from './AdAssetCache';
 import AssetDownloader, { DownloadStatus } from './AssetDownloader';
 import { AdSupplier } from './AdSupplier';
+import { reportSwallowed } from '../../core/errorReporter';
 
 class SeenRecencyCache {
   static #instance: SeenRecencyCache;
@@ -178,7 +179,7 @@ export class AdEngine {
             }
           );
         } catch (e) {
-          console.log('error: 3', e);
+          reportSwallowed('AdEngine.prefetchAsset', e);
         }
       } else if (asset.downloadStatus !== DownloadStatus.COMPLETED) {
         AdAssetCache.instance.updateDownloadStatus(

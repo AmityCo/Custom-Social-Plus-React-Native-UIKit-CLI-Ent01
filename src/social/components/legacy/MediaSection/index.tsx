@@ -15,6 +15,7 @@ import ImageView from '../react-native-image-viewing/dist';
 import { RootState, useUIKitSelector } from '../../../../core/stores/store';
 import { playBtn } from '../../../../core/assets/icons/xml';
 import PollSection from '../PollSection/PollSection';
+import { reportSwallowed } from '../../../../core/errorReporter';
 
 interface IMediaSection {
   childrenPosts: string[];
@@ -94,7 +95,7 @@ const MediaSection: React.FC<IMediaSection> = ({ childrenPosts }) => {
         }
       });
     } catch (error) {
-      console.log('error: ', error);
+      reportSwallowed('MediaSection', error);
     }
   }, [apiRegion, childrenPosts]);
 

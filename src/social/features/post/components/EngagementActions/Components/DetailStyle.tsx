@@ -22,6 +22,7 @@ import AmityReactionListComponent from '../../../../reaction/components/List';
 import { formatNumber } from '../../../../../../core/utils/number';
 import { usePostShareAction } from './usePostShareAction';
 import { ShareButton } from '../../../../../elements/ShareButton';
+import { reportSwallowed } from '../../../../../../core/errorReporter';
 
 const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   community,
@@ -92,7 +93,7 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
         await addPostReaction(postId, 'like');
       }
     } catch (error) {
-      console.log(error);
+      reportSwallowed('DetailStyle.togglePostReaction', error);
     }
   }, [isLike, postId]);
 

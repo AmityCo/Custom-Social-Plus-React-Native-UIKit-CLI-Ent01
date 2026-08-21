@@ -19,6 +19,7 @@ import { LinkPreview } from '../PreviewLink';
 import RenderTextWithMention from '../RenderTextWithMention/RenderTextWithMention';
 import { IMentionPosition } from '../../../core/types';
 import PollContent from '../PollContent';
+import { reportSwallowed } from '../../../core/errorReporter';
 
 interface IPostContent {
   post: Amity.Post;
@@ -127,7 +128,7 @@ const PostContent: React.FC<IPostContent> = ({
         setPollIds(polls);
       }
     } catch (error) {
-      console.log('error: ', error);
+      reportSwallowed('PostContent', error);
     }
   }, [apiRegion, childrenPosts]);
 

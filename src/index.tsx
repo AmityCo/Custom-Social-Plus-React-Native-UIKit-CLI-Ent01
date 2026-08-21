@@ -151,3 +151,10 @@ export {
   AmityPendingPostListComponent,
   navigate,
 };
+
+// Error reporting types, for hosts wiring up AmityUiKitProvider's `onError`.
+export type {
+  AmityUIKitError,
+  AmityErrorHandler,
+  AmityErrorSource,
+} from './core/errorReporter';

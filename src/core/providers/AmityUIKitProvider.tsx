@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import { Provider } from 'react-redux';
 import AuthContextProvider from './AuthProvider';
@@ -15,9 +16,22 @@ import { lighten, darken, parseToHsl, hslToColorString } from 'polished';
 import { AdEngineProvider } from '../../social/providers/AdEngineProvider';
 import BottomSheetComponent from '../../social/components/BottomSheetComponent/BottomSheetComponent';
 import Toast from '../../social/components/Toast';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+  MutationCache,
+} from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import {
+  AmityErrorHandler,
+  errorMessage,
+  extractAmityCode,
+  releaseErrorHandler,
+  reportError,
+  setErrorHandler,
+} from '../errorReporter';
 
 export type CusTomTheme = typeof DefaultTheme;
 export interface IAmityUIkitProvider {
@@ -41,6 +55,15 @@ export interface IAmityUIkitProvider {
   configs?: IConfigRaw;
   behaviour?: IBehaviour;
   fcmToken?: string;
+  /**
+   * Called for every error the UIKit encounters: render crashes, failed reads
+   * and writes, and login / session / auth-token failures.
+   *
+   * Purely an observer - the UIKit still shows its own toasts and fallback
+   * screens. Use `error.handled` to tell the failures a user already saw from
+   * the ones that were otherwise silent.
+   */
+  onError?: AmityErrorHandler;
 }
 
 export interface CustomColors {
@@ -72,7 +95,32 @@ export interface MyMD3Theme extends MD3Theme {
   colors: MD3Theme['colors'] & CustomColors;
 }
 
-const queryClient = new QueryClient();
+// Cache-level handlers report every react-query failure from one place,
+// instead of needing an onError on each of the ~58 query/mutation call sites.
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error, query) =>
+      reportError({
+        source: 'query',
+        message: errorMessage(error, 'Query failed'),
+        code: extractAmityCode(error),
+        cause: error,
+        context: { queryKey: query.queryKey },
+        handled: false,
+      }),
+  }),
+  mutationCache: new MutationCache({
+    onError: (error, _variables, _context, mutation) =>
+      reportError({
+        source: 'mutation',
+        message: errorMessage(error, 'Mutation failed'),
+        code: extractAmityCode(error),
+        cause: error,
+        context: { mutationKey: mutation.options.mutationKey },
+        handled: false,
+      }),
+  }),
+});
 
 export default function AmityUiKitProvider({
   userId,
@@ -86,7 +134,19 @@ export default function AmityUiKitProvider({
   configs,
   behaviour,
   fcmToken,
+  onError,
 }: IAmityUIkitProvider) {
+  // Registered during render rather than in an effect on purpose: React runs
+  // child effects before parent effects, so AuthProvider's login effect would
+  // fire - and could fail - before a parent effect here had installed the
+  // handler, losing the very first login error.
+  //
+  // The registration id lets unmount cleanup skip the clear when another
+  // provider has since taken over (see releaseErrorHandler).
+  const registrationRef = useRef(0);
+  registrationRef.current = setErrorHandler(onError);
+  useEffect(() => () => releaseErrorHandler(registrationRef.current), []);
+
   const colorScheme = useColorScheme();
   const SHADE_PERCENTAGES = [0.25, 0.4, 0.45, 0.6];
 
@@ -161,7 +221,19 @@ export default function AmityUiKitProvider({
   };
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary
+      onError={(error, info) =>
+        reportError({
+          source: 'render',
+          message: errorMessage(error, 'Render error'),
+          code: extractAmityCode(error),
+          cause: error,
+          context: { componentStack: info.componentStack },
+          // The boundary swaps in its fallback screen, so the user saw this.
+          handled: true,
+        })
+      }
+    >
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <Provider store={store} context={AmityUIKitReduxContext}>

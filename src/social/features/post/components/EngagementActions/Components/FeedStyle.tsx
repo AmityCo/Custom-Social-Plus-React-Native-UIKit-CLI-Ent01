@@ -25,6 +25,7 @@ import { useBehaviour } from '../../../../../providers/BehaviourProvider';
 import { formatNumber } from '../../../../../../core/utils/number';
 import { usePostShareAction } from './usePostShareAction';
 import { ShareButton } from '../../../../../elements/ShareButton';
+import { reportSwallowed } from '../../../../../../core/errorReporter';
 
 const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   community,
@@ -78,7 +79,7 @@ const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
         await addPostReaction(postId, 'like');
       }
     } catch (error) {
-      console.log(error);
+      reportSwallowed('FeedStyle.togglePostReaction', error);
     }
   }, [isLike, postData, postId]);
 

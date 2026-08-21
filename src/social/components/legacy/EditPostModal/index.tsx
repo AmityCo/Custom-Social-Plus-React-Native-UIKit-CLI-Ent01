@@ -29,6 +29,7 @@ import { TSearchItem } from '../../../../core/hooks/useSearch';
 import useMention from '../../../hooks/useMention';
 import { replaceTriggerValues } from 'react-native-controlled-mentions';
 import { useUIKitDispatch } from '../../../../core/stores/store';
+import { reportSwallowed } from '../../../../core/errorReporter';
 interface IModal {
   visible: boolean;
   userId?: string;
@@ -157,7 +158,7 @@ const EditPostModal = ({
           }
         });
       } catch (error) {
-        console.log('error: ', error);
+        reportSwallowed('EditPostModal', error);
       }
     },
     [apiRegion]
