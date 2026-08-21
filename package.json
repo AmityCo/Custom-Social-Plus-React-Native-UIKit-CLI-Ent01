@@ -1,6 +1,6 @@
 {
   "name": "@amityco/react-native-social-uikit-ocean",
-  "version": "4.0.1-ocean-3",
+  "version": "4.0.1-ocean-4",
   "description": "Social UIKit",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

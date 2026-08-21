@@ -318,13 +318,17 @@ const EditPostModal = ({
           <SvgXml xml={closeIcon(theme.colors.base)} width="17" height="17" />
         </TouchableOpacity>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Edit Post</Text>
+          <Text allowFontScaling={false} style={styles.headerText}>
+            Edit Post
+          </Text>
         </View>
         <TouchableOpacity
           onPress={handleEditPost}
           style={styles.headerTextContainer}
         >
-          <Text style={styles.headerText}>Save</Text>
+          <Text allowFontScaling={false} style={styles.headerText}>
+            Save
+          </Text>
         </TouchableOpacity>
       </View>
       <KeyboardAvoidingView

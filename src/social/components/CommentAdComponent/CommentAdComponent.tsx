@@ -69,7 +69,11 @@ const CommentAdComponent: FC<CommnetAdComponentType> = ({
           <SvgXml xml={infoIcon()} width="16" height="16" />
         </Pressable>
         <View style={styles.header}>
-          <Text numberOfLines={1} style={styles.headerText}>
+          <Text
+            allowFontScaling={false}
+            numberOfLines={1}
+            style={styles.headerText}
+          >
             {ad?.advertiser?.name}
           </Text>
           <View style={styles.adBadge}>
@@ -79,10 +83,16 @@ const CommentAdComponent: FC<CommnetAdComponentType> = ({
               width="12"
               height="12"
             />
-            <Text style={styles.adBadgeContent}>Sponsored</Text>
+            <Text allowFontScaling={false} style={styles.adBadgeContent}>
+              Sponsored
+            </Text>
           </View>
         </View>
-        {ad.body && <Text style={styles.textContent}>{ad.body}</Text>}
+        {ad.body && (
+          <Text allowFontScaling={false} style={styles.textContent}>
+            {ad.body}
+          </Text>
+        )}
         <Pressable
           style={styles.callToActionCard}
           onPress={() => {
@@ -103,16 +113,28 @@ const CommentAdComponent: FC<CommnetAdComponentType> = ({
             />
           )}
           <View style={styles.callToActionCardRightSection}>
-            <Text numberOfLines={1} style={styles.callToActionCardDescription}>
+            <Text
+              allowFontScaling={false}
+              numberOfLines={1}
+              style={styles.callToActionCardDescription}
+            >
               {ad?.description}
             </Text>
-            <Text numberOfLines={2} style={styles.callToActionCardHeadline}>
+            <Text
+              allowFontScaling={false}
+              numberOfLines={2}
+              style={styles.callToActionCardHeadline}
+            >
               {ad?.headline}
             </Text>
 
             {ad?.callToActionUrl && (
               <View style={styles.callToActionButton}>
-                <Text numberOfLines={1} style={styles.callToActionText}>
+                <Text
+                  allowFontScaling={false}
+                  numberOfLines={1}
+                  style={styles.callToActionText}
+                >
                   {ad.callToAction}
                 </Text>
               </View>

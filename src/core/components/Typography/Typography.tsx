@@ -7,7 +7,7 @@ export type TypographyProps = TextProps & {
 
 export function Typography({ children, style, ...props }: TypographyProps) {
   return (
-    <Text style={style} {...props}>
+    <Text allowFontScaling={false} style={style} {...props}>
       {children}
     </Text>
   );

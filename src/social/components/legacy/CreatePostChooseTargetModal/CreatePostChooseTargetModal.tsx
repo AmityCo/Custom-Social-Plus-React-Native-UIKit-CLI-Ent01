@@ -18,6 +18,7 @@ import useAuth from '../../../../core/hooks/useAuth';
 import { useStyles } from './styles';
 import { useTheme } from 'react-native-paper';
 import type { MyMD3Theme } from '../../../../core/providers/AmityUIKitProvider';
+import { base64Images } from '../../../../core/assets/images/base64Images';
 interface IModal {
   visible: boolean;
   userId?: string;
@@ -101,10 +102,12 @@ const CreatePostChooseTargetModal = ({
               ? {
                   uri: `https://api.${apiRegion}.amity.co/api/v3/files/${myUser.avatarFileId}/download`,
                 }
-              : require('./../../../../../assets/icon/Placeholder.png')
+              : { uri: base64Images.placeholder }
           }
         />
-        <Text style={styles.communityText}>My Timeline</Text>
+        <Text allowFontScaling={false} style={styles.communityText}>
+          My Timeline
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -160,10 +163,12 @@ const CreatePostChooseTargetModal = ({
               ? {
                   uri: `https://api.${apiRegion}.amity.co/api/v3/files/${item.avatarFileId}/download`,
                 }
-              : require('./../../../../../assets/icon/Placeholder.png')
+              : { uri: base64Images.placeholder }
           }
         />
-        <Text style={styles.communityText}>{item.displayName}</Text>
+        <Text allowFontScaling={false} style={styles.communityText}>
+          {item.displayName}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -192,11 +197,15 @@ const CreatePostChooseTargetModal = ({
             <SvgXml xml={closeIcon(theme.colors.base)} width="17" height="17" />
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>Post To</Text>
+            <Text allowFontScaling={false} style={styles.headerText}>
+              Post To
+            </Text>
           </View>
         </View>
         {renderMyTimeLine()}
-        <Text style={styles.myCommunityText}>My Community</Text>
+        <Text allowFontScaling={false} style={styles.myCommunityText}>
+          My Community
+        </Text>
 
         <ScrollView
           onScroll={({ nativeEvent }) => {

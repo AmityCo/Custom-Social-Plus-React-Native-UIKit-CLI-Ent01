@@ -57,7 +57,11 @@ const PostAdComponent: FC<PostAdComponentType> = ({
         <SvgXml xml={infoIcon()} width="16" height="16" />
       </TouchableOpacity>
       <PostAdHeader advertiser={ad?.advertiser} pageId={pageId} />
-      {ad.body && <Text style={styles.textContent}>{ad.body}</Text>}
+      {ad.body && (
+        <Text allowFontScaling={false} style={styles.textContent}>
+          {ad.body}
+        </Text>
+      )}
       {ad?.image1_1?.fileUrl && (
         <Image
           source={{
@@ -71,10 +75,18 @@ const PostAdComponent: FC<PostAdComponentType> = ({
       )}
       <View style={styles.footer}>
         <View style={styles.footerTextWrap}>
-          <Text numberOfLines={1} style={styles.footerDescription}>
+          <Text
+            allowFontScaling={false}
+            numberOfLines={1}
+            style={styles.footerDescription}
+          >
             {ad?.description}
           </Text>
-          <Text numberOfLines={2} style={styles.footerHeadline}>
+          <Text
+            allowFontScaling={false}
+            numberOfLines={2}
+            style={styles.footerHeadline}
+          >
             {ad?.headline}
           </Text>
         </View>
@@ -86,7 +98,9 @@ const PostAdComponent: FC<PostAdComponentType> = ({
               Linking.openURL(ad?.callToActionUrl);
             }}
           >
-            <Text style={styles.callToActionText}>{ad.callToAction}</Text>
+            <Text allowFontScaling={false} style={styles.callToActionText}>
+              {ad.callToAction}
+            </Text>
           </TouchableOpacity>
         )}
       </View>

@@ -107,7 +107,7 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   if (community && community.isJoined === false) {
     return (
       <View style={styles.actionSection}>
-        <Text style={styles.btnText}>
+        <Text allowFontScaling={false} style={styles.btnText}>
           Join community to interact with all posts
         </Text>
       </View>
@@ -125,16 +125,24 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
               height="16"
               xml={likeReaction(themeStyles.colors.background)}
             />
-            <Text style={styles.likeCountText} onPress={onClickReactions}>
+            <Text
+              allowFontScaling={false}
+              style={styles.likeCountText}
+              onPress={onClickReactions}
+            >
               {formatNumber(totalReactions)} {renderLikeText(totalReactions)}
             </Text>
           </View>
         ) : (
-          <Text style={styles.likeCountText} onPress={onClickReactions}>
+          <Text
+            allowFontScaling={false}
+            style={styles.likeCountText}
+            onPress={onClickReactions}
+          >
             {formatNumber(totalReactions)} {renderLikeText(totalReactions)}
           </Text>
         )}
-        <Text style={styles.commentCountText}>
+        <Text allowFontScaling={false} style={styles.commentCountText}>
           {formatNumber(postData?.localCommentCount)}{' '}
           {renderCommentText(postData?.localCommentCount)}
         </Text>
@@ -158,7 +166,12 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
               />
             )}
 
-            <Text style={isLike ? styles.likedText : styles.btnText}>Like</Text>
+            <Text
+              allowFontScaling={false}
+              style={isLike ? styles.likedText : styles.btnText}
+            >
+              Like
+            </Text>
           </TouchableOpacity>
           <View style={styles.commentBtn}>
             <CommentButtonIconElement
@@ -168,7 +181,9 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
               height={20}
               resizeMode="contain"
             />
-            <Text style={styles.btnText}>Comment</Text>
+            <Text allowFontScaling={false} style={styles.btnText}>
+              Comment
+            </Text>
           </View>
         </View>
         {shareLink && (

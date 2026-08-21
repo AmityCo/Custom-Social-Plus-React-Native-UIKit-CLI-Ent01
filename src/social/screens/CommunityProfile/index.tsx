@@ -345,7 +345,12 @@ function CommunityProfileActions({ pageId, communityId, styles }) {
                   width={24}
                   height={24}
                 />
-                <Text style={styles.bottomSheetOptionText}>Post</Text>
+                <Text
+                  allowFontScaling={false}
+                  style={styles.bottomSheetOptionText}
+                >
+                  Post
+                </Text>
               </TouchableOpacity>
             )}
             {hasPostPermission && (
@@ -359,7 +364,12 @@ function CommunityProfileActions({ pageId, communityId, styles }) {
                   xml={poll()}
                   color={colors.base}
                 />
-                <Text style={styles.bottomSheetOptionText}>Poll</Text>
+                <Text
+                  allowFontScaling={false}
+                  style={styles.bottomSheetOptionText}
+                >
+                  Poll
+                </Text>
               </TouchableOpacity>
             )}
           </Animated.View>

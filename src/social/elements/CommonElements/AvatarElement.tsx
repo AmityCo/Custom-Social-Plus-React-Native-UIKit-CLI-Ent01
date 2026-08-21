@@ -98,7 +98,9 @@ const AvatarElement: FC<AvatarElementType> = ({
           { width: size, height: size, borderRadius: radius },
         ]}
       >
-        <Text style={styles.avatarPlaceholderText}>{firstChar}</Text>
+        <Text allowFontScaling={false} style={styles.avatarPlaceholderText}>
+          {firstChar}
+        </Text>
       </View>
     );
   }

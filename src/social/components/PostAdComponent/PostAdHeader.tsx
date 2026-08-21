@@ -35,7 +35,11 @@ const PostAdHeader: FC<PostAdHeaderType> = ({ advertiser, pageId }) => {
         defaultAvatar={defaultAdAvatarUri}
       />
       <View style={styles.headerRightSection}>
-        <Text numberOfLines={1} style={styles.headerText}>
+        <Text
+          allowFontScaling={false}
+          numberOfLines={1}
+          style={styles.headerText}
+        >
           {advertiser?.name}
         </Text>
         <View style={styles.adBadge}>
@@ -45,7 +49,9 @@ const PostAdHeader: FC<PostAdHeaderType> = ({ advertiser, pageId }) => {
             width="12"
             height="12"
           />
-          <Text style={styles.adBadgeContent}>Sponsored</Text>
+          <Text allowFontScaling={false} style={styles.adBadgeContent}>
+            Sponsored
+          </Text>
         </View>
       </View>
     </View>

@@ -67,6 +67,7 @@ const AmityTopSearchBarComponent = ({
           accessibilityLabel="top_search_bar/search_icon"
         />
         <TextInput
+          allowFontScaling={false}
           value={inputValue}
           style={styles.input}
           onChangeText={onChangeText}
@@ -92,7 +93,9 @@ const AmityTopSearchBarComponent = ({
         testID="top_search_bar/cancel_button"
         accessibilityLabel="top_search_bar/cancel_button"
       >
-        <Text style={styles.cancelBtn}>{cancelText[0]}</Text>
+        <Text allowFontScaling={false} style={styles.cancelBtn}>
+          {cancelText[0]}
+        </Text>
       </TouchableOpacity>
     </View>
   );

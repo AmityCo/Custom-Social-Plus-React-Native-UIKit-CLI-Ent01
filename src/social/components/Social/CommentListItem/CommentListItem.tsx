@@ -330,7 +330,9 @@ const CommentListItem = ({
                 }
               }}
             >
-              <Text style={styles.headerText}>{user?.displayName}</Text>
+              <Text allowFontScaling={false} style={styles.headerText}>
+                {user?.displayName}
+              </Text>
             </TouchableOpacity>
           </View>
 

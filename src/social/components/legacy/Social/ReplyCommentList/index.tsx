@@ -249,7 +249,9 @@ export default function ReplyCommentList({
                 }
               }}
             >
-              <Text style={styles.headerText}>{user?.displayName}</Text>
+              <Text allowFontScaling={false} style={styles.headerText}>
+                {user?.displayName}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -308,7 +310,7 @@ export default function ReplyCommentList({
             {childrenComment.length > 0 && (
               <Pressable style={styles.viewMoreReplyBtn}>
                 <SvgXml xml={expandIcon} />
-                <Text style={styles.viewMoreText}>
+                <Text allowFontScaling={false} style={styles.viewMoreText}>
                   View {childrenNumber} replies
                 </Text>
               </Pressable>

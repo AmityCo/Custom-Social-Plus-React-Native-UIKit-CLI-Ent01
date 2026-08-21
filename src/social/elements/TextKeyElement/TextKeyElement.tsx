@@ -30,6 +30,7 @@ const TextKeyElement: FC<TextElementType> = ({
   if (isExcluded) return null;
   return (
     <Text
+      allowFontScaling={false}
       testID={accessibilityId}
       accessibilityLabel={accessibilityId}
       {...props}

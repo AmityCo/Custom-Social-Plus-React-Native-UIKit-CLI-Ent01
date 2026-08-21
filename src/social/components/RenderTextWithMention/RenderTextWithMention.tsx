@@ -96,6 +96,7 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
       // Add highlighted text
       const highlightedText = (
         <Text
+          allowFontScaling={false}
           onPress={() => handleOnClick(link, userId)}
           key={`highlighted-${i}`}
           style={styles.mentionText}
@@ -116,6 +117,7 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
   const remainingText = textPost.slice(currentPosition);
   result.push([
     <Text
+      allowFontScaling={false}
       selectable
       key="nonHighlighted-last"
       style={[styles.inputText, isTitle && styles.bold]}
@@ -126,7 +128,11 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
 
   // Flatten the array and render
   return (
-    <Text selectable style={[styles.inputText, isTitle && styles.bold]}>
+    <Text
+      allowFontScaling={false}
+      selectable
+      style={[styles.inputText, isTitle && styles.bold]}
+    >
       {result.flat()}
     </Text>
   );

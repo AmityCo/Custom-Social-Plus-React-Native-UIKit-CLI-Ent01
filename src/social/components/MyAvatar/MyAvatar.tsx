@@ -49,7 +49,9 @@ const MyAvatar: FC<MyAvatarProp> = (props) => {
             { width: size, height: size, borderRadius: size / 2 },
           ]}
         >
-          <Text style={styles.avatarPlaceholderText}>{firstChar}</Text>
+          <Text allowFontScaling={false} style={styles.avatarPlaceholderText}>
+            {firstChar}
+          </Text>
         </View>
       );
     }

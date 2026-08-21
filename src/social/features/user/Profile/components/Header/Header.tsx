@@ -103,6 +103,7 @@ export function Header({ user, inline }: HeaderProps) {
           {/* Hidden full text — used only to measure line layout */}
           {!descriptionExpanded && truncatedDescription === null && (
             <Text
+              allowFontScaling={false}
               style={[styles.description, styles.hiddenText]}
               onTextLayout={(e) => onDescriptionTextLayout(e.nativeEvent.lines)}
             >
@@ -110,12 +111,15 @@ export function Header({ user, inline }: HeaderProps) {
             </Text>
           )}
           {descriptionExpanded ? (
-            <Text style={styles.description}>{user.description}</Text>
+            <Text allowFontScaling={false} style={styles.description}>
+              {user.description}
+            </Text>
           ) : (
-            <Text style={styles.description}>
+            <Text allowFontScaling={false} style={styles.description}>
               {truncatedDescription ?? user.description}
               {truncatedDescription !== null && (
                 <Text
+                  allowFontScaling={false}
                   style={styles.seeMore}
                   onPress={() => setDescriptionExpanded(true)}
                 >

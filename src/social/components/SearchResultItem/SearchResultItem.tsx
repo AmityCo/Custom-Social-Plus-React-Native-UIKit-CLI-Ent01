@@ -137,6 +137,7 @@ const SearchResultItem: FC<SearchResultItemType> = ({
         {isCommunity && (
           <>
             <Text
+              allowFontScaling={false}
               style={communityCategory?.name && styles.category}
               testID="community_search_result/community_category_name"
               accessibilityLabel="community_search_result/community_category_name"
@@ -144,6 +145,7 @@ const SearchResultItem: FC<SearchResultItemType> = ({
               {communityCategory?.name ?? ''}
             </Text>
             <Text
+              allowFontScaling={false}
               style={styles.memberCounts}
               testID="community_search_result/community_members_count"
               accessibilityLabel="community_search_result/community_members_count"

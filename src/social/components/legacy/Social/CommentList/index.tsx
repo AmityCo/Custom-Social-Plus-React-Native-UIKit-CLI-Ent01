@@ -310,16 +310,24 @@ const CommentList = ({
         )}
         <View style={styles.rightSection}>
           <View style={styles.headerRow}>
-            <Text style={styles.headerText}>{user?.displayName}</Text>
+            <Text allowFontScaling={false} style={styles.headerText}>
+              {user?.displayName}
+            </Text>
           </View>
 
           <View style={styles.timeRow}>
-            <Text style={styles.headerTextTime}>{timeDifference}</Text>
+            <Text allowFontScaling={false} style={styles.headerTextTime}>
+              {timeDifference}
+            </Text>
             {(editedAt !== createdAt || isEditComment) && (
-              <Text style={styles.dot}>·</Text>
+              <Text allowFontScaling={false} style={styles.dot}>
+                ·
+              </Text>
             )}
             {(editedAt !== createdAt || isEditComment) && (
-              <Text style={styles.headerTextTime}>Edited</Text>
+              <Text allowFontScaling={false} style={styles.headerTextTime}>
+                Edited
+              </Text>
             )}
           </View>
           <View style={styles.commentBubble}>
@@ -329,7 +337,7 @@ const CommentList = ({
                 text={textComment}
               />
             )}
-            {/* <Text style={styles.commentText}>{textComment}</Text> */}
+            {/* <Text allowFontScaling={false} style={styles.commentText}>{textComment}</Text> */}
           </View>
           <View style={styles.actionSection}>
             <TouchableOpacity
@@ -346,7 +354,10 @@ const CommentList = ({
                 <SvgXml xml={likeXml} width="20" height="16" />
               )}
 
-              <Text style={isLike ? styles.likedText : styles.btnText}>
+              <Text
+                allowFontScaling={false}
+                style={isLike ? styles.likedText : styles.btnText}
+              >
                 {!isLike ? 'Like' : 'Liked'}
               </Text>
             </TouchableOpacity>
@@ -356,7 +367,9 @@ const CommentList = ({
                 style={styles.likeBtn}
               >
                 <SvgXml xml={likeCircle} width="20" height="16" />
-                <Text style={styles.likedText}>{likeReaction}</Text>
+                <Text allowFontScaling={false} style={styles.likedText}>
+                  {likeReaction}
+                </Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
@@ -366,7 +379,9 @@ const CommentList = ({
             >
               <SvgXml xml={replyIcon} width="20" height="16" />
 
-              <Text style={styles.btnText}>Reply</Text>
+              <Text allowFontScaling={false} style={styles.btnText}>
+                Reply
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={openModal} style={styles.threeDots}>
@@ -410,7 +425,7 @@ const CommentList = ({
               style={styles.viewMoreReplyBtn}
             >
               <SvgXml xml={expandIcon} />
-              <Text style={styles.viewMoreText}>
+              <Text allowFontScaling={false} style={styles.viewMoreText}>
                 View {childrenNumber}{' '}
                 {childrenNumber === 1 ? 'reply' : 'replies'}
               </Text>
@@ -423,7 +438,9 @@ const CommentList = ({
               style={styles.viewMoreReplyBtn}
             >
               <SvgXml xml={expandIcon} />
-              <Text style={styles.viewMoreText}>View more replies</Text>
+              <Text allowFontScaling={false} style={styles.viewMoreText}>
+                View more replies
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -449,13 +466,19 @@ const CommentList = ({
                   onPress={openEditCommentModal}
                   style={styles.modalRow}
                 >
-                  <Text style={styles.deleteText}> Edit Comment</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Edit Comment
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={deletePostObject}
                   style={styles.modalRow}
                 >
-                  <Text style={styles.deleteText}> Delete Comment</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Delete Comment
+                  </Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -463,7 +486,7 @@ const CommentList = ({
                 onPress={reportCommentObject}
                 style={styles.modalRow}
               >
-                <Text style={styles.deleteText}>
+                <Text allowFontScaling={false} style={styles.deleteText}>
                   {isReportByMe ? 'Undo Report' : 'Report'}
                 </Text>
               </TouchableOpacity>

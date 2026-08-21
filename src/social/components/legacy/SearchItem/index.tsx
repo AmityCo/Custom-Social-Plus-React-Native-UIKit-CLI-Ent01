@@ -92,9 +92,13 @@ export default function SearchItem({
           />
         )}
         <View>
-          <Text style={styles.itemText}>{displayName()}</Text>
+          <Text allowFontScaling={false} style={styles.itemText}>
+            {displayName()}
+          </Text>
           {target.targetType === 'community' && (
-            <Text style={styles.categoryText}>{categoryName}</Text>
+            <Text allowFontScaling={false} style={styles.categoryText}>
+              {categoryName}
+            </Text>
           )}
         </View>
       </View>

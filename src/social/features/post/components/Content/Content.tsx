@@ -272,7 +272,9 @@ const AmityPostContentComponent: FC<AmityPostContentComponentProps> = ({
                       communityId={targetType === 'community' && targetId}
                       userId={creator?.userId}
                     />
-                    <Text style={styles.dot}>·</Text>
+                    <Text allowFontScaling={false} style={styles.dot}>
+                      ·
+                    </Text>
                   </View>
                 )}
                 <TimestampElement
@@ -283,8 +285,15 @@ const AmityPostContentComponent: FC<AmityPostContentComponentProps> = ({
 
                 {editedAt !== createdAt && (
                   <>
-                    <Text style={styles.dot}>·</Text>
-                    <Text style={styles.headerTextTime}>Edited</Text>
+                    <Text allowFontScaling={false} style={styles.dot}>
+                      ·
+                    </Text>
+                    <Text
+                      allowFontScaling={false}
+                      style={styles.headerTextTime}
+                    >
+                      Edited
+                    </Text>
                   </>
                 )}
               </View>

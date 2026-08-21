@@ -111,14 +111,18 @@ const PostTypeChoiceModal = () => {
               width="24"
               height="24"
             />
-            <Text style={styles.postText}>Post</Text>
+            <Text allowFontScaling={false} style={styles.postText}>
+              Post
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => onChooseType('poll')}
             style={styles.modalRow}
           >
             <SvgXml xml={pollIcon(theme.colors.base)} width="24" height="24" />
-            <Text style={styles.postText}>Poll</Text>
+            <Text allowFontScaling={false} style={styles.postText}>
+              Poll
+            </Text>
           </TouchableOpacity>
           <CreatePostChooseTargetModal
             visible={createPostModalVisible}

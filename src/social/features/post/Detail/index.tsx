@@ -271,9 +271,11 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
         <View onLayout={(e) => setInputBarHeight(e.nativeEvent.layout.height)}>
           {replyUserName.length > 0 && (
             <View style={styles.replyLabelWrap}>
-              <Text style={styles.replyLabel}>
+              <Text allowFontScaling={false} style={styles.replyLabel}>
                 Replying to{' '}
-                <Text style={styles.userNameLabel}>{replyUserName}</Text>
+                <Text allowFontScaling={false} style={styles.userNameLabel}>
+                  {replyUserName}
+                </Text>
               </Text>
               <TouchableOpacity>
                 <TouchableOpacity onPress={onCloseReply}>
@@ -305,6 +307,7 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
                 style={styles.postBtn}
               >
                 <Text
+                  allowFontScaling={false}
                   style={
                     inputMessage.length > 0
                       ? styles.postBtnText
@@ -372,7 +375,9 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
               style={styles.headerIcon}
             />
           </Pressable>
-          <Text style={styles.headerTitle}>Post</Text>
+          <Text allowFontScaling={false} style={styles.headerTitle}>
+            Post
+          </Text>
           <PostMenu post={postData} pageId={pageId} componentId={componentId} />
         </View>
         <View style={[styles.scrollContainer]}>

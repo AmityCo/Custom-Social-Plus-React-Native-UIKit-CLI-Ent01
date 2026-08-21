@@ -98,7 +98,7 @@ const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   if (community && community.isJoined === false) {
     return (
       <View style={styles.actionSection}>
-        <Text style={styles.btnText}>
+        <Text allowFontScaling={false} style={styles.btnText}>
           Join community to interact with all posts
         </Text>
       </View>
@@ -124,7 +124,10 @@ const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
               resizeMode="contain"
             />
           )}
-          <Text style={isLike ? styles.likedText : styles.btnText}>
+          <Text
+            allowFontScaling={false}
+            style={isLike ? styles.likedText : styles.btnText}
+          >
             {formatNumber(totalReactions)}
           </Text>
         </TouchableOpacity>
@@ -136,7 +139,9 @@ const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
             height={20}
             resizeMode="contain"
           />
-          <Text style={styles.btnText}>{postData?.localCommentCount}</Text>
+          <Text allowFontScaling={false} style={styles.btnText}>
+            {postData?.localCommentCount}
+          </Text>
         </TouchableOpacity>
       </View>
       {shareLink && (

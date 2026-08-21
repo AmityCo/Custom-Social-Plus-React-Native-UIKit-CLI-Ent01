@@ -213,16 +213,24 @@ export default function ReplyCommentList({
         )}
         <View style={styles.rightSection}>
           <View style={styles.headerRow}>
-            <Text style={styles.headerText}>{user?.displayName}</Text>
+            <Text allowFontScaling={false} style={styles.headerText}>
+              {user?.displayName}
+            </Text>
           </View>
 
           <View style={styles.timeRow}>
-            <Text style={styles.headerTextTime}>{timeDifference}</Text>
+            <Text allowFontScaling={false} style={styles.headerTextTime}>
+              {timeDifference}
+            </Text>
             {(editedAt !== createdAt || isEditComment) && (
-              <Text style={styles.dot}>·</Text>
+              <Text allowFontScaling={false} style={styles.dot}>
+                ·
+              </Text>
             )}
             {(editedAt !== createdAt || isEditComment) && (
-              <Text style={styles.headerTextTime}>Edited</Text>
+              <Text allowFontScaling={false} style={styles.headerTextTime}>
+                Edited
+              </Text>
             )}
           </View>
           <View style={styles.commentBubble}>
@@ -248,7 +256,10 @@ export default function ReplyCommentList({
                 <SvgXml xml={likeXml} width="20" height="16" />
               )}
 
-              <Text style={isLike ? styles.likedText : styles.btnText}>
+              <Text
+                allowFontScaling={false}
+                style={isLike ? styles.likedText : styles.btnText}
+              >
                 {!isLike && likeReaction === 0 ? 'Like' : likeReaction}
               </Text>
             </TouchableOpacity>
@@ -265,7 +276,7 @@ export default function ReplyCommentList({
             {childrenComment && childrenComment.length > 0 && (
               <Pressable style={styles.viewMoreReplyBtn}>
                 <SvgXml xml={expandIcon} />
-                <Text style={styles.viewMoreText}>
+                <Text allowFontScaling={false} style={styles.viewMoreText}>
                   View {childrenNumber} replies
                 </Text>
               </Pressable>
@@ -299,7 +310,10 @@ export default function ReplyCommentList({
                     width="20"
                     height="20"
                   />
-                  <Text style={styles.deleteText}> Edit reply</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Edit reply
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={deleteReplyComment}
@@ -310,7 +324,10 @@ export default function ReplyCommentList({
                     width="20"
                     height="20"
                   />
-                  <Text style={styles.deleteText}> Delete reply</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Delete reply
+                  </Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -318,7 +335,7 @@ export default function ReplyCommentList({
                 onPress={reportCommentObject}
                 style={styles.modalRow}
               >
-                <Text style={styles.deleteText}>
+                <Text allowFontScaling={false} style={styles.deleteText}>
                   {isReportByMe ? 'Undo Report' : 'Report'}
                 </Text>
               </TouchableOpacity>

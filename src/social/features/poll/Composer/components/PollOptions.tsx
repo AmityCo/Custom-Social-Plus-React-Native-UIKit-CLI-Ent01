@@ -50,6 +50,7 @@ export function PollOptions({
                   ]}
                 >
                   <TextInput
+                    allowFontScaling={false}
                     multiline
                     style={styles.pollOptionInput}
                     value={pollOptions[index].data}

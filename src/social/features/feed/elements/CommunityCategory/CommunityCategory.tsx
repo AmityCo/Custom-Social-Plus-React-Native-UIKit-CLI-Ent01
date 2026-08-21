@@ -36,7 +36,7 @@ export function CommunityCategory({
         style,
       ]}
     >
-      <Text style={styles.chipText} numberOfLines={1}>
+      <Text allowFontScaling={false} style={styles.chipText} numberOfLines={1}>
         {categoryName}
       </Text>
     </View>

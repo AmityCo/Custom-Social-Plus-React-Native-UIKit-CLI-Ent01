@@ -25,6 +25,7 @@ function SearchInput({ iconProps, inputProps, style }: SearchInputProps) {
         color={theme.colors.baseShade3}
       />
       <TextInput
+        allowFontScaling={false}
         {...inputProps}
         value={value}
         placeholder={inputProps?.placeholder}

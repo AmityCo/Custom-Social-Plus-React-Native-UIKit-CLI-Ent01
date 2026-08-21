@@ -16,6 +16,7 @@ const CustomText: React.FC<CustomTextProps> = ({
 }) => {
   return (
     <Text
+      allowFontScaling={false}
       style={[styles.text, style]}
       numberOfLines={numberOfLines}
       ellipsizeMode={ellipsizeMode}

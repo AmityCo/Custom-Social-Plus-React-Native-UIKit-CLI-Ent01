@@ -81,7 +81,9 @@ export function CommunityCategories({
           ))}
           {displayShowMore && (
             <View style={styles.chipContainer}>
-              <Text style={styles.chipText}>{showMoreText}</Text>
+              <Text allowFontScaling={false} style={styles.chipText}>
+                {showMoreText}
+              </Text>
             </View>
           )}
         </>

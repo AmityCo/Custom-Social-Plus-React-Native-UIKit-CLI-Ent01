@@ -786,13 +786,16 @@ const AmityPostComposerPage: FC<AmityPostComposerPageType> = ({
         <TouchableOpacity onPress={onClose} hitSlop={20}>
           <CloseButtonIconElement pageID={pageId} style={styles.closeBtn} />
         </TouchableOpacity>
-        <Text style={styles.title}>{title}</Text>
+        <Text allowFontScaling={false} style={styles.title}>
+          {title}
+        </Text>
         <TouchableOpacity
           onPress={onPressPost}
           disabled={!isInputValid || !checkIsEditValid()}
         >
           {isEditMode ? (
             <Text
+              allowFontScaling={false}
               style={[
                 styles.postBtnText,
                 checkIsEditValid() && styles.activePostBtn,

@@ -18,7 +18,11 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
     <View style={styles.overlay}>
       <View style={styles.indicatorContainer}>
         <ActivityIndicator size="large" color="#fff" />
-        {loadingText && <Text style={styles.loadingText}>{loadingText}</Text>}
+        {loadingText && (
+          <Text allowFontScaling={false} style={styles.loadingText}>
+            {loadingText}
+          </Text>
+        )}
       </View>
     </View>
   );

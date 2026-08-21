@@ -32,10 +32,12 @@ const PollSection: React.FC<IPollSection> = ({ pollId }) => {
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
-          <Text style={styles.pollEndDays}>
+          <Text allowFontScaling={false} style={styles.pollEndDays}>
             {isPollClosed ? 'Final result' : `Poll ends in ${endDays}`}
           </Text>
-          <Text style={styles.totalVote}>{totalVote} votes</Text>
+          <Text allowFontScaling={false} style={styles.totalVote}>
+            {totalVote} votes
+          </Text>
         </View>
         <PollOptionList
           onSubmit={onSubmit}

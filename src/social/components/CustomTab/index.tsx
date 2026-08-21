@@ -84,6 +84,7 @@ const CustomTab = ({ tabName, onTabChange }: ICustomTab): ReactElement => {
             onPress={() => handleTabPress({ name: tab, tabIndex: index + 1 })}
           >
             <Text
+              allowFontScaling={false}
               style={[
                 styles.tabText,
                 activeTab === index + 1 && styles.activeTabText,

@@ -5,6 +5,7 @@ import { PreviewDataImage } from './types';
 import { getPreviewData } from './utils';
 import { IMentionPosition } from '../../../core/types';
 import RenderTextWithMention from '../RenderTextWithMention/RenderTextWithMention';
+import { base64Images } from '../../../core/assets/images/base64Images';
 
 export interface LinkPreviewProps {
   text: string;
@@ -37,9 +38,12 @@ export const LinkPreview = React.memo(
 
     const renderImageNode = React.useCallback(
       (image: PreviewDataImage) => {
-        const imageUrl = image
-          ? { uri: image }
-          : require('../../../core/assets/images/previewLinkDefaultBackground.png');
+        // `image` is a PreviewDataImage ({ url, width, height }), so the URI has
+        // to come from image.url - passing the object itself meant `uri` was never
+        // a string and the preview image silently never rendered.
+        const imageUrl = image?.url
+          ? { uri: image.url }
+          : { uri: base64Images.previewLinkDefaultBackground };
 
         return (
           <Image
@@ -55,7 +59,7 @@ export const LinkPreview = React.memo(
 
     const renderTitleNode = (title: string) => {
       return (
-        <Text numberOfLines={1} style={styles.title}>
+        <Text allowFontScaling={false} numberOfLines={1} style={styles.title}>
           {title}
         </Text>
       );
@@ -65,7 +69,11 @@ export const LinkPreview = React.memo(
       const matches = url.match(/^https?:\/\/([^/?#]+)(?:[/?#]|$)/i);
       const shortUrl = matches ? matches[1] : '';
       return (
-        <Text numberOfLines={1} style={styles.shortUrl}>
+        <Text
+          allowFontScaling={false}
+          numberOfLines={1}
+          style={styles.shortUrl}
+        >
           {shortUrl}
         </Text>
       );

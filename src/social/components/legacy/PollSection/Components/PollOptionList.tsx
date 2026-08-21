@@ -66,7 +66,9 @@ const PollOptionList: FC<IPollOptionList> = ({
         onPress={() => onSubmit(selectedOption)}
         style={styles.submitBtn}
       >
-        <Text style={styles.submit}>Submit</Text>
+        <Text allowFontScaling={false} style={styles.submit}>
+          Submit
+        </Text>
       </TouchableOpacity>
     );
   }, [isPollClosed, isAlreadyVoted, styles, onSubmit, selectedOption]);
@@ -81,7 +83,7 @@ const PollOptionList: FC<IPollOptionList> = ({
         onPress={onPressMoreOption}
         style={styles.moreOptionsBtn}
       >
-        <Text>{resultText}</Text>
+        <Text allowFontScaling={false}>{resultText}</Text>
       </TouchableOpacity>
     );
   }, [
@@ -124,12 +126,17 @@ const PollOptionList: FC<IPollOptionList> = ({
               {!isPollClosed && !isAlreadyVoted && (
                 <SvgXml xml={selectedIcon} width="20" height="20" />
               )}
-              <Text style={styles.optionText}>{option.data}</Text>
+              <Text allowFontScaling={false} style={styles.optionText}>
+                {option.data}
+              </Text>
             </View>
             {(isPollClosed || isAlreadyVoted) && (
               <>
                 <PollBar myVote={option.isVotedByUser} length={length} />
-                <Text style={[styles.voteCount, selectedVoteCountStyle]}>
+                <Text
+                  allowFontScaling={false}
+                  style={[styles.voteCount, selectedVoteCountStyle]}
+                >
                   {option.voteCount} votes
                 </Text>
               </>

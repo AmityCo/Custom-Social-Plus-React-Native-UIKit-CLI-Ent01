@@ -26,11 +26,15 @@ const AdInformation: FC<AdInformationType> = ({
 
   return (
     <View testID={accessibilityId} style={styles.container}>
-      <Text style={styles.header}>About this advertisement</Text>
+      <Text allowFontScaling={false} style={styles.header}>
+        About this advertisement
+      </Text>
       <View style={styles.divider} />
       <View style={styles.content}>
         <View style={styles.contentItem}>
-          <Text style={styles.contentTitle}>Why this advertisement?</Text>
+          <Text allowFontScaling={false} style={styles.contentTitle}>
+            Why this advertisement?
+          </Text>
           <View style={styles.contentDetail}>
             <SvgXml
               style={styles.infoIcon}
@@ -38,14 +42,16 @@ const AdInformation: FC<AdInformationType> = ({
               width="16"
               height="16"
             />
-            <Text style={styles.contentDetailText}>
+            <Text allowFontScaling={false} style={styles.contentDetailText}>
               You're seeing this advertisement because it was displayed to all
               users in the system.
             </Text>
           </View>
         </View>
         <View style={styles.contentItem}>
-          <Text style={styles.contentTitle}>About this advertiser</Text>
+          <Text allowFontScaling={false} style={styles.contentTitle}>
+            About this advertiser
+          </Text>
           <View style={styles.contentDetail}>
             <SvgXml
               style={styles.infoIcon}
@@ -53,7 +59,7 @@ const AdInformation: FC<AdInformationType> = ({
               width="16"
               height="16"
             />
-            <Text style={styles.contentDetailText}>
+            <Text allowFontScaling={false} style={styles.contentDetailText}>
               Advertiser name: {companyName}
             </Text>
           </View>

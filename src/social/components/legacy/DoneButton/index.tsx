@@ -18,7 +18,9 @@ export default function DoneButton({
   return (
     <TouchableOpacity onPress={onDonePressed}>
       <View style={styles.icon}>
-        <Text style={styles.doneText}>{buttonText}</Text>
+        <Text allowFontScaling={false} style={styles.doneText}>
+          {buttonText}
+        </Text>
       </View>
     </TouchableOpacity>
   );

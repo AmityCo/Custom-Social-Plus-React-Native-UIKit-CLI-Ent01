@@ -43,7 +43,7 @@ const AmityRecommendedCommunityComponent: FC<
 
   return (
     <View testID={accessibilityId}>
-      <Text style={styles.headerText}>
+      <Text allowFontScaling={false} style={styles.headerText}>
         {config?.text || 'Recommended for you'}
       </Text>
       <FlatList

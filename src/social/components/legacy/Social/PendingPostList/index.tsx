@@ -175,11 +175,13 @@ export default function PendingPostList({
           <View>
             <View style={styles.headerRow}>
               <TouchableOpacity onPress={handleDisplayNamePress}>
-                <Text style={styles.headerText}>{user?.displayName}</Text>
+                <Text allowFontScaling={false} style={styles.headerText}>
+                  {user?.displayName}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={styles.timeRow}>
-              <Text style={styles.headerTextTime}>
+              <Text allowFontScaling={false} style={styles.headerTextTime}>
                 {getTimeDifference(createdAt)}
               </Text>
             </View>
@@ -212,13 +214,17 @@ export default function PendingPostList({
               onPress={() => approvePost()}
               style={styles.acceptBtn}
             >
-              <Text style={styles.acceptBtnText}>Accept</Text>
+              <Text allowFontScaling={false} style={styles.acceptBtnText}>
+                Accept
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => declinePost()}
               style={styles.declineBtn}
             >
-              <Text style={styles.declineBtnText}>Decline</Text>
+              <Text allowFontScaling={false} style={styles.declineBtnText}>
+                Decline
+              </Text>
             </TouchableOpacity>
           </View>
         )}

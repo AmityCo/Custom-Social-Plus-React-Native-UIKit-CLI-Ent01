@@ -19,7 +19,11 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
   const navigation =
     useNavigation() as NativeStackNavigationProp<RootStackParamList>;
   if (mentionPositionArr.length === 0) {
-    return <Text style={styles.inputText}>{textPost}</Text>;
+    return (
+      <Text allowFontScaling={false} style={styles.inputText}>
+        {textPost}
+      </Text>
+    );
   }
   const mentionClick = (userId: string) => {
     navigation.navigate('UserProfile', {
@@ -35,6 +39,7 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
       // Add highlighted text
       const highlightedText = (
         <Text
+          allowFontScaling={false}
           onPress={() => mentionClick(userId)}
           key={`highlighted-${i}`}
           style={styles.mentionText}
@@ -54,13 +59,21 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
   // Add any remaining non-highlighted text after the mentions
   const remainingText = textPost.slice(currentPosition);
   result.push([
-    <Text key="nonHighlighted-last" style={styles.inputText}>
+    <Text
+      allowFontScaling={false}
+      key="nonHighlighted-last"
+      style={styles.inputText}
+    >
       {remainingText}
     </Text>,
   ]);
 
   // Flatten the array and render
-  return <Text style={styles.inputText}>{result.flat()}</Text>;
+  return (
+    <Text allowFontScaling={false} style={styles.inputText}>
+      {result.flat()}
+    </Text>
+  );
 };
 
 export default memo(RenderTextWithMention);

@@ -17,7 +17,11 @@ const Description = () => {
 
   if (excludes.includes('social_home_page/empty_newsfeed/description'))
     return null;
-  return <Text style={styles.description}>{title[0]}</Text>;
+  return (
+    <Text allowFontScaling={false} style={styles.description}>
+      {title[0]}
+    </Text>
+  );
 };
 
 export default memo(Description);

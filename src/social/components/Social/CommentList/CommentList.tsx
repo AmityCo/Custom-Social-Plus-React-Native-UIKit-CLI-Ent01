@@ -273,9 +273,11 @@ const CommentList: FC<ICommentListProp> = ({
         <View onLayout={(e) => setInputBarHeight(e.nativeEvent.layout.height)}>
           {replyUserName.length > 0 && (
             <View style={styles.replyLabelWrap}>
-              <Text style={styles.replyLabel}>
+              <Text allowFontScaling={false} style={styles.replyLabel}>
                 Replying to{' '}
-                <Text style={styles.userNameLabel}>{replyUserName}</Text>
+                <Text allowFontScaling={false} style={styles.userNameLabel}>
+                  {replyUserName}
+                </Text>
               </Text>
               <TouchableOpacity>
                 <TouchableOpacity onPress={onCloseReply}>
@@ -319,6 +321,7 @@ const CommentList: FC<ICommentListProp> = ({
                   style={styles.postBtn}
                 >
                   <Text
+                    allowFontScaling={false}
                     style={
                       inputMessage.length > 0
                         ? styles.postBtnText
@@ -363,7 +366,9 @@ const CommentList: FC<ICommentListProp> = ({
         ListEmptyComponent={
           loadingComments ? null : (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No comments yet</Text>
+              <Text allowFontScaling={false} style={styles.emptyText}>
+                No comments yet
+              </Text>
             </View>
           )
         }

@@ -35,6 +35,7 @@ const CreateCommunityButton = () => {
 
   return (
     <Text
+      allowFontScaling={false}
       style={styles.createCommunityBtnText}
       onPress={onPressCreateCommunity}
     >

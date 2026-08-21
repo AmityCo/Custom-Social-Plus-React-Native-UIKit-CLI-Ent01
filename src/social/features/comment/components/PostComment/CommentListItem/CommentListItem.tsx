@@ -368,6 +368,7 @@ const CommentListItem = ({
             >
               <View style={styles.displayNameRow}>
                 <Text
+                  allowFontScaling={false}
                   style={styles.headerText}
                   numberOfLines={1}
                   ellipsizeMode="tail"
@@ -400,19 +401,32 @@ const CommentListItem = ({
             <View style={styles.actionSection}>
               <View style={styles.rowContainer}>
                 <View style={styles.timeRow}>
-                  <Text style={styles.headerTextTime}>{timeDifference}</Text>
+                  <Text allowFontScaling={false} style={styles.headerTextTime}>
+                    {timeDifference}
+                  </Text>
                   {(editedAt !== createdAt || isEditComment) && (
-                    <Text style={styles.headerTextTime}> (edited)</Text>
+                    <Text
+                      allowFontScaling={false}
+                      style={styles.headerTextTime}
+                    >
+                      {' '}
+                      (edited)
+                    </Text>
                   )}
                 </View>
 
                 <TouchableOpacity onPress={onPressLike} style={styles.likeBtn}>
-                  <Text style={isLike ? styles.likedText : styles.btnText}>
+                  <Text
+                    allowFontScaling={false}
+                    style={isLike ? styles.likedText : styles.btnText}
+                  >
                     {!isLike ? 'Like' : 'Liked'}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressReply} style={styles.likeBtn}>
-                  <Text style={styles.btnText}>Reply</Text>
+                  <Text allowFontScaling={false} style={styles.btnText}>
+                    Reply
+                  </Text>
                 </TouchableOpacity>
                 {!isVisitorOrBot && (
                   <TouchableOpacity
@@ -433,7 +447,9 @@ const CommentListItem = ({
                   onPress={onPressCommentReaction}
                   style={styles.likeBtn}
                 >
-                  <Text style={styles.btnText}>{likeReaction}</Text>
+                  <Text allowFontScaling={false} style={styles.btnText}>
+                    {likeReaction}
+                  </Text>
                   <SvgXml
                     // eslint-disable-next-line react-native/no-inline-styles
                     style={{ marginLeft: 4 }}
@@ -478,7 +494,7 @@ const CommentListItem = ({
               style={styles.viewMoreReplyBtn}
             >
               <SvgXml xml={expandIcon} />
-              <Text style={styles.viewMoreText}>
+              <Text allowFontScaling={false} style={styles.viewMoreText}>
                 View {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
               </Text>
             </TouchableOpacity>
@@ -490,7 +506,9 @@ const CommentListItem = ({
               style={styles.viewMoreReplyBtn}
             >
               <SvgXml xml={expandIcon} />
-              <Text style={styles.viewMoreText}>View more replies</Text>
+              <Text allowFontScaling={false} style={styles.viewMoreText}>
+                View more replies
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -522,7 +540,10 @@ const CommentListItem = ({
                     width="20"
                     height="20"
                   />
-                  <Text style={styles.deleteText}> Edit Comment</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Edit Comment
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={deleteComment}
@@ -533,7 +554,10 @@ const CommentListItem = ({
                     width="20"
                     height="20"
                   />
-                  <Text style={styles.deleteText}> Delete Comment</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Delete Comment
+                  </Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -546,7 +570,7 @@ const CommentListItem = ({
                   width="20"
                   height="20"
                 />
-                <Text style={styles.deleteText}>
+                <Text allowFontScaling={false} style={styles.deleteText}>
                   {isReportByMe ? 'Unreport comment' : 'Report comment'}
                 </Text>
               </TouchableOpacity>

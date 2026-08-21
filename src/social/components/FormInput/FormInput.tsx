@@ -45,6 +45,7 @@ function FormInput({
         )}
       </View>
       <TextInput
+        allowFontScaling={false}
         {...props}
         value={value}
         editable={editable}

@@ -14,7 +14,7 @@ const ImageDefaultHeader = ({ onRequestClose }) => (
       onPress={onRequestClose}
       hitSlop={HIT_SLOP}
     >
-      <Text style={styles.closeText}>✕</Text>
+      <Text allowFontScaling={false} style={styles.closeText}>✕</Text>
     </TouchableOpacity>
   </SafeAreaView>
 );

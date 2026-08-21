@@ -44,7 +44,9 @@ const ExploreCommunityButton: FC<ExploreCommunityButtonType> = ({
       onPress={() => onPressExploreCommunity && onPressExploreCommunity()}
     >
       <Image source={icon} style={styles.exploreIcon} resizeMode="contain" />
-      <Text style={styles.exploreText}>{text}</Text>
+      <Text allowFontScaling={false} style={styles.exploreText}>
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };

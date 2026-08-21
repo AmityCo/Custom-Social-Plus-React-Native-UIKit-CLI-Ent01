@@ -8,7 +8,9 @@ export default function CancelButton() {
   return (
     <TouchableOpacity onPress={() => navigation.goBack()}>
       <View style={styles.icon}>
-        <Text style={styles.cancelText}>Cancel</Text>
+        <Text allowFontScaling={false} style={styles.cancelText}>
+          Cancel
+        </Text>
       </View>
     </TouchableOpacity>
   );

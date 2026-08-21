@@ -22,7 +22,12 @@ const TimeStampElement: FC<TimeStampElementType> = ({
   const text = useTimeDifference(createdAt);
   if (excludes.includes(configId)) return null;
   return (
-    <Text testID={configId} accessibilityLabel={configId} {...props}>
+    <Text
+      allowFontScaling={false}
+      testID={configId}
+      accessibilityLabel={configId}
+      {...props}
+    >
       {text}
     </Text>
   );

@@ -21,7 +21,12 @@ const TextElement: FC<TextElementType> = ({
   const configId = `${pageID}/${componentID}/${elementID}`;
   if (excludes.includes(configId)) return null;
   return (
-    <Text testID={configId} accessibilityLabel={configId} {...props}>
+    <Text
+      allowFontScaling={false}
+      testID={configId}
+      accessibilityLabel={configId}
+      {...props}
+    >
       {text}
     </Text>
   );

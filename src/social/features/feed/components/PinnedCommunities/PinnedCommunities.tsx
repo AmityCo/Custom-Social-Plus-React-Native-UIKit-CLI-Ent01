@@ -42,7 +42,9 @@ const AmityPinnedCommunitiesComponent: FC<
 
   return (
     <View>
-      <Text style={styles.headerText}>{title}</Text>
+      <Text allowFontScaling={false} style={styles.headerText}>
+        {title}
+      </Text>
       {isSingle ? (
         // A single card fills the row (no carousel) so it doesn't leave a large
         // empty gap on the right.

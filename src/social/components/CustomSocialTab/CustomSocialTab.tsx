@@ -45,7 +45,12 @@ const CustomSocialTab: FC<TCustomTab> = ({
               onPress={onPressTab}
               key={tabName}
             >
-              <Text style={[styles.tabName, pressedTabName]}>{tabName}</Text>
+              <Text
+                allowFontScaling={false}
+                style={[styles.tabName, pressedTabName]}
+              >
+                {tabName}
+              </Text>
             </TouchableOpacity>
           );
         })}

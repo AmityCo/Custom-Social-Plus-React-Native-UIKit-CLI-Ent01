@@ -47,9 +47,11 @@ export class ErrorBoundary extends Component<
         <View style={styles.container}>
           <SvgXml xml={errorPage('#EBECEF')} />
           <View>
-            <Text style={styles.title}>Something went wrong</Text>
+            <Text allowFontScaling={false} style={styles.title}>
+              Something went wrong
+            </Text>
 
-            <Text style={styles.description}>
+            <Text allowFontScaling={false} style={styles.description}>
               The content you're looking for is unavailable.
             </Text>
           </View>

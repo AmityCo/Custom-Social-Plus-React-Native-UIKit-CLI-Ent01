@@ -88,11 +88,17 @@ export default function SearchItem({
       <View style={styles.leftContainer}>
         <Image style={styles.avatar} source={{ uri: avatar }} />
         <View>
-          <Text numberOfLines={1} style={styles.itemText}>
+          <Text
+            allowFontScaling={false}
+            numberOfLines={1}
+            style={styles.itemText}
+          >
             {target?.displayName}
           </Text>
           {target?.targetType === 'community' && (
-            <Text style={styles.categoryText}>{categoryName}</Text>
+            <Text allowFontScaling={false} style={styles.categoryText}>
+              {categoryName}
+            </Text>
           )}
         </View>
       </View>

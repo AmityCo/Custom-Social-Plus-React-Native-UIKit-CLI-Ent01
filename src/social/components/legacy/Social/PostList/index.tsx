@@ -349,13 +349,19 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
                   onPress={openEditPostModal}
                   style={styles.modalRow}
                 >
-                  <Text style={styles.deleteText}> Edit Post</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Edit Post
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={deletePostObject}
                   style={styles.modalRow}
                 >
-                  <Text style={styles.deleteText}> Delete Post</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Delete Post
+                  </Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -363,7 +369,7 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
                 onPress={reportPostObject}
                 style={styles.modalRow}
               >
-                <Text style={styles.deleteText}>
+                <Text allowFontScaling={false} style={styles.deleteText}>
                   {isReportByMe ? 'Undo Report' : 'Report'}
                 </Text>
               </TouchableOpacity>
@@ -452,10 +458,14 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
             <View style={styles.headerRow}>
               {user?.userId ? (
                 <TouchableOpacity onPress={handleDisplayNamePress}>
-                  <Text style={styles.headerText}>{user?.displayName}</Text>
+                  <Text allowFontScaling={false} style={styles.headerText}>
+                    {user?.displayName}
+                  </Text>
                 </TouchableOpacity>
               ) : (
-                <Text style={styles.headerText}>{user?.displayName}</Text>
+                <Text allowFontScaling={false} style={styles.headerText}>
+                  {user?.displayName}
+                </Text>
               )}
 
               {communityName && (
@@ -469,6 +479,7 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
 
                   <TouchableOpacity onPress={handleCommunityNamePress}>
                     <Text
+                      allowFontScaling={false}
                       ellipsizeMode="tail"
                       numberOfLines={3}
                       style={styles.headerText}
@@ -480,12 +491,18 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
               )}
             </View>
             <View style={styles.timeRow}>
-              <Text style={styles.headerTextTime}>{timeDifference}</Text>
+              <Text allowFontScaling={false} style={styles.headerTextTime}>
+                {timeDifference}
+              </Text>
               {(editedAt !== createdAt || isEdit) && (
-                <Text style={styles.dot}>·</Text>
+                <Text allowFontScaling={false} style={styles.dot}>
+                  ·
+                </Text>
               )}
               {(editedAt !== createdAt || isEdit) && (
-                <Text style={styles.headerTextTime}>Edited</Text>
+                <Text allowFontScaling={false} style={styles.headerTextTime}>
+                  Edited
+                </Text>
               )}
             </View>
           </View>
@@ -511,14 +528,18 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
           <View>
             <View style={styles.countSection}>
               {likeReaction ? (
-                <Text style={styles.likeCountText} onPress={onClickReactions}>
+                <Text
+                  allowFontScaling={false}
+                  style={styles.likeCountText}
+                  onPress={onClickReactions}
+                >
                   {likeReaction} {renderLikeText(likeReaction)}
                 </Text>
               ) : (
-                <Text />
+                <Text allowFontScaling={false} />
               )}
               {commentsCount > 0 && (
-                <Text style={styles.commentCountText}>
+                <Text allowFontScaling={false} style={styles.commentCountText}>
                   {commentsCount > 0 && commentsCount}{' '}
                   {renderCommentText(commentsCount)}
                 </Text>
@@ -543,7 +564,10 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
                 <SvgXml xml={likeXml} width="20" height="16" />
               )}
 
-              <Text style={isLike ? styles.likedText : styles.btnText}>
+              <Text
+                allowFontScaling={false}
+                style={isLike ? styles.likedText : styles.btnText}
+              >
                 Like
               </Text>
             </TouchableOpacity>
@@ -552,12 +576,14 @@ export default function PostList({ postDetail, onDelete }: IPostList) {
               style={styles.commentBtn}
             >
               <SvgXml xml={commentXml} width="20" height="16" />
-              <Text style={styles.btnText}>Comment</Text>
+              <Text allowFontScaling={false} style={styles.btnText}>
+                Comment
+              </Text>
             </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.actionSection}>
-            <Text style={styles.btnText}>
+            <Text allowFontScaling={false} style={styles.btnText}>
               Join community to interact with all posts
             </Text>
           </View>

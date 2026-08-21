@@ -84,7 +84,9 @@ const Toast: FC = () => {
       ) : (
         <SvgXml xml={toastIcon()} width="24" height="24" />
       )}
-      <Text style={styles.message}>{toastMessage}</Text>
+      <Text allowFontScaling={false} style={styles.message}>
+        {toastMessage}
+      </Text>
     </Animated.View>
   );
 };

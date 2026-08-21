@@ -181,14 +181,21 @@ const EditCommentModal = ({
           <SvgXml xml={closeIcon(theme.colors.base)} width="17" height="17" />
         </TouchableOpacity>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Edit Comment</Text>
+          <Text allowFontScaling={false} style={styles.headerText}>
+            Edit Comment
+          </Text>
         </View>
         <TouchableOpacity
           onPress={handleEditComment}
           style={styles.headerTextContainer}
           disabled={disabledState}
         >
-          <Text style={[styles.headerText, disabledColor]}>Save</Text>
+          <Text
+            allowFontScaling={false}
+            style={[styles.headerText, disabledColor]}
+          >
+            Save
+          </Text>
         </TouchableOpacity>
       </View>
       <KeyboardAvoidingView

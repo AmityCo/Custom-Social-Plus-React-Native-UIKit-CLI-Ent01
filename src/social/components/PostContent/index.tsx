@@ -240,9 +240,10 @@ const PostContent: React.FC<IPostContent> = ({
               />
               {index === 3 && imagePosts.length > 4 && (
                 <View style={styles.overlay}>
-                  <Text style={styles.overlayText}>{`+ ${
-                    imagePosts.length - 3
-                  }`}</Text>
+                  <Text
+                    allowFontScaling={false}
+                    style={styles.overlayText}
+                  >{`+ ${imagePosts.length - 3}`}</Text>
                 </View>
               )}
             </View>
@@ -289,11 +290,13 @@ const PostContent: React.FC<IPostContent> = ({
             style={styles.closebtnIcon}
             onPress={() => setIsVisibleFullImage(false)}
           >
-            <Text style={styles.closeBtn}>X</Text>
+            <Text allowFontScaling={false} style={styles.closeBtn}>
+              X
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.flexWidth}>
-          <Text style={styles.header}>
+          <Text allowFontScaling={false} style={styles.header}>
             {imgIndex + 1}/
             {imagePostsFullSize.length || videoPostsFullSize.length}
           </Text>

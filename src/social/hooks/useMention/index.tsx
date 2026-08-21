@@ -78,7 +78,9 @@ function useMention({
   });
 
   const renderInput = (props: TextInputProps) => {
-    return <TextInput {...textInputProps} {...props} />;
+    return (
+      <TextInput allowFontScaling={false} {...textInputProps} {...props} />
+    );
   };
 
   const renderSuggestions = ({

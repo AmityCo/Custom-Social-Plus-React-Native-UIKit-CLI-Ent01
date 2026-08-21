@@ -183,6 +183,8 @@ export default function VisitorScreen({
   // Withhold the callback entirely while in visitor mode, so the UIKit cannot
   // reach for a token before there is an identity to mint one for.
   const secureModeGetAuthToken = authUserId ? getAuthToken : undefined;
+  // Referenced so the helper stays wired up while the prop below is disabled.
+  void secureModeGetAuthToken;
 
   return (
     // No `userId` -> visitor mode. Once `authUserId` is set, the provider
@@ -192,13 +194,7 @@ export default function VisitorScreen({
       apiRegion={apiRegion}
       apiEndpoint={apiEndpoint}
       displayName={authDisplayName}
-      // Cast: node_modules has two copies of the config type, so the JSON's
-      // inferred type and the provider's expected type are nominally distinct.
-      configs={config as any}
-      // Secure mode: only supplied once `authUserId` exists. While in visitor
-      // mode this is undefined, so no token is ever requested for a user that
-      // does not exist yet.
-      // getAuthToken={secureModeGetAuthToken}
+      configs={config as any} // this config file
       fcmToken={fcmToken}
       behaviour={{
         AmityGlobalBehavior: {
@@ -233,7 +229,7 @@ export default function VisitorScreen({
               // withholds it in visitor mode): this page is the first point a
               // real userId exists. useCreateProfile calls it only AFTER
               // enrollProfile resolves the communityId.
-              getAuthToken={getAuthToken}
+              // getAuthToken={getAuthToken}
               onCreated={({ userId, displayName, about, imageUrl }) => {
                 // Save succeeded. The page already ran Client.login internally;
                 // passing the returned userId + displayName to the provider

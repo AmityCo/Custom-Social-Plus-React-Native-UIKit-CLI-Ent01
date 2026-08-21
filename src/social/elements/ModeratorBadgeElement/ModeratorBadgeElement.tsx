@@ -43,6 +43,7 @@ const ModeratorBadgeElement: FC<ModeratorBadgeElementType> = ({
         style={styles.moderatorBadge}
       />
       <Text
+        allowFontScaling={false}
         style={styles.moderatorTitle}
         testID={accessibilityId}
         accessibilityLabel={accessibilityId}

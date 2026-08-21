@@ -258,6 +258,7 @@ const ReplyCommentList = ({
             >
               <View style={styles.displayNameRow}>
                 <Text
+                  allowFontScaling={false}
                   style={styles.headerText}
                   numberOfLines={1}
                   ellipsizeMode="tail"
@@ -293,14 +294,22 @@ const ReplyCommentList = ({
           <View style={styles.actionSection}>
             <View style={styles.rowContainer}>
               <View style={styles.timeRow}>
-                <Text style={styles.headerTextTime}>{timeDifference}</Text>
+                <Text allowFontScaling={false} style={styles.headerTextTime}>
+                  {timeDifference}
+                </Text>
                 {(editedAt !== createdAt || isEditComment) && (
-                  <Text style={styles.headerTextTime}> (edited)</Text>
+                  <Text allowFontScaling={false} style={styles.headerTextTime}>
+                    {' '}
+                    (edited)
+                  </Text>
                 )}
               </View>
 
               <TouchableOpacity onPress={onPressLike} style={styles.likeBtn}>
-                <Text style={isLike ? styles.likedText : styles.btnText}>
+                <Text
+                  allowFontScaling={false}
+                  style={isLike ? styles.likedText : styles.btnText}
+                >
                   {!isLike ? 'Like' : 'Liked'}
                 </Text>
               </TouchableOpacity>
@@ -320,7 +329,9 @@ const ReplyCommentList = ({
                 onPress={onPressCommentReaction}
                 style={styles.likeBtn}
               >
-                <Text style={styles.btnText}>{likeReaction}</Text>
+                <Text allowFontScaling={false} style={styles.btnText}>
+                  {likeReaction}
+                </Text>
                 <SvgXml
                   // eslint-disable-next-line react-native/no-inline-styles
                   style={{ marginLeft: 4 }}
@@ -359,7 +370,10 @@ const ReplyCommentList = ({
                     width="20"
                     height="20"
                   />
-                  <Text style={styles.deleteText}> Edit reply</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Edit reply
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={deleteReplyComment}
@@ -370,7 +384,10 @@ const ReplyCommentList = ({
                     width="20"
                     height="20"
                   />
-                  <Text style={styles.deleteText}> Delete reply</Text>
+                  <Text allowFontScaling={false} style={styles.deleteText}>
+                    {' '}
+                    Delete reply
+                  </Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -383,7 +400,7 @@ const ReplyCommentList = ({
                   width="20"
                   height="20"
                 />
-                <Text style={styles.deleteText}>
+                <Text allowFontScaling={false} style={styles.deleteText}>
                   {isReportByMe ? 'Unreport reply' : 'Report reply'}
                 </Text>
               </TouchableOpacity>

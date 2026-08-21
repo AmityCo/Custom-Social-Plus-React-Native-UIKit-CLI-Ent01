@@ -102,10 +102,10 @@ const AmityReactionListComponent: FC<AmityReactionListComponentType> = ({
     return (
       <View style={styles.errorContainer}>
         <SvgXml xml={fileSearch()} width={48} height={48} />
-        <Text style={styles.errorTitle}>
+        <Text allowFontScaling={false} style={styles.errorTitle}>
           Sorry, we couldn't show the content
         </Text>
-        <Text style={styles.errorDesc}>
+        <Text allowFontScaling={false} style={styles.errorDesc}>
           Please try again or contact the administator{'\n'}for more information
         </Text>
       </View>
@@ -156,7 +156,9 @@ const AmityReactionListComponent: FC<AmityReactionListComponentType> = ({
         >
           <View style={styles.reactorNameContainer}>
             <Image source={{ uri: avatarUrl }} style={styles.avater} />
-            <Text style={styles.userName}>{item.displayName}</Text>
+            <Text allowFontScaling={false} style={styles.userName}>
+              {item.displayName}
+            </Text>
           </View>
           <SvgXml xml={reactionIcon} width={18} height={18} />
         </TouchableOpacity>
@@ -188,11 +190,14 @@ const AmityReactionListComponent: FC<AmityReactionListComponentType> = ({
               {/* {index !== 0 && (
                 <SvgXml xml={reactionIcon} width={18} height={18} />
               )}
-              <Text style={[styles.reaction, selectedReactionTextStyle]}>
+              <Text allowFontScaling={false} style={[styles.reaction, selectedReactionTextStyle]}>
                 {allReactiontext} {formatNumber(reactionCount)}
               </Text> */}
               <SvgXml xml={allReactiontext} width={18} height={18} />
-              <Text style={[styles.reaction, selectedReactionTextStyle]}>
+              <Text
+                allowFontScaling={false}
+                style={[styles.reaction, selectedReactionTextStyle]}
+              >
                 {formatNumber(reactionCount)}
               </Text>
             </Pressable>

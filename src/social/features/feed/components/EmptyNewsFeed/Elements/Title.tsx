@@ -16,7 +16,11 @@ const Title = () => {
   }) as string[];
 
   if (excludes.includes('social_home_page/empty_newsfeed/title')) return null;
-  return <Text style={styles.title}>{title[0]}</Text>;
+  return (
+    <Text allowFontScaling={false} style={styles.title}>
+      {title[0]}
+    </Text>
+  );
 };
 
 export default memo(Title);
