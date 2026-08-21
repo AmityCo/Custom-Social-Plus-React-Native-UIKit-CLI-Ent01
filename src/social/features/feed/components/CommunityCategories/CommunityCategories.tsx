@@ -24,30 +24,15 @@ export function CommunityCategories({
     hiddenCategoriesCount > 0 ? `+${hiddenCategoriesCount}` : '';
   const showMore = hiddenCategoriesCount > 0;
 
-  // Dynamic maxWidth based on number of visible categories
-  const getMaxWidthForItem = (totalVisibleItems: number) => {
-    // If allVisible is true, return 100% for all items
-    if (allVisible) {
-      return '100%';
-    }
-
-    // If only 1 visible category, let it use more space (but still have some limit)
-    if (totalVisibleItems === 1 && !showMore) {
-      return '100%'; // Use percentage for flexibility
-    }
-
-    if (totalVisibleItems === 2 && !showMore) {
-      return '50%'; // Use percentage for flexibility
-    }
-
-    // More restrictive as items increase
-    if (totalVisibleItems === 2 || showMore) {
-      return '40%'; // Match your existing maxWidth
-    }
-
-    // Default case
-    return '40%';
-  };
+  // Badges are no longer capped at a fixed share of the row.
+  //
+  // The previous rules gave each badge maxWidth 50% (two badges) or 40% (three
+  // or more), which ellipsized short labels like "Destinations" or even
+  // "Loyalty" while the row still had free space - it depended purely on how
+  // many categories a community happened to have. Each badge now takes its
+  // natural width and shrinks (flexShrink on chipContainer) only when the row
+  // genuinely overflows, so labels stay readable whenever they can fit.
+  const getMaxWidthForItem = () => '100%';
 
   // Choose all categories or just the visible ones based on allVisible
   const displayCategories = allVisible ? categories : visibleCategories;
@@ -66,7 +51,7 @@ export function CommunityCategories({
             <CommunityCategory
               key={index}
               categoryName={category.name}
-              maxWidth={getMaxWidthForItem(displayCategories.length)}
+              maxWidth={getMaxWidthForItem()}
             />
           ))}
         </ScrollView>
@@ -76,7 +61,7 @@ export function CommunityCategories({
             <CommunityCategory
               key={index}
               categoryName={category.name}
-              maxWidth={getMaxWidthForItem(displayCategories.length)}
+              maxWidth={getMaxWidthForItem()}
             />
           ))}
           {displayShowMore && (
