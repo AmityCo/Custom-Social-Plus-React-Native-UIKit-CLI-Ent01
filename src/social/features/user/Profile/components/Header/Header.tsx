@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, TextLayoutLine } from 'react-native';
+import { View, TouchableOpacity, TextLayoutLine } from 'react-native';
 import Avatar from '../../../../../components/Avatar';
 import { BrandBadge } from '../../../../../elements/BrandBadge';
 import { Typography } from '../../../../../../core/components/Typography/Typography';
@@ -16,6 +16,7 @@ import {
 } from '../../elements';
 import MenuAction from '../../../../../elements/MenuAction';
 import { Menu } from '../../elements';
+import { Text } from '../../../../../../core/components/Text';
 
 type HeaderProps = {
   user?: Amity.User;

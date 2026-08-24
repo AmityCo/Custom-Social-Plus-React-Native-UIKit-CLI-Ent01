@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { FC, memo, useState, useCallback, useEffect } from 'react';
 import {
   PostRepository,
@@ -23,6 +23,7 @@ import { formatNumber } from '../../../../../../core/utils/number';
 import { usePostShareAction } from './usePostShareAction';
 import { ShareButton } from '../../../../../elements/ShareButton';
 import { reportSwallowed } from '../../../../../../core/errorReporter';
+import { Text } from '../../../../../../core/components/Text';
 
 const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   community,

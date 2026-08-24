@@ -1,4 +1,4 @@
-import { Text, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import { useStyles } from './styles';
 import { memo, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../core/routes/RouteParamList';
 import ReadMore from '@fawazahmed/react-native-read-more';
 import { createUrlRegex } from '../../../core/constants';
+import { Text } from '../../../core/components/Text';
 
 interface IrenderTextWithMention {
   mentionPositionArr: IMentionPosition[];

@@ -47,6 +47,15 @@ export default function SignedInScreen({
       apiRegion={apiRegion}
       apiEndpoint={apiEndpoint}
       userId={userId}
+      // Give the UIKit an explicit font. Important in a native host whose
+      // theme sets a global typeface: without this the UIKit inherits it, and
+      // React Native measures with a different font than it renders with,
+      // which clips text.
+      // fonts={{
+      //   regular: 'ProximaNova-Regular',
+      //   semiBold: 'ProximaNova-Semibold',
+      //   bold: 'ProximaNova-Bold',
+      // }}
       // ⚠️ TEST ONLY: exercises secure-mode auth-token flow. Remove before ship.
       // getAuthToken={getAuthToken}
       // Cast: node_modules has two copies of the config type, so the JSON's

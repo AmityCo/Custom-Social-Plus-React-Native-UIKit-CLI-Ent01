@@ -1,7 +1,8 @@
-import { Text, View, ViewProps, ScrollView } from 'react-native';
+import { View, ViewProps, ScrollView } from 'react-native';
 import { CommunityCategory } from '../../elements/CommunityCategory/CommunityCategory';
 import { useStyles } from './styles';
 import { ComponentID, PageID } from '../../../../enums';
+import { Text } from '../../../../../core/components/Text';
 
 type CommunityCategoriesProps = ViewProps & {
   categories?: Amity.Category[];

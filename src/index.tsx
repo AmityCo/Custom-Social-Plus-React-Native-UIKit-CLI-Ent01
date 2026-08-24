@@ -158,3 +158,6 @@ export type {
   AmityErrorHandler,
   AmityErrorSource,
 } from './core/errorReporter';
+
+// Font customization types, for AmityUiKitProvider's `fonts` prop.
+export type { AmityFontConfig } from './core/providers/FontProvider';

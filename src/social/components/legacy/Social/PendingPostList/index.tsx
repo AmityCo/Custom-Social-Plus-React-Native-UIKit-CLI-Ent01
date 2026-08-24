@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 // import { useTranslation } from 'react-i18next';
 
-import { View, Text, TouchableOpacity, Image, ImageStyle } from 'react-native';
+import { View, TouchableOpacity, Image, ImageStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { personXml } from '../../../../../core/assets/icons/xml';
 import { useStyles } from './styles';
@@ -15,6 +15,7 @@ import { IMentionPosition } from '../../../../../core/types';
 import { PostRepository } from '@amityco/ts-sdk-react-native';
 import { LinkPreview } from '../../../PreviewLink/LinkPreview';
 import RenderTextWithMention from '../../../RenderTextWithMention/RenderTextWithMention';
+import { Text } from '../../../../../core/components/Text';
 
 export interface IPost {
   postId: string;

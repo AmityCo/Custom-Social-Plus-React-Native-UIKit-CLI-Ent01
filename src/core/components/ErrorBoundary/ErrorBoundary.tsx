@@ -1,7 +1,8 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { errorPage } from '../../assets/icons';
+import { Text } from '../../../core/components/Text';
 
 export interface ErrorBoundaryProps {
   children: ReactNode;

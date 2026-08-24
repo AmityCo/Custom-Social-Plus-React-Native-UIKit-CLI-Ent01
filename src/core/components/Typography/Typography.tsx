@@ -1,5 +1,6 @@
-import { Text, TextProps, StyleProp, TextStyle } from 'react-native';
+import { TextProps, StyleProp, TextStyle } from 'react-native';
 import { useStyles } from './styles';
+import { Text } from '../../../core/components/Text';
 
 export type TypographyProps = TextProps & {
   style?: StyleProp<TextStyle>;

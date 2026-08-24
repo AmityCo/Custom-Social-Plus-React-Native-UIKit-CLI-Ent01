@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { memo } from 'react';
 import { useTheme } from 'react-native-paper';
 import { MyMD3Theme } from '../../../core/providers/AmityUIKitProvider';
 import { base64Images } from '../../../core/assets/images/base64Images';
+import { Text } from '../../../core/components/Text';
 const NoSearchResult = () => {
   const theme = useTheme() as MyMD3Theme;
   const styles = StyleSheet.create({

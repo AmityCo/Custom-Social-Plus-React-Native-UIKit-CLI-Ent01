@@ -1,4 +1,4 @@
-import { TextProps, Text, View } from 'react-native';
+import { TextProps, View } from 'react-native';
 import { FC, memo } from 'react';
 
 import ImageElement from '../CommonElements/ImageElement';
@@ -6,6 +6,7 @@ import { useStyles } from './styles';
 import { useUser } from '../../hooks/objects';
 import { isModerator, useAmityElement } from '../../hooks';
 import { ComponentID, ElementID, PageID } from '../../enums';
+import { Text } from '../../../core/components/Text';
 
 type ModeratorBadgeElementType = Partial<TextProps> & {
   pageID: PageID;

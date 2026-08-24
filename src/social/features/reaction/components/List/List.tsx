@@ -1,5 +1,4 @@
 import {
-  Text,
   TouchableOpacity,
   View,
   Pressable,
@@ -26,6 +25,7 @@ import { formatNumber } from '../../../../../core/utils/number';
 import { useTheme } from 'react-native-paper';
 import { MyMD3Theme } from '../../../../../core/providers/AmityUIKitProvider';
 import { reportSwallowed } from '../../../../../core/errorReporter';
+import { Text } from '../../../../../core/components/Text';
 
 type AmityReactionListComponentType = {
   referenceId: string;

@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import { Image, View, TouchableOpacity, Linking, Text } from 'react-native';
+import { Image, View, TouchableOpacity, Linking } from 'react-native';
 
 import { ComponentID, PageID } from '../../enums';
 import { useStyles } from './styles';
@@ -12,6 +12,7 @@ import bottomSheetSlice from '../../../core/stores/slices/bottomSheetSlice';
 import AdEngine from '../../../core/engines/AdEngine';
 import AssetDownloader from '../../../core/engines/AssetDownloader';
 import { useUIKitDispatch } from '../../../core/stores/store';
+import { Text } from '../../../core/components/Text';
 
 type PostAdComponentType = {
   pageId?: PageID;

@@ -1,5 +1,5 @@
 import { FC, memo, useCallback } from 'react';
-import { Text, FlatList, View, Pressable } from 'react-native';
+import { FlatList, View, Pressable } from 'react-native';
 import { RecommendedCommunityItem } from './RecommenedCommunityItems/RecommenedCommunityItems';
 import { useStyles } from './styles';
 import { ComponentID, ElementID, PageID } from '../../../../enums';
@@ -8,6 +8,7 @@ import { useExplore } from '../../../../providers/ExploreProvider';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../core/routes/RouteParamList';
 import { useNavigation } from '@react-navigation/native';
+import { Text } from '../../../../../core/components/Text';
 
 type AmityRecommendedCommunityComponentProps = {
   pageId?: PageID;

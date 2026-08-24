@@ -1,10 +1,11 @@
-import { Image, ImageProps, View, Text } from 'react-native';
+import { Image, ImageProps, View } from 'react-native';
 import { FC, memo, useEffect, useState } from 'react';
 import useAuth from '../../../core/hooks/useAuth';
 import { useFile } from '../../hooks';
 import { UserRepository } from '@amityco/ts-sdk-react-native';
 import { ImageSizeState } from '../../enums';
 import { useStyles } from './styles';
+import { Text } from '../../../core/components/Text';
 
 type MyAvatarProp = Partial<ImageProps>;
 

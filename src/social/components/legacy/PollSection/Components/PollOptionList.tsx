@@ -1,15 +1,10 @@
-import {
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { FC, memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { useStyles } from '../style';
 import { SvgXml } from 'react-native-svg';
 import { radioOff, radioOn } from '../../../../../core/assets/icons/xml';
 import PollBar from './PollBar';
+import { Text } from '../../../../../core/components/Text';
 
 interface IPollOptionList {
   options: Amity.PollAnswer[];

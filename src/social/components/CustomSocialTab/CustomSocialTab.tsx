@@ -1,6 +1,5 @@
 import {
   ScrollView,
-  Text,
   TextStyle,
   TouchableOpacity,
   View,
@@ -11,6 +10,7 @@ import { useStyles } from './styles';
 import { TabName } from '../../enums/enumTabName';
 import { useTheme } from 'react-native-paper';
 import { MyMD3Theme } from '../../../core/providers/AmityUIKitProvider';
+import { Text } from '../../../core/components/Text';
 
 type TCustomTab = {
   onTabChange: (tabName: TabName) => void;

@@ -1,4 +1,3 @@
-import { Text } from 'react-native';
 import { memo, useCallback } from 'react';
 import { ComponentID, ElementID, PageID } from '../../../../../enums';
 import useConfig from '../../../../../hooks/useConfig';
@@ -8,6 +7,7 @@ import { useBehaviour } from '../../../../../providers/BehaviourProvider';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../../core/routes/RouteParamList';
+import { Text } from '../../../../../../core/components/Text';
 
 const CreateCommunityButton = () => {
   const { excludes } = useConfig();

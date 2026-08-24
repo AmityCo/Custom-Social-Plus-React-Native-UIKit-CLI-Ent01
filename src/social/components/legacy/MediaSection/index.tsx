@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Image,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -16,6 +15,7 @@ import { RootState, useUIKitSelector } from '../../../../core/stores/store';
 import { playBtn } from '../../../../core/assets/icons/xml';
 import PollSection from '../PollSection/PollSection';
 import { reportSwallowed } from '../../../../core/errorReporter';
+import { Text } from '../../../../core/components/Text';
 
 interface IMediaSection {
   childrenPosts: string[];

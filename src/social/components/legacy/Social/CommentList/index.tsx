@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   Modal,
@@ -47,6 +46,7 @@ import ReplyCommentList from '../ReplyCommentList';
 import { CommentRepository } from '@amityco/ts-sdk-react-native';
 import { useTimeDifference } from '../../../../../core/hooks/useTimeDifference';
 import { LinkPreview } from '../../../PreviewLink/LinkPreview';
+import { Text } from '../../../../../core/components/Text';
 export interface IComment {
   commentId: string;
   data: Record<string, any>;

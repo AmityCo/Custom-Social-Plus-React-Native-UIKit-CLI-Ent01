@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { useStyles } from './styles';
 import { CategoryRepository } from '@amityco/ts-sdk-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import {
   defaultAvatarUri,
   defaultCommunityAvatarUri,
 } from '../../../core/assets';
+import { Text } from '../../../core/components/Text';
 
 export interface ISearchItem {
   targetId: string;

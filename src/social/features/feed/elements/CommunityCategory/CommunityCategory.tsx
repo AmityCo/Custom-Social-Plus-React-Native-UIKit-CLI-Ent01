@@ -1,7 +1,8 @@
-import { DimensionValue, Text, View } from 'react-native';
+import { DimensionValue, View } from 'react-native';
 import { useStyles } from './styles';
 import { useAmityElement } from '../../../../hooks';
 import { ComponentID, ElementID, PageID } from '../../../../enums';
+import { Text } from '../../../../../core/components/Text';
 
 type CommunityCategoryProps = {
   categoryName: string;

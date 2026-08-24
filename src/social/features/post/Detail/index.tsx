@@ -3,7 +3,6 @@ import {
   View,
   Alert,
   Keyboard,
-  Text,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -56,6 +55,7 @@ import {
   createComment,
   createReplyComment,
 } from '../../../../core/legacy/comment';
+import { Text } from '../../../../core/components/Text';
 
 type AmityPostDetailPageType = {
   postId: Amity.Post['postId'];

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   TouchableOpacity,
   View,
-  Text,
   Modal,
   KeyboardAvoidingView,
   Platform,
@@ -23,6 +22,7 @@ import {
 } from '@amityco/ts-sdk-react-native';
 import useMention from '../../../hooks/useMention';
 import { replaceTriggerValues } from 'react-native-controlled-mentions';
+import { Text } from '../../../../core/components/Text';
 
 interface IModal {
   visible: boolean;

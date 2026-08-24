@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import { useStyles } from './styles';
 import AvatarElement from '../../elements/CommonElements/AvatarElement';
@@ -8,6 +8,7 @@ import { PageID, ComponentID, ElementID } from '../../enums';
 import { star } from '../../../core/assets/icons/xml';
 import { SvgXml } from 'react-native-svg';
 import { defaultAdAvatarUri } from '../../../core/assets';
+import { Text } from '../../../core/components/Text';
 
 type PostAdHeaderType = {
   advertiser?: Amity.Ad['advertiser'];

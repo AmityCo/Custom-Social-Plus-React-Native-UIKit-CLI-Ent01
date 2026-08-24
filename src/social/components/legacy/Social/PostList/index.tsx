@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   Modal,
@@ -43,6 +42,7 @@ import { useTimeDifference } from '../../../../../core/hooks/useTimeDifference';
 import { CommunityRepository } from '@amityco/ts-sdk-react-native';
 import PostContent from '../../../PostContent';
 import { useUIKitDispatch } from '../../../../../core/stores/store';
+import { Text } from '../../../../../core/components/Text';
 
 export interface IPost {
   postId: string;

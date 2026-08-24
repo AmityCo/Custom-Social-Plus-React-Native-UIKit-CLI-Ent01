@@ -1,5 +1,6 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { styles } from './styles';
+import { Text } from '../../../../core/components/Text';
 
 interface LoadingOverlayProps {
   isLoading: boolean;

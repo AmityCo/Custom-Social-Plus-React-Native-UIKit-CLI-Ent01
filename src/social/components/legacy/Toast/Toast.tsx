@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import { FC, memo, useEffect, useRef } from 'react';
 import uiSlice from '../../../../core/stores/slices/uiSlice';
 import {
@@ -8,6 +8,7 @@ import {
 } from '../../../../core/stores/store';
 import { toastIcon, toastSuccess } from '../../../../core/assets/icons/xml';
 import { SvgXml } from 'react-native-svg';
+import { Text } from '../../../../core/components/Text';
 
 const Toast: FC = () => {
   const dispatch = useUIKitDispatch();

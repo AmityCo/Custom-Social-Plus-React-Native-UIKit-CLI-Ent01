@@ -2,7 +2,6 @@ import {
   Alert,
   FlatList,
   Keyboard,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -32,6 +31,7 @@ import { lock } from '../../../../core/assets/icons';
 import { Typography } from '../../../../core/components/Typography/Typography';
 import { MAX_MENTION_USERS } from '../../../../core/constants';
 import useAuth from '../../../../core/hooks/useAuth';
+import { Text } from '../../../../core/components/Text';
 
 interface ICommentListProp {
   postId: string;

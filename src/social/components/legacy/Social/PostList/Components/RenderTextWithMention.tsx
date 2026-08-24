@@ -1,10 +1,10 @@
-import { Text } from 'react-native';
 import { useStyles } from '../styles';
 import { memo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { IMentionPosition } from '../../../../../../core/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../../core/routes/RouteParamList';
+import { Text } from '../../../../../../core/components/Text';
 
 interface IrenderTextWithMention {
   mentionPositionArr: IMentionPosition[];

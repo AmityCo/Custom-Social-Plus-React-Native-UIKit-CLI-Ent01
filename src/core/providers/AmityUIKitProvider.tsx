@@ -24,6 +24,7 @@ import {
 } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { AmityFontConfig, FontProvider } from './FontProvider';
 import {
   AmityErrorHandler,
   errorMessage,
@@ -64,6 +65,15 @@ export interface IAmityUIkitProvider {
    * the ones that were otherwise silent.
    */
   onError?: AmityErrorHandler;
+  /**
+   * Font families for the UIKit's text, per weight.
+   *
+   * The UIKit otherwise declares no fontFamily, so its text inherits whatever
+   * typeface the host provides. In a native host whose theme sets a global
+   * font, that inherited typeface can differ from the one React Native
+   * measured with, which clips text. Setting this makes both agree.
+   */
+  fonts?: AmityFontConfig;
 }
 
 export interface CustomColors {
@@ -135,6 +145,7 @@ export default function AmityUiKitProvider({
   behaviour,
   fcmToken,
   onError,
+  fonts,
 }: IAmityUIkitProvider) {
   // Registered during render rather than in an effect on purpose: React runs
   // child effects before parent effects, so AuthProvider's login effect would
@@ -234,40 +245,42 @@ export default function AmityUiKitProvider({
         })
       }
     >
-      <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store} context={AmityUIKitReduxContext}>
-            <AuthContextProvider
-              userId={userId}
-              // Pass displayName through untouched. The SDK only overwrites an
-              // existing user's displayName when a value is supplied, so leaving
-              // it undefined preserves the server-side name (host can pass only
-              // userId; new users set displayName later on the CreateProfile page).
-              displayName={displayName}
-              apiKey={apiKey}
-              apiRegion={apiRegion}
-              apiEndpoint={apiEndpoint}
-              authToken={authToken}
-              getAuthToken={getAuthToken}
-              fcmToken={fcmToken}
-            >
-              <AdEngineProvider>
-                <ConfigProvider configs={configData}>
-                  <BehaviourProvider behaviour={behaviour}>
-                    <ExploreProvider>
-                      <PaperProvider theme={globalTheme}>
-                        {children}
-                        <BottomSheetComponent />
-                        <Toast />
-                      </PaperProvider>
-                    </ExploreProvider>
-                  </BehaviourProvider>
-                </ConfigProvider>
-              </AdEngineProvider>
-            </AuthContextProvider>
-          </Provider>
-        </QueryClientProvider>
-      </SafeAreaProvider>
+      <FontProvider fonts={fonts}>
+        <SafeAreaProvider>
+          <QueryClientProvider client={queryClient}>
+            <Provider store={store} context={AmityUIKitReduxContext}>
+              <AuthContextProvider
+                userId={userId}
+                // Pass displayName through untouched. The SDK only overwrites an
+                // existing user's displayName when a value is supplied, so leaving
+                // it undefined preserves the server-side name (host can pass only
+                // userId; new users set displayName later on the CreateProfile page).
+                displayName={displayName}
+                apiKey={apiKey}
+                apiRegion={apiRegion}
+                apiEndpoint={apiEndpoint}
+                authToken={authToken}
+                getAuthToken={getAuthToken}
+                fcmToken={fcmToken}
+              >
+                <AdEngineProvider>
+                  <ConfigProvider configs={configData}>
+                    <BehaviourProvider behaviour={behaviour}>
+                      <ExploreProvider>
+                        <PaperProvider theme={globalTheme}>
+                          {children}
+                          <BottomSheetComponent />
+                          <Toast />
+                        </PaperProvider>
+                      </ExploreProvider>
+                    </BehaviourProvider>
+                  </ConfigProvider>
+                </AdEngineProvider>
+              </AuthContextProvider>
+            </Provider>
+          </QueryClientProvider>
+        </SafeAreaProvider>
+      </FontProvider>
     </ErrorBoundary>
   );
 }

@@ -2,7 +2,6 @@ import { Fragment, memo, useCallback, useEffect, useState } from 'react';
 import {
   Image,
   Pressable,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -20,6 +19,7 @@ import RenderTextWithMention from '../RenderTextWithMention/RenderTextWithMentio
 import { IMentionPosition } from '../../../core/types';
 import PollContent from '../PollContent';
 import { reportSwallowed } from '../../../core/errorReporter';
+import { Text } from '../../../core/components/Text';
 
 interface IPostContent {
   post: Amity.Post;

@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { useStyles } from './styles';
 import { ComponentID, ElementID, PageID, TabName } from '../../enums';
@@ -13,6 +13,7 @@ import TextElement from '../../elements/CommonElements/TextElement';
 import ImageElement from '../../elements/CommonElements/ImageElement';
 import { formatNumber } from '../../../core/utils/number';
 import { BrandBadge } from '../../elements/BrandBadge';
+import { Text } from '../../../core/components/Text';
 type SearchResultItemType = {
   pageId?: PageID;
   componentId?: ComponentID;

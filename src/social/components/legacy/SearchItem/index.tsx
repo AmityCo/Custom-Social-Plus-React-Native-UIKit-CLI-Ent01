@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { useStyles } from './styles';
 import { SvgXml } from 'react-native-svg';
 import { communityIcon, userIcon } from '../../../../core/assets/icons/xml';
 import { CategoryRepository } from '@amityco/ts-sdk-react-native';
 import { useNavigation } from '@react-navigation/native';
 import useAuth from '../../../../core/hooks/useAuth';
+import { Text } from '../../../../core/components/Text';
 export interface ISearchItem {
   targetId: string;
   targetType: string;

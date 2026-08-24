@@ -2,7 +2,6 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import {
   TouchableOpacity,
   View,
-  Text,
   Modal,
   FlatList,
   KeyboardAvoidingView,
@@ -30,6 +29,7 @@ import useMention from '../../../hooks/useMention';
 import { replaceTriggerValues } from 'react-native-controlled-mentions';
 import { useUIKitDispatch } from '../../../../core/stores/store';
 import { reportSwallowed } from '../../../../core/errorReporter';
+import { Text } from '../../../../core/components/Text';
 interface IModal {
   visible: boolean;
   userId?: string;

@@ -1,8 +1,9 @@
-import { TextProps, Text } from 'react-native';
+import { TextProps } from 'react-native';
 import { FC, memo } from 'react';
 import { ComponentID, ElementID, PageID } from '../../enums/enumUIKitID';
 import useConfig from '../../hooks/useConfig';
 import { useTimeDifference } from '../../hooks';
+import { Text } from '../../../core/components/Text';
 
 type TimeStampElementType = Partial<TextProps> & {
   pageID?: PageID;

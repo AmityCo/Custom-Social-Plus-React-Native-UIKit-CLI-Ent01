@@ -1,13 +1,6 @@
 import { CommunityRepository } from '@amityco/ts-sdk-react-native';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  Modal,
-  Image,
-  ScrollView,
-} from 'react-native';
+import { TouchableOpacity, View, Modal, Image, ScrollView } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { getAmityUser } from '../../../../core/legacy/user';
 import type { UserInterface } from '../../../../core/types/user';
@@ -19,6 +12,7 @@ import { useStyles } from './styles';
 import { useTheme } from 'react-native-paper';
 import type { MyMD3Theme } from '../../../../core/providers/AmityUIKitProvider';
 import { base64Images } from '../../../../core/assets/images/base64Images';
+import { Text } from '../../../../core/components/Text';
 interface IModal {
   visible: boolean;
   userId?: string;

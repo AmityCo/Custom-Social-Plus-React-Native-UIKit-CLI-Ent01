@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   Modal,
@@ -47,6 +46,7 @@ import { useTimeDifference } from '../../../../hooks';
 import { useGlobalBehavior } from '../../../../hooks/useGlobalBehavior';
 import { useToast } from '../../../../../core/stores/slices/toastSlice';
 import AmityReactionListComponent from '../../../../features/reaction/components/List';
+import { Text } from '../../../../../core/components/Text';
 
 export interface IComment {
   commentId: string;

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, TouchableOpacity, View } from 'react-native';
 import { useStyles } from './styles';
 import { PreviewDataImage } from './types';
 import { getPreviewData } from './utils';
 import { IMentionPosition } from '../../../core/types';
 import RenderTextWithMention from '../RenderTextWithMention/RenderTextWithMention';
 import { base64Images } from '../../../core/assets/images/base64Images';
+import { Text } from '../../../core/components/Text';
 
 export interface LinkPreviewProps {
   text: string;

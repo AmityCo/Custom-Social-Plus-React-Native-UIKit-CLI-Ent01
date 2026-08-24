@@ -1,9 +1,10 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useStyles } from './style';
 import { memo, useCallback, useState } from 'react';
 import { usePoll } from './usePoll';
 import PollOptionList from './Components/PollOptionList';
 import { PollRepository } from '@amityco/ts-sdk-react-native';
+import { Text } from '../../../../core/components/Text';
 
 interface IPollSection {
   pollId: string;

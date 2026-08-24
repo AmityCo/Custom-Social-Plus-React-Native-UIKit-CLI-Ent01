@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   Modal,
@@ -41,6 +40,7 @@ import { useTheme } from 'react-native-paper';
 import type { MyMD3Theme } from '../../../../core/providers/AmityUIKitProvider';
 import { IMentionPosition } from '../../../../core/types/mention';
 import { LinkPreview } from '../../PreviewLink';
+import { Text } from '../../../../core/components/Text';
 
 export interface IComment {
   commentId: string;

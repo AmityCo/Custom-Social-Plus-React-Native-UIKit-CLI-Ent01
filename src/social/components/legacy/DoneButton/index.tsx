@@ -1,10 +1,10 @@
 import {
   TouchableOpacity,
   View,
-  Text,
   type GestureResponderEvent,
 } from 'react-native';
 import { useStyles } from './styles';
+import { Text } from '../../../../core/components/Text';
 export default function DoneButton({
   onDonePressed,
   buttonTxt,

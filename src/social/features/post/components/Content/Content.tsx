@@ -1,11 +1,5 @@
 import { FC, memo, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Pressable,
-  ImageStyle,
-} from 'react-native';
+import { View, TouchableOpacity, Pressable, ImageStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { arrowForward } from '../../../../../core/assets/icons/xml';
 import { useStyles } from './styles';
@@ -36,6 +30,7 @@ import PinBadge from '../../../../elements/PinBadge';
 import AnnouncementBadge from '../../../../elements/AnnouncementBadge';
 import { Typography } from '../../../../../core/components/Typography/Typography';
 import useAuth from '../../../../../core/hooks/useAuth';
+import { Text } from '../../../../../core/components/Text';
 
 type AmityPostContentComponentProps = {
   post: Amity.Post;

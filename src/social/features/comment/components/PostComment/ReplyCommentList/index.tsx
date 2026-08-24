@@ -2,7 +2,6 @@ import { memo, useEffect, useRef, useState } from 'react';
 
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   Modal,
@@ -47,6 +46,7 @@ import { useUIKitDispatch } from '../../../../../../core/stores/store';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../../core/routes/RouteParamList';
+import { Text } from '../../../../../../core/components/Text';
 
 export interface IComment {
   commentId: string;

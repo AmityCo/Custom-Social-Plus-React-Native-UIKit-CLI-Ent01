@@ -1,10 +1,4 @@
-import {
-  Animated,
-  Modal,
-  Pressable,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { Animated, Modal, Pressable, TouchableOpacity } from 'react-native';
 import { memo, useEffect, useRef, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
 import CreatePostChooseTargetModal from '../CreatePostChooseTargetModal/CreatePostChooseTargetModal';
@@ -21,6 +15,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../core/routes/RouteParamList';
+import { Text } from '../../../../core/components/Text';
 
 const PostTypeChoiceModal = () => {
   const styles = useStyles();

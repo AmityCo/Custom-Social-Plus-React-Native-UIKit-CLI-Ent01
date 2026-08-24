@@ -1,4 +1,4 @@
-import { Image, ImageProps, View, Text } from 'react-native';
+import { Image, ImageProps, View } from 'react-native';
 import { FC, useLayoutEffect, useMemo, useState } from 'react';
 import {
   defaultAvatarUri,
@@ -10,6 +10,7 @@ import { ComponentID, ElementID, PageID } from '../../enums/enumUIKitID';
 import useConfig from '../../hooks/useConfig';
 import useAuth from '../../../core/hooks/useAuth';
 import { useStyles } from './styles';
+import { Text } from '../../../core/components/Text';
 
 type AvatarElementType = Partial<ImageProps> & {
   avatarId: string;

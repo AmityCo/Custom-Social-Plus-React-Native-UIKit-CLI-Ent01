@@ -7,7 +7,6 @@ import {
   Modal,
   Pressable,
   TouchableOpacity,
-  Text,
 } from 'react-native';
 import {
   Fragment,
@@ -42,6 +41,7 @@ import { MyMD3Theme } from '../../../core/providers/AmityUIKitProvider';
 import AmityCommunityPinnedPostComponent from './components/PinnedPost/PinnedPost';
 import { usePostPermission } from '../../../social/hooks/usePostPermission';
 import { serializeCommunity } from '../../../social/utils';
+import { Text } from '../../../core/components/Text';
 
 type ICommunityProfilePage = {
   defaultCommunityId?: string;

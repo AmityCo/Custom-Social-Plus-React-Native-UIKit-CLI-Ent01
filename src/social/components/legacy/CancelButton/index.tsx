@@ -1,6 +1,7 @@
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { useStyles } from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { Text } from '../../../../core/components/Text';
 
 export default function CancelButton() {
   const navigation = useNavigation();

@@ -1,6 +1,6 @@
 import { FC, memo } from 'react';
 import { ComponentID, ElementID, PageID } from '../../enums';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 import { useStyles } from './styles';
 import { useAmityComponent } from '../../hooks';
 import { star } from '../../../core/assets/icons/xml';
@@ -14,6 +14,7 @@ import AssetDownloader from '../../../core/engines/AssetDownloader';
 import AdEngine from '../../../core/engines/AdEngine';
 import { Linking } from 'react-native';
 import { useUIKitDispatch } from '../../../core/stores/store';
+import { Text } from '../../../core/components/Text';
 
 type CommnetAdComponentType = {
   pageId?: PageID;

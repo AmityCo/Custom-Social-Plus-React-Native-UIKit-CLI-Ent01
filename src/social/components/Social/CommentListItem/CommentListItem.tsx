@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
   Modal,
@@ -49,6 +48,7 @@ import { LinkPreview } from '../../PreviewLink';
 import { Typography } from '../../../../core/components/Typography/Typography';
 import { pen, report, trash, unreport } from '../../../../core/assets/icons';
 import { useToast } from '../../../../core/stores/slices/toastSlice';
+import { Text } from '../../../../core/components/Text';
 export interface IComment {
   commentId: string;
   data: Record<string, any>;

@@ -3,12 +3,12 @@ import {
   Animated,
   type LayoutChangeEvent,
   type StyleProp,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useStyles } from './styles';
 import { TabName } from '../../../../core/enums';
+import { Text } from '../../../../core/components/Text';
 
 interface ICustomTab {
   onTabChange: (tabName: TabName) => void;

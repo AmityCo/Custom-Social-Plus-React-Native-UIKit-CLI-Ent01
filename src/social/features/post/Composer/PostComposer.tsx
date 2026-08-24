@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
   TouchableOpacity,
   View,
   StatusBar,
@@ -71,6 +70,7 @@ import { replaceTriggerValues } from 'react-native-controlled-mentions';
 import { useUIKitDispatch } from '../../../../core/stores/store';
 import { useBehaviour } from '../../../providers/BehaviourProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text } from '../../../../core/components/Text';
 
 const AmityPostComposerPage: FC<AmityPostComposerPageType> = ({
   mode,

@@ -1,4 +1,4 @@
-import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, TouchableOpacity, View } from 'react-native';
 import { FC, memo, useCallback, useEffect, useState, useRef } from 'react';
 import { AmityPostEngagementActionsSubComponentType } from './type';
 import {
@@ -26,6 +26,7 @@ import { formatNumber } from '../../../../../../core/utils/number';
 import { usePostShareAction } from './usePostShareAction';
 import { ShareButton } from '../../../../../elements/ShareButton';
 import { reportSwallowed } from '../../../../../../core/errorReporter';
+import { Text } from '../../../../../../core/components/Text';
 
 const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   community,

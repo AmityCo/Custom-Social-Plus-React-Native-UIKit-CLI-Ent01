@@ -1,9 +1,10 @@
-import { Image, Text, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import { FC, memo } from 'react';
 import { ComponentID, ElementID, PageID } from '../../../../../enums';
 import useConfig from '../../../../../hooks/useConfig';
 import { useConfigImageUri, useUiKitConfig } from '../../../../../hooks';
 import { useStyles } from './styles/styles';
+import { Text } from '../../../../../../core/components/Text';
 
 type ExploreCommunityButtonType = {
   onPressExploreCommunity?: () => void;

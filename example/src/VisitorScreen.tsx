@@ -195,6 +195,15 @@ export default function VisitorScreen({
       apiEndpoint={apiEndpoint}
       displayName={authDisplayName}
       configs={config as any} // this config file
+      // Optional: give the UIKit an explicit font. Worth setting in a native
+      // host whose theme defines a global typeface, so React Native measures
+      // and renders with the same font instead of inheriting the host's.
+      // fonts={{
+      //   regular: 'ProximaNova-Regular',
+      //   medium: 'ProximaNova-Medium',
+      //   semiBold: 'ProximaNova-Semibold',
+      //   bold: 'ProximaNova-Bold',
+      // }}
       fcmToken={fcmToken}
       behaviour={{
         AmityGlobalBehavior: {
