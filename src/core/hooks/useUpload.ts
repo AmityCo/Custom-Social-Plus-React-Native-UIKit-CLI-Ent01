@@ -3,6 +3,13 @@ import { Alert } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
 import { ERROR_CODE } from '../constants';
 import { appendFileToFormData } from '../utils/fileUpload';
+import {
+  logUpload,
+  platformContext,
+  probeUploadHosts,
+  serializeUploadError,
+  startUploadWatchdog,
+} from '../utils/uploadDebugLog';
 
 type UploadImageResponse = Awaited<
   ReturnType<typeof FileRepository.uploadImage>
@@ -37,30 +44,43 @@ export function useUpload() {
     onProgress,
     altText,
   }: UploadSingleImageParams) => {
-    const formData = new FormData();
-    const parts = file.split('/');
-    const fileName = parts[parts.length - 1];
+    // PDT-4769: log BEFORE any work — if anything below throws, `2. start`
+    // has already recorded the exact input.
+    logUpload('2. start', { file, ...platformContext() });
 
-    // Attach the file as a React-Native { uri, name, type } multipart part.
-    // This works on both the Old and New (Bridgeless) Architecture and is what
-    // the SDK's uploadImage expects (it reads files[0].name for preferredFilename).
-    appendFileToFormData(formData, 'files', file, fileName, 'image/jpeg');
-
-    console.log('[AmityUpload] 3. start', { file, fileName });
+    const startedAt = Date.now();
+    let lastProgress = -1; // -1 = no progress event ever fired
+    let stage: 'build-formdata' | 'request' = 'build-formdata';
+    // The request runs with no axios timeout — without a watchdog, a request
+    // that never resolves is the one failure mode with no terminal log line.
+    const stopWatchdog = startUploadWatchdog(() => lastProgress);
 
     try {
+      const formData = new FormData();
+      const parts = file.split('/');
+      const fileName = parts[parts.length - 1];
+
+      // Attach the file as a React-Native { uri, name, type } multipart part.
+      // This works on both the Old and New (Bridgeless) Architecture and is what
+      // the SDK's uploadImage expects (it reads files[0].name for preferredFilename).
+      appendFileToFormData(formData, 'files', file, fileName, 'image/jpeg');
+
+      stage = 'request';
       const result = await mutateAsync(
         {
           file: formData,
           onProgress: (percent: number) => {
-            console.log('[AmityUpload] 4. progress', percent);
+            lastProgress = percent;
+            logUpload('4. progress', { percent });
             onProgress?.(percent);
           },
           altText,
         },
         {
+          // Alerts only — the catch below is the SINGLE '5. error' log site.
+          // (Logging the raw error object here serialised config.headers and
+          // put the Authorization bearer token into logcat.)
           onError: (error) => {
-            console.log('[AmityUpload] 5. error', { error });
             if (
               error.message.includes(ERROR_CODE.INVALID_IMAGE) ||
               error.message.includes(ERROR_CODE.VIOLENCE)
@@ -79,19 +99,31 @@ export function useUpload() {
         }
       );
 
-      console.log('[AmityUpload] 5. success', result?.data?.[0]?.fileId);
+      logUpload('5. success', {
+        fileId: result?.data?.[0]?.fileId,
+        ms: Date.now() - startedAt,
+        lastProgress,
+      });
       return result;
     } catch (error: any) {
-      console.log('[AmityUpload] 5. error', {
-        message: error?.message,
-        code: error?.code,
-        status: error?.response?.status,
-        // React Native puts the native Android error text here - this is where
-        // "Stream Closed" shows up. It is not in error.message.
-        nativeResponse: error?.request?._response,
-        data: error?.response?.data,
-      });
+      // `lastProgress` on the error line itself: -1 = body never streamed
+      // (died before/at request build or connect); 1-99 = died mid-body;
+      // 100 = body fully written once, then failed (the OkHttp-retry /
+      // "Stream Closed" signature).
+      logUpload(
+        '5. error',
+        serializeUploadError(error, {
+          stage,
+          lastProgress,
+          ms: Date.now() - startedAt,
+        })
+      );
+      // Fire-and-forget reachability probes for the proxy/allowlist
+      // hypothesis, captured at the moment of failure. Never delays the throw.
+      probeUploadHosts('after-upload-error').catch(() => {});
       throw error;
+    } finally {
+      stopWatchdog();
     }
   };
 

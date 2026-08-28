@@ -29,6 +29,8 @@
 
 import { Platform } from 'react-native';
 
+import { logUpload } from './uploadDebugLog';
+
 /**
  * Append a local file to `formData` as a React-Native multipart file part.
  *
@@ -50,7 +52,7 @@ export function appendFileToFormData(
   const uri =
     Platform.OS === 'android' ? fileUri : fileUri.replace('file://', '');
 
-  console.log('[AmityUpload] 2. append', { fileUri, uri, fileName, mimeType });
+  logUpload('3. append', { fileUri, uri, fileName, mimeType });
 
   // RN's FormData.append is typed for the legacy `{ uri, name, type }` object
   // but its TS types don't expose that overload, so we cast to `any`.
