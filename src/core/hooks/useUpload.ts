@@ -46,29 +46,53 @@ export function useUpload() {
     // the SDK's uploadImage expects (it reads files[0].name for preferredFilename).
     appendFileToFormData(formData, 'files', file, fileName, 'image/jpeg');
 
-    return await mutateAsync(
-      {
-        file: formData,
-        onProgress,
-        altText,
-      },
-      {
-        onError: (error) => {
-          if (
-            error.message.includes(ERROR_CODE.INVALID_IMAGE) ||
-            error.message.includes(ERROR_CODE.VIOLENCE)
-          ) {
-            Alert.alert(
-              'Inappropriate image',
-              'Please choose a different image to upload.',
-              [{ text: 'OK' }]
-            );
-          } else {
-            Alert.alert('Upload failed', 'Please try again.', [{ text: 'OK' }]);
-          }
+    console.log('[AmityUpload] 3. start', { file, fileName });
+
+    try {
+      const result = await mutateAsync(
+        {
+          file: formData,
+          onProgress: (percent: number) => {
+            console.log('[AmityUpload] 4. progress', percent);
+            onProgress?.(percent);
+          },
+          altText,
         },
-      }
-    );
+        {
+          onError: (error) => {
+            console.log('[AmityUpload] 5. error', { error });
+            if (
+              error.message.includes(ERROR_CODE.INVALID_IMAGE) ||
+              error.message.includes(ERROR_CODE.VIOLENCE)
+            ) {
+              Alert.alert(
+                'Inappropriate image',
+                'Please choose a different image to upload.',
+                [{ text: 'OK' }]
+              );
+            } else {
+              Alert.alert('Upload failed', 'Please try again.', [
+                { text: 'OK' },
+              ]);
+            }
+          },
+        }
+      );
+
+      console.log('[AmityUpload] 5. success', result?.data?.[0]?.fileId);
+      return result;
+    } catch (error: any) {
+      console.log('[AmityUpload] 5. error', {
+        message: error?.message,
+        code: error?.code,
+        status: error?.response?.status,
+        // React Native puts the native Android error text here - this is where
+        // "Stream Closed" shows up. It is not in error.message.
+        nativeResponse: error?.request?._response,
+        data: error?.response?.data,
+      });
+      throw error;
+    }
   };
 
   return {

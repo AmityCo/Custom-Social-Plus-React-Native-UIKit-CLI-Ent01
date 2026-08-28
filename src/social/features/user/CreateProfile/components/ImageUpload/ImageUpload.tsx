@@ -62,6 +62,7 @@ export function ImageUpload({
   // Validate the picked asset and hand the local uri up. The page uploads it
   // after Client.login (a visitor session can't write).
   const handleAsset = (asset?: Asset) => {
+    console.log('[AmityUpload] 1. picked', asset);
     if (!isValidImageType(asset?.type)) {
       Alert.alert(
         'Unsupported image type',

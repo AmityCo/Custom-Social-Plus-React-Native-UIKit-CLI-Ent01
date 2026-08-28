@@ -11,7 +11,7 @@ type SearchInputProps = {
 };
 
 function SearchInput({ iconProps, inputProps, style }: SearchInputProps) {
-  const ref = useRef(0);
+  const ref = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const { styles, theme } = useStyles();
   const [value, setValue] = useState(inputProps?.value);
 

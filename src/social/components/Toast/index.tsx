@@ -10,7 +10,7 @@ import { CircularProgressIndicator } from '../CircularProgressIndicator';
 const Toast = () => {
   const { hideToast, toast } = useToast();
   const { styles, theme } = useStyles(toast.bottomPosition);
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeIn = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

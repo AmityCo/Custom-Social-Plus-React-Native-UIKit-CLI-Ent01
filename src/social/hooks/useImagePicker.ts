@@ -42,6 +42,7 @@ const useImagePicker = (): UseImagePickerResponse => {
       setProgress(0);
       return data[0];
     } catch (error) {
+      console.log('[AmityUpload] 6. swallowed, returning null', { error });
       return null;
     } finally {
       setProgress(0);
@@ -52,6 +53,7 @@ const useImagePicker = (): UseImagePickerResponse => {
     const result = await launchImageLibrary(options);
 
     if (!result.didCancel && result.assets && result.assets.length > 0) {
+      console.log('[AmityUpload] 1. picked', result.assets[0]);
       if (!isValidImageType(result.assets[0]?.type)) {
         return Alert.alert(
           'Unsupported image type',
@@ -70,6 +72,7 @@ const useImagePicker = (): UseImagePickerResponse => {
     const result = await launchCamera(options);
 
     if (!result.didCancel && result.assets && result.assets.length > 0) {
+      console.log('[AmityUpload] 1. picked', result.assets[0]);
       if (!isValidImageType(result.assets[0]?.type)) {
         return Alert.alert(
           'Unsupported image type',
