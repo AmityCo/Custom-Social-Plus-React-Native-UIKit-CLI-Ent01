@@ -29,7 +29,29 @@
 
 import { Platform } from 'react-native';
 
+import mime from 'mime';
+
 import { logUpload } from './uploadDebugLog';
+
+// PDT-4769: the part's Content-Type is what the upload host validates against
+// the actual bytes, so a PNG labelled as JPEG is rejected. Prefer the type the
+// picker reported (on Android it comes from the ContentResolver), then the file
+// extension, then JPEG so an unrecognised image is never blocked outright.
+export function resolveImageMimeType(
+  fileNameOrUri: string,
+  reported?: string
+): string {
+  const normalised = reported?.toLowerCase();
+
+  // Some Android pickers report `image/jpg`, which is not a real MIME type.
+  if (normalised === 'image/jpg') return 'image/jpeg';
+  if (normalised?.startsWith('image/')) return normalised;
+
+  // `mime` returns null for an extensionless path or a `content://` uri, and a
+  // non-image type for a misnamed file — neither is usable as an image part.
+  const fromExtension = mime.getType(fileNameOrUri);
+  return fromExtension?.startsWith('image/') ? fromExtension : 'image/jpeg';
+}
 
 /**
  * Append a local file to `formData` as a React-Native multipart file part.

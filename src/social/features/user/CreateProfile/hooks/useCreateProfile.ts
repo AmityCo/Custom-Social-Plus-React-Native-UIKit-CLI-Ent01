@@ -16,7 +16,7 @@ import useAuth from '../../../../../core/hooks/useAuth';
 // A visitor session is read-only, so the avatar cannot be uploaded while the
 // page is shown (still a visitor). Instead we hold the locally picked image
 // (just its uri) and upload it AFTER Client.login signs the user in.
-export type LocalImage = { uri: string };
+export type LocalImage = { uri: string; type?: string };
 
 // The success toast is hosted inside this page's tree. onCreated typically
 // tears that tree down (host swaps to the signed-in app), which would unmount
@@ -228,7 +228,10 @@ export const useCreateProfile = ({
       let avatarFileUrl: string | undefined;
       if (data.image?.uri) {
         // Local file → binary multipart upload (streams to the upload host).
-        const uploaded = await uploadImage({ file: data.image.uri });
+        const uploaded = await uploadImage({
+          file: data.image.uri,
+          mimeType: data.image.type,
+        });
         avatarFileId = uploaded?.data?.[0]?.fileId;
         avatarFileUrl = uploaded?.data?.[0]?.fileUrl;
       } else if (defaultAvatarImageUrl) {

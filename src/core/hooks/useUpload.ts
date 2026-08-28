@@ -2,7 +2,10 @@ import { FileRepository } from '@amityco/ts-sdk-react-native';
 import { Alert } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
 import { ERROR_CODE } from '../constants';
-import { appendFileToFormData } from '../utils/fileUpload';
+import {
+  appendFileToFormData,
+  resolveImageMimeType,
+} from '../utils/fileUpload';
 import {
   logUpload,
   platformContext,
@@ -25,6 +28,8 @@ type UploadImagePayload = {
 
 type UploadSingleImageParams = {
   file: string;
+  /** MIME type reported by the picker; falls back to the file extension. */
+  mimeType?: string;
   onProgress?: UploadImagePayload['onProgress'];
   altText?: UploadImagePayload['altText'];
 };
@@ -41,6 +46,7 @@ export function useUpload() {
 
   const uploadImage = async ({
     file,
+    mimeType,
     onProgress,
     altText,
   }: UploadSingleImageParams) => {
@@ -63,7 +69,13 @@ export function useUpload() {
       // Attach the file as a React-Native { uri, name, type } multipart part.
       // This works on both the Old and New (Bridgeless) Architecture and is what
       // the SDK's uploadImage expects (it reads files[0].name for preferredFilename).
-      appendFileToFormData(formData, 'files', file, fileName, 'image/jpeg');
+      appendFileToFormData(
+        formData,
+        'files',
+        file,
+        fileName,
+        resolveImageMimeType(fileName, mimeType)
+      );
 
       stage = 'request';
       const result = await mutateAsync(

@@ -79,7 +79,7 @@ export function ImageUpload({
       return;
     }
     if (asset?.uri) {
-      onChange({ uri: asset.uri });
+      onChange({ uri: asset.uri, type: asset.type });
     } else {
       // PDT-4769: an asset that passed type validation but has no uri is
       // itself a finding — previously this fell through silently.

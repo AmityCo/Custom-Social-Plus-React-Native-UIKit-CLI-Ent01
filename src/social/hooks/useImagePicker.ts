@@ -59,11 +59,12 @@ const useImagePicker = (): UseImagePickerResponse => {
     useState<Amity.File<'image'> | null>(null);
   const { uploadImage, isImageUploading } = useUpload();
 
-  const uploadFileToAmity = async (path: string) => {
+  const uploadFileToAmity = async (path: string, mimeType?: string) => {
     try {
       setImageUri(path);
       const { data } = await uploadImage({
         file: path,
+        mimeType,
         onProgress: setProgress,
       });
       setUploadedImage(data[0]);
@@ -98,7 +99,7 @@ const useImagePicker = (): UseImagePickerResponse => {
           [{ text: 'OK' }]
         );
       }
-      return uploadFileToAmity(result.assets[0]?.uri);
+      return uploadFileToAmity(result.assets[0]?.uri, result.assets[0]?.type);
     }
   };
 
@@ -126,7 +127,7 @@ const useImagePicker = (): UseImagePickerResponse => {
           [{ text: 'OK' }]
         );
       }
-      return uploadFileToAmity(result.assets[0]?.uri);
+      return uploadFileToAmity(result.assets[0]?.uri, result.assets[0]?.type);
     }
   };
 
