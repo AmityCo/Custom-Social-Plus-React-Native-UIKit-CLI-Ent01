@@ -21,6 +21,10 @@ import { Avatar } from '../../../../../components';
 import { Typography } from '../../../../../../core/components/Typography/Typography';
 import { useCameraPermission } from '../../../../../hooks';
 import type { LocalImage } from '../../hooks/useCreateProfile';
+import {
+  logPickerResult,
+  logUpload,
+} from '../../../../../../core/utils/uploadDebugLog';
 
 // Downscale the avatar at pick time. A full-resolution photo (often 5-15MB from
 // the simulator/camera roll) makes the post-login upload take many seconds; the
@@ -62,8 +66,11 @@ export function ImageUpload({
   // Validate the picked asset and hand the local uri up. The page uploads it
   // after Client.login (a visitor session can't write).
   const handleAsset = (asset?: Asset) => {
-    console.log('[AmityUpload] 1. picked', asset);
     if (!isValidImageType(asset?.type)) {
+      logUpload('1. rejected', {
+        reason: 'invalid-image-type',
+        type: asset?.type,
+      });
       Alert.alert(
         'Unsupported image type',
         'Please upload a PNG or JPG image.',
@@ -73,6 +80,10 @@ export function ImageUpload({
     }
     if (asset?.uri) {
       onChange({ uri: asset.uri });
+    } else {
+      // PDT-4769: an asset that passed type validation but has no uri is
+      // itself a finding — previously this fell through silently.
+      logUpload('1. rejected', { reason: 'asset-has-no-uri' });
     }
   };
 
@@ -81,6 +92,9 @@ export function ImageUpload({
       ...PICKER_OPTIONS,
       selectionLimit: 1,
     });
+    // PDT-4769: logs EVERY outcome (asset, cancel, errorCode) — the early
+    // return below can no longer be confused with "picker never ran".
+    logPickerResult('create-profile-gallery', result);
     if (result.didCancel || !result.assets?.length) return;
     handleAsset(result.assets[0]);
   };
@@ -90,6 +104,9 @@ export function ImageUpload({
     // Permission denied — send the user to Settings to enable it (matches the
     // app's other camera flows, e.g. useImagePicker).
     if (!granted) {
+      // PDT-4769: ties a denied permission to the visible "nothing happened,
+      // Settings opened" behaviour.
+      logUpload('0. permission', { camera: false, action: 'opening-settings' });
       Linking.openSettings();
       return;
     }
@@ -97,6 +114,7 @@ export function ImageUpload({
       ...PICKER_OPTIONS,
       saveToPhotos: false,
     });
+    logPickerResult('create-profile-camera', result);
     if (result.didCancel || !result.assets?.length) return;
     handleAsset(result.assets[0]);
   };
@@ -115,6 +133,11 @@ export function ImageUpload({
         (buttonIndex) => {
           if (buttonIndex === 0) openCamera();
           else if (buttonIndex === 1) openLibrary();
+          else
+            logUpload('1. picked', {
+              source: 'create-profile-sheet',
+              sheetCancelled: true,
+            });
         }
       );
       return;
@@ -123,7 +146,15 @@ export function ImageUpload({
     Alert.alert('Profile photo', undefined, [
       { text: 'Take photo', onPress: openCamera },
       { text: 'Upload photo', onPress: openLibrary },
-      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+        onPress: () =>
+          logUpload('1. picked', {
+            source: 'create-profile-sheet',
+            sheetCancelled: true,
+          }),
+      },
     ]);
   };
 
