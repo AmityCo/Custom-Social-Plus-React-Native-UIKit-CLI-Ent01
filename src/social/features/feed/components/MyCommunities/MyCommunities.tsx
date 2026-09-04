@@ -1,7 +1,11 @@
 import { View } from 'react-native';
 import { FC, memo, useCallback } from 'react';
 import { useStyles } from './styles';
-import { useAmityComponent, useCommunities } from '../../../../hooks';
+import {
+  useAmityComponent,
+  useCapabilities,
+  useCommunities,
+} from '../../../../hooks';
 import { PageID, ComponentID } from '../../../../enums';
 import { useNavigation } from '@react-navigation/native';
 import { useBehaviour } from '../../../../providers/BehaviourProvider';
@@ -29,6 +33,8 @@ const AmityMyCommunitiesComponent: FC<AmityMyCommunitiesComponentType> = ({
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { AmityMyCommunitiesComponentBehaviour } = useBehaviour();
+  // Community creation is restricted to global admins (see useCapabilities).
+  const { canCreateCommunity } = useCapabilities();
   const styles = useStyles(themeStyles);
   const { communities, onNextCommunityPage, loading } = useCommunities();
 
@@ -58,19 +64,21 @@ const AmityMyCommunitiesComponent: FC<AmityMyCommunitiesComponentType> = ({
         <Typography.Caption style={styles.emptyDescriptionText}>
           {"Let's create your own communities"}
         </Typography.Caption>
-        <Button
-          type="primary"
-          icon={plus()}
-          style={styles.createCommunityButton}
-          onPress={onPressCreateCommunity}
-        >
-          <Typography.BodyBold style={styles.createCommunityButtonText}>
-            {'Create community'}
-          </Typography.BodyBold>
-        </Button>
+        {canCreateCommunity && (
+          <Button
+            type="primary"
+            icon={plus()}
+            style={styles.createCommunityButton}
+            onPress={onPressCreateCommunity}
+          >
+            <Typography.BodyBold style={styles.createCommunityButtonText}>
+              {'Create community'}
+            </Typography.BodyBold>
+          </Button>
+        )}
       </View>
     );
-  }, [styles, themeStyles, onPressCreateCommunity]);
+  }, [canCreateCommunity, styles, themeStyles, onPressCreateCommunity]);
 
   if (isExcluded) return null;
 

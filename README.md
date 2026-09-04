@@ -360,6 +360,18 @@ The Dark Mode feature in our UIKit enhances user experience by providing an alte
 
 Please refer to our online documentation at https://docs.amity.co or contact a Ui-Kit representative at **clientsolutiomns@amity.co** for support.
 
+### Debugging network traffic
+
+To inspect the sample app's API traffic with Charles Proxy on Android, see
+[docs/charles-proxy.md](docs/charles-proxy.md).
+
+```sh
+yarn android:charles   # launch the emulator with the Charles proxy set
+yarn charles:on        # route a running emulator through Charles
+yarn charles:off       # clear it (required — the setting survives a restart)
+yarn lan-ip            # print your LAN IP for a physical device's proxy settings
+```
+
 ## Migration Guide to React Navigation v7
 
 1. Upgrade the following dependencies to the exact versions specified in the `package.json` of UIKit:

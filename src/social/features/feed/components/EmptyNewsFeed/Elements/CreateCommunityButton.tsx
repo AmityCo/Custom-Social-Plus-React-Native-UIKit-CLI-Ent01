@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 import { ComponentID, ElementID, PageID } from '../../../../../enums';
 import useConfig from '../../../../../hooks/useConfig';
-import { useUiKitConfig } from '../../../../../hooks';
+import { useCapabilities, useUiKitConfig } from '../../../../../hooks';
 import { useStyles } from './styles/styles';
 import { useBehaviour } from '../../../../../providers/BehaviourProvider';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +11,8 @@ import { Text } from '../../../../../../core/components/Text';
 
 const CreateCommunityButton = () => {
   const { excludes } = useConfig();
+  // Community creation is restricted to global admins (see useCapabilities).
+  const { canCreateCommunity } = useCapabilities();
   const styles = useStyles();
   const navigation =
     useNavigation() as NativeStackNavigationProp<RootStackParamList>;
@@ -27,6 +29,8 @@ const CreateCommunityButton = () => {
       return AmityEmptyNewsFeedComponent.onPressCreateCommunity();
     navigation.navigate('CreateCommunity');
   }, [AmityEmptyNewsFeedComponent, navigation]);
+
+  if (!canCreateCommunity) return null;
 
   if (
     excludes.includes('social_home_page/empty_newsfeed/create_community_button')

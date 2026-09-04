@@ -29,6 +29,30 @@
 
 import { Platform } from 'react-native';
 
+import mime from 'mime';
+
+import { logUpload } from './uploadDebugLog';
+
+// PDT-4769: the part's Content-Type is what the upload host validates against
+// the actual bytes, so a PNG labelled as JPEG is rejected. Prefer the type the
+// picker reported (on Android it comes from the ContentResolver), then the file
+// extension, then JPEG so an unrecognised image is never blocked outright.
+export function resolveImageMimeType(
+  fileNameOrUri: string,
+  reported?: string
+): string {
+  const normalised = reported?.toLowerCase();
+
+  // Some Android pickers report `image/jpg`, which is not a real MIME type.
+  if (normalised === 'image/jpg') return 'image/jpeg';
+  if (normalised?.startsWith('image/')) return normalised;
+
+  // `mime` returns null for an extensionless path or a `content://` uri, and a
+  // non-image type for a misnamed file — neither is usable as an image part.
+  const fromExtension = mime.getType(fileNameOrUri);
+  return fromExtension?.startsWith('image/') ? fromExtension : 'image/jpeg';
+}
+
 /**
  * Append a local file to `formData` as a React-Native multipart file part.
  *
@@ -38,6 +62,35 @@ import { Platform } from 'react-native';
  * @param fileName   The filename sent in the Content-Disposition header.
  * @param mimeType   MIME type for the part (e.g. `'image/jpeg'`).
  */
+/**
+ * Upload progress callback.
+ *
+ * `percent` is clamped to 0-100 and is what UI should render. `raw` is what the
+ * SDK actually reported, so a caller can tell a trustworthy progress stream
+ * from one that overshoots - see normalizeUploadPercent for why that happens.
+ * A determinate progress control should fall back to an indeterminate one as
+ * soon as `raw` leaves the 0-100 range, and will start working on its own once
+ * the SDK reports honest totals.
+ */
+export type UploadProgressCallback = (percent: number, raw: number) => void;
+
+/**
+ * Clamp an upload percentage reported by the SDK to a usable 0-100.
+ *
+ * The SDK computes `Math.round(loaded * 100 / total)` from the XHR upload
+ * progress event, and on Android `total` comes back smaller than the bytes
+ * actually sent - measured values for one image were 0, 0, 47, 106, 177, 188.
+ * Passing that straight to a progress ring drives it past full, and an exact
+ * `=== 100` completion check never matches, so callers get stuck showing a
+ * determinate bar that never resolves.
+ *
+ * Non-finite values (a `total` of 0 yields Infinity/NaN) collapse to 0.
+ */
+export function normalizeUploadPercent(percent: number): number {
+  if (!Number.isFinite(percent)) return 0;
+  return Math.min(100, Math.max(0, Math.round(percent)));
+}
+
 export function appendFileToFormData(
   formData: FormData,
   fieldName: string,
@@ -49,6 +102,8 @@ export function appendFileToFormData(
   // iOS expects the `file://` scheme stripped to a bare path.
   const uri =
     Platform.OS === 'android' ? fileUri : fileUri.replace('file://', '');
+
+  logUpload('3. append', { fileUri, uri, fileName, mimeType });
 
   // RN's FormData.append is typed for the legacy `{ uri, name, type }` object
   // but its TS types don't expose that overload, so we cast to `any`.

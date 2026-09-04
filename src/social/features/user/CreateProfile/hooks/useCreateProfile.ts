@@ -16,7 +16,7 @@ import useAuth from '../../../../../core/hooks/useAuth';
 // A visitor session is read-only, so the avatar cannot be uploaded while the
 // page is shown (still a visitor). Instead we hold the locally picked image
 // (just its uri) and upload it AFTER Client.login signs the user in.
-export type LocalImage = { uri: string };
+export type LocalImage = { uri: string; type?: string };
 
 // The success toast is hosted inside this page's tree. onCreated typically
 // tears that tree down (host swaps to the signed-in app), which would unmount
@@ -29,6 +29,21 @@ const schema = z.object({
   image: z.custom<LocalImage>().nullish(),
   displayName: z.string().min(1).max(CHARACTER_LIMIT.USER_DISPLAY_NAME),
   description: z.string().max(CHARACTER_LIMIT.USER_DESCRIPTION).optional(),
+});
+
+/**
+ * Used when the host supplies no `defaultAvatarImageUrl`, which makes the
+ * profile photo a mandatory field: the user must pick one before Save enables.
+ *
+ * With a default avatar configured the base schema applies instead — that URL
+ * is uploaded as the user's avatar when they pick nothing, so every profile
+ * still ends up with a photo and blocking Save would be pointless.
+ */
+const requiredImageSchema = schema.extend({
+  image: z.custom<LocalImage>(
+    (value) => value != null,
+    'Profile photo is required'
+  ),
 });
 
 export type CreateProfileFormValues = z.infer<typeof schema>;
@@ -160,7 +175,7 @@ export const useCreateProfile = ({
     handleSubmit,
     formState: { isValid, isSubmitting },
   } = useForm<CreateProfileFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(defaultAvatarImageUrl ? schema : requiredImageSchema),
     mode: 'onChange',
     defaultValues: {
       image: null,
@@ -228,7 +243,10 @@ export const useCreateProfile = ({
       let avatarFileUrl: string | undefined;
       if (data.image?.uri) {
         // Local file → binary multipart upload (streams to the upload host).
-        const uploaded = await uploadImage({ file: data.image.uri });
+        const uploaded = await uploadImage({
+          file: data.image.uri,
+          mimeType: data.image.type,
+        });
         avatarFileId = uploaded?.data?.[0]?.fileId;
         avatarFileUrl = uploaded?.data?.[0]?.fileUrl;
       } else if (defaultAvatarImageUrl) {

@@ -19,6 +19,7 @@ const API_REGION = ""; // Put your apiRegion
 const API_ENDPOINT ="" //"https://api.{apiRegion}.amity.co"
 
 
+
 type TabName = 'visitor' | 'signedIn';
 
 function handleNotificationNavigation(remoteMessage: {
@@ -164,10 +165,19 @@ export default function App() {
             apiEndpoint={API_ENDPOINT}
             fcmToken={fcmToken}
             // Sign in directly as this user — no visitor / create-profile step.
-            userId="visitor-user-test-10"
+            userId="topSocialPlus2New"
             // displayName intentionally omitted to test the "userId only" login
             // path (existing displayName is preserved, not overwritten).
           />
+        )}
+
+        {/* Network logger overlay. Scoped to the screen area (not the whole
+            root) so the tab bar — and its Hide Logs button — stays visible
+            and tappable while the logger is open. */}
+        {showLogger && (
+          <View style={styles.loggerOverlay}>
+            <NetworkLogger />
+          </View>
         )}
       </View>
 
@@ -195,26 +205,20 @@ export default function App() {
             Signed-in
           </Text>
         </TouchableOpacity>
+
+        {/* Logs toggle lives in the app's own tab bar rather than floating over
+            the screen: the UIKit owns the whole page area (header across the
+            top, scrolling content below, its own floating buttons), so any
+            absolutely-positioned button overlapped something. */}
+        <TouchableOpacity
+          style={styles.loggerToggle}
+          onPress={() => setShowLogger((v) => !v)}
+        >
+          <Text style={styles.loggerToggleText}>
+            {showLogger ? 'Hide Logs' : 'Show Logs'}
+          </Text>
+        </TouchableOpacity>
       </View>
-
-      {/* Full-screen network logger overlay, toggled by the floating button. */}
-      {showLogger && (
-        <View style={styles.loggerOverlay}>
-          <View style={styles.loggerContainer}>
-            <NetworkLogger />
-          </View>
-        </View>
-      )}
-
-      {/* Floating Show/Hide button, always on top. */}
-      <TouchableOpacity
-        style={styles.loggerToggle}
-        onPress={() => setShowLogger((v) => !v)}
-      >
-        <Text style={styles.loggerToggleText}>
-          {showLogger ? 'Hide Logs' : 'Show Logs'}
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -228,6 +232,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
+    alignItems: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#d9dbe0',
     backgroundColor: '#ffffff',
@@ -249,33 +254,22 @@ const styles = StyleSheet.create({
     color: '#1054de',
   },
   loggerOverlay: {
+    // Fills the screen area only — the tab bar sits outside it.
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#ffffff',
+    paddingTop: 48, // clear the status bar
     zIndex: 10,
   },
-  loggerContainer: {
-    flex: 1,
-    // Leave room at the top for the status bar and the floating toggle button.
-    paddingTop: 100,
-  },
   loggerToggle: {
-    position: 'absolute',
-    top: 60,
-    right: 16,
-    zIndex: 20,
+    marginRight: 12,
     backgroundColor: '#1054de',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   loggerToggleText: {
     color: '#ffffff',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
   },
 });
