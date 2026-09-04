@@ -22,6 +22,7 @@ import {
   useAmityPage,
   useUser,
   isModerator,
+  useCapabilities,
 } from '../../../hooks';
 import { useStyles } from './styles';
 import {
@@ -95,6 +96,8 @@ const AmityPostComposerPage: FC<AmityPostComposerPageType> = ({
 
   const currentUser = useUser((client as Amity.Client)?.userId || '');
   const isCommunityModerator = isModerator(currentUser?.roles);
+  // Video attachment is restricted to global admins (see useCapabilities).
+  const { canPostVideo } = useCapabilities();
   const { showToastMessage, hideToastMessage } = uiSlice.actions;
   const [inputMessage, setInputMessage] = useState<string>(
     (post?.data as Amity.ContentDataText)?.text ?? ''
@@ -566,6 +569,10 @@ const AmityPostComposerPage: FC<AmityPostComposerPageType> = ({
     [displayImages.length, displayVideos.length, processMedia]
   );
   const onPressCamera = useCallback(async () => {
+    // Hiding the video button is not enough: the camera itself offers a Video
+    // option on Android and 'mixed' capture on iOS, so a restricted user could
+    // still record video through it.
+    if (!canPostVideo) return pickCamera('photo');
     if (displayImages.length > 0) return pickCamera('photo');
     if (displayVideos.length > 0) return pickCamera('video');
     if (Platform.OS === 'ios') return pickCamera('mixed');
@@ -573,7 +580,7 @@ const AmityPostComposerPage: FC<AmityPostComposerPageType> = ({
       { text: 'Photo', onPress: async () => pickCamera('photo') },
       { text: 'Video', onPress: async () => pickCamera('video') },
     ]);
-  }, [displayImages.length, displayVideos.length, pickCamera]);
+  }, [canPostVideo, displayImages.length, displayVideos.length, pickCamera]);
 
   const onPressImage = useCallback(async () => {
     if (displayImages.length === 10)

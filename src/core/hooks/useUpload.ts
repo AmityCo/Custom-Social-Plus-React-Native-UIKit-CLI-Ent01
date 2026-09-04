@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { ERROR_CODE } from '../constants';
 import {
   appendFileToFormData,
+  normalizeUploadPercent,
   resolveImageMimeType,
 } from '../utils/fileUpload';
 import {
@@ -81,9 +82,13 @@ export function useUpload() {
       const result = await mutateAsync(
         {
           file: formData,
-          onProgress: (percent: number) => {
+          onProgress: (rawPercent: number) => {
+            // The SDK can report >100 (its `total` under-counts the bytes
+            // sent), so clamp before anything renders it. `raw` stays in the
+            // log because the unclamped value is what identifies the cause.
+            const percent = normalizeUploadPercent(rawPercent);
             lastProgress = percent;
-            logUpload('4. progress', { percent });
+            logUpload('4. progress', { percent, raw: rawPercent });
             onProgress?.(percent);
           },
           altText,

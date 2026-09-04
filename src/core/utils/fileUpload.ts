@@ -62,6 +62,35 @@ export function resolveImageMimeType(
  * @param fileName   The filename sent in the Content-Disposition header.
  * @param mimeType   MIME type for the part (e.g. `'image/jpeg'`).
  */
+/**
+ * Upload progress callback.
+ *
+ * `percent` is clamped to 0-100 and is what UI should render. `raw` is what the
+ * SDK actually reported, so a caller can tell a trustworthy progress stream
+ * from one that overshoots - see normalizeUploadPercent for why that happens.
+ * A determinate progress control should fall back to an indeterminate one as
+ * soon as `raw` leaves the 0-100 range, and will start working on its own once
+ * the SDK reports honest totals.
+ */
+export type UploadProgressCallback = (percent: number, raw: number) => void;
+
+/**
+ * Clamp an upload percentage reported by the SDK to a usable 0-100.
+ *
+ * The SDK computes `Math.round(loaded * 100 / total)` from the XHR upload
+ * progress event, and on Android `total` comes back smaller than the bytes
+ * actually sent - measured values for one image were 0, 0, 47, 106, 177, 188.
+ * Passing that straight to a progress ring drives it past full, and an exact
+ * `=== 100` completion check never matches, so callers get stuck showing a
+ * determinate bar that never resolves.
+ *
+ * Non-finite values (a `total` of 0 yields Infinity/NaN) collapse to 0.
+ */
+export function normalizeUploadPercent(percent: number): number {
+  if (!Number.isFinite(percent)) return 0;
+  return Math.min(100, Math.max(0, Math.round(percent)));
+}
+
 export function appendFileToFormData(
   formData: FormData,
   fieldName: string,

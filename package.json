@@ -1,6 +1,6 @@
 {
   "name": "@amityco/react-native-social-uikit-ocean",
-  "version": "4.0.1-ocean-6",
+  "version": "4.0.1-ocean-7",
   "description": "Social UIKit",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -39,6 +39,10 @@
     "build:android": "cd example/android && ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a",
     "build:ios": "cd example/ios && xcodebuild -workspace AmityReactNativeSocialUiKitExample.xcworkspace -scheme AmityReactNativeSocialUiKitExample -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO",
     "bootstrap": "yarn example && yarn install && yarn example pods",
+    "android:charles": "node scripts/emulator-charles.js",
+    "lan-ip": "node scripts/lan-ip.js",
+    "charles:on": "node scripts/emulator-proxy.js on",
+    "charles:off": "node scripts/emulator-proxy.js off",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
@@ -57,7 +61,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@amityco/ts-sdk-react-native": "7.22.1-f15e84ea.0",
+    "@amityco/ts-sdk-react-native": "7.26.1-c29647b8.0",
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",
     "@commitlint/config-conventional": "^17.0.2",
     "@evilmartians/lefthook": "^1.2.2",
@@ -116,7 +120,7 @@
     "@types/react": "^19.1.0"
   },
   "peerDependencies": {
-    "@amityco/ts-sdk-react-native": "7.22.1-f15e84ea.0",
+    "@amityco/ts-sdk-react-native": "7.26.1-c29647b8.0",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/datetimepicker": "^9.1.0",

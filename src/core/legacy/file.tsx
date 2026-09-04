@@ -1,11 +1,15 @@
 import { FileRepository, ContentFeedType } from '@amityco/ts-sdk-react-native';
 
 import { Platform } from 'react-native';
-import { appendFileToFormData } from '../utils/fileUpload';
+import {
+  appendFileToFormData,
+  normalizeUploadPercent,
+  type UploadProgressCallback,
+} from '../utils/fileUpload';
 
 export async function uploadFile(
   filePath: string,
-  perCentCallback?: (percent: number) => void
+  perCentCallback?: UploadProgressCallback
 ): Promise<Amity.File<any>[]> {
   return await new Promise(async (resolve, reject) => {
     const formData = new FormData();
@@ -18,7 +22,8 @@ export async function uploadFile(
     const { data: file } = await FileRepository.uploadFile(
       formData,
       (percent) => {
-        perCentCallback && perCentCallback(percent);
+        perCentCallback &&
+          perCentCallback(normalizeUploadPercent(percent), percent);
       }
     );
     if (file) {
@@ -30,7 +35,7 @@ export async function uploadFile(
 }
 export async function uploadImageFile(
   filePath: string,
-  perCentCallback?: (percent: number) => void
+  perCentCallback?: UploadProgressCallback
 ): Promise<Amity.File<'image'>[]> {
   return await new Promise(async (resolve, reject) => {
     try {
@@ -50,7 +55,8 @@ export async function uploadImageFile(
       const { data: file } = await FileRepository.uploadImage(
         formData,
         (percent) => {
-          perCentCallback && perCentCallback(percent);
+          perCentCallback &&
+            perCentCallback(normalizeUploadPercent(percent), percent);
         }
       );
 
@@ -83,7 +89,7 @@ export async function uploadImageFile(
 }
 export async function uploadVideoFile(
   filePath: string,
-  perCentCallback?: (percent: number) => void
+  perCentCallback?: UploadProgressCallback
 ): Promise<Amity.File<any>[]> {
   return await new Promise(async (resolve, reject) => {
     const formData = new FormData();
@@ -102,7 +108,8 @@ export async function uploadVideoFile(
       formData,
       ContentFeedType.POST,
       (percent) => {
-        perCentCallback && perCentCallback(percent);
+        perCentCallback &&
+          perCentCallback(normalizeUploadPercent(percent), percent);
       }
     );
     if (file) {
