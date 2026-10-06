@@ -40,3 +40,9 @@ export enum ShareableLinkModel {
   communities = 'communities',
   users = 'users',
 }
+
+export enum ReportContentType {
+  post = 'post',
+  comment = 'comment',
+  reply = 'reply',
+}

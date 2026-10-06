@@ -35,6 +35,7 @@ export enum PageID {
   community_livestreams_notification_page = 'community_livestreams_notification_page',
 }
 export enum ComponentID {
+  content_report_reason = 'content_report_reason',
   EditComment = 'edit_comment_component',
   HyperLinkConfig = 'hyper_link_config_component',
   CommentTray = 'comment_tray_component',
@@ -69,6 +70,7 @@ export enum ComponentID {
   user_video_feed = 'user_video_feed',
 }
 export enum ElementID {
+  submit_button = 'submit_button',
   CloseBtn = 'close_button',
   AspectRatioBtn = 'aspect_ratio_button',
   StoryHyperLinkBtn = 'story_hyperlink_button',
