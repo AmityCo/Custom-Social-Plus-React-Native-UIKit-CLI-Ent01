@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import { cancelPendingVisitorJoin } from '../../../../../core/stores/pendingVisitorJoin';
 import { CommunityRepository } from '@amityco/ts-sdk-react-native';
 import { useBehaviour } from '../../../../providers/BehaviourProvider';
 import { useNavigation } from '@react-navigation/native';
@@ -38,6 +39,9 @@ export function useCommunitySetting(community: Amity.Community) {
         community.communityId
       );
       if (!didLeave) throw new Error('Leave community did not take effect');
+      // Drop any pending visitor auto-join for this community, or the next
+      // session event would join the user straight back.
+      cancelPendingVisitorJoin(community.communityId);
       return didLeave;
     },
     onSuccess: () => {

@@ -7,6 +7,14 @@ import useAuth from '../../core/hooks/useAuth';
 // server-side (via the community's `tags` field); the client only reads it.
 export const EXPLORE_PINNED_TAG = 'explore-pinned';
 
+// The SDK's getCommunities live collection prepends the community from every
+// community event (joined, left, updated, created) to the collection, and does
+// not re-apply the query's filters when it re-emits. Without this check, leaving
+// any community put it into the pinned list - shown under the pinned section and
+// auto-joined straight back by ExploreProvider.
+const isPinned = (community: Amity.Community) =>
+  !community.isDeleted && !!community.tags?.includes(EXPLORE_PINNED_TAG);
+
 // Follows the same live-collection pattern as useTrendingCommunities /
 // useRecommendedCommunities: subscribe to CommunityRepository.getCommunities and
 // copy results into state, exposing a refresh() that re-subscribes.
@@ -26,7 +34,7 @@ export const usePinnedCommunities = () => {
         setLoading(isLoading);
         if (err) setError(err);
         if (!isLoading) {
-          setCommunities(data);
+          setCommunities(data?.filter(isPinned));
         }
       }
     );

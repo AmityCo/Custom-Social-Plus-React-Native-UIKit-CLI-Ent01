@@ -9,6 +9,11 @@ import {
   EXPLORE_PINNED_TAG,
 } from '../hooks';
 import { onVisitorAutoJoinCompleted } from '../../core/stores/pendingVisitorJoin';
+import {
+  hasLeftPinnedCommunity,
+  loadLeftPinnedCommunities,
+  markPinnedCommunityLeft,
+} from '../../core/stores/leftPinnedCommunities';
 import useAuth from '../../core/hooks/useAuth';
 import { joinCommunityWithRetry } from '../../core/utils/joinCommunityWithRetry';
 
@@ -37,12 +42,23 @@ export const ExploreProvider: React.FC<{ children: ReactNode }> = ({
   // Visitor/bot sessions are read-only and cannot join communities, so the
   // auto-join below must not run for them (every call would fail with a
   // permission error). Signed-in users only.
-  const { isVisitorOrBot } = useAuth();
+  const { isVisitorOrBot, client } = useAuth();
+  const userId = client?.userId;
 
   // Community ids already attempted this session. The pinned query is a live
   // collection, so it re-emits on any change; without this the effect would
   // re-fire joins that are still in flight.
   const attemptedJoinsRef = useRef<Set<string>>(new Set());
+
+  // Pinned community ids seen as joined during this mount. Seeing one of these
+  // later with isJoined false means the membership was dropped - the user left,
+  // or a moderator removed them - not that it never existed.
+  const seenJoinedRef = useRef<Set<string>>(new Set());
+
+  // The user the two sets above describe. A host can switch userId without
+  // remounting this provider; carried over, the previous user's joins would make
+  // the next user's not-yet-joined pinned communities read as ones they left.
+  const trackedUserIdRef = useRef<string | undefined>(undefined);
 
   const {
     onJoinCommunity: onJoinRecommendedCommunity,
@@ -97,33 +113,59 @@ export const ExploreProvider: React.FC<{ children: ReactNode }> = ({
   // try/catch so one failure can't affect the others, and we intentionally do
   // not re-query/re-render after success (joined visuals update on next natural
   // refresh). Already-joined communities are skipped with no API call.
+  //
+  // A community the user has left is never auto-joined again. Leaving makes the
+  // pinned live collection re-emit it with isJoined false, which used to look
+  // exactly like a not-yet-joined community: the user was put straight back,
+  // and only a second leave stuck.
   useEffect(() => {
     // Skip entirely for visitors/bots — their read-only session can't join, so
     // every call would fail. Signed-in users only.
-    if (isVisitorOrBot) return;
+    if (isVisitorOrBot || !userId) return;
     if (!pinnedCommunities?.length) return;
-    pinnedCommunities.forEach((community) => {
-      if (community.isJoined) return;
-      // Already attempted this session — don't re-fire on every re-render of
-      // the pinned query. Without this, a live-collection update would restart
-      // joins that are still in flight.
-      if (attemptedJoinsRef.current.has(community.communityId)) return;
-      attemptedJoinsRef.current.add(community.communityId);
 
-      // Retries transient network failures; a single dropped request used to
-      // leave the user silently un-joined with only a console error.
-      joinCommunityWithRetry(community.communityId, {
-        onFinalFailure: (err) => {
-          console.error(
-            `Auto-join failed for community ${community.communityId}:`,
-            err
-          );
-          // Allow a later attempt (next mount / natural refresh) to try again.
-          attemptedJoinsRef.current.delete(community.communityId);
-        },
+    if (trackedUserIdRef.current !== userId) {
+      trackedUserIdRef.current = userId;
+      seenJoinedRef.current = new Set();
+      attemptedJoinsRef.current = new Set();
+    }
+
+    // Classify against this emission before anything async, so the re-emit
+    // caused by a leave is recorded before the join check below can see it.
+    pinnedCommunities.forEach(({ communityId, isJoined }) => {
+      if (isJoined) {
+        seenJoinedRef.current.add(communityId);
+      } else if (seenJoinedRef.current.delete(communityId)) {
+        markPinnedCommunityLeft(userId, communityId);
+      }
+    });
+
+    // Leaves from earlier launches are persisted; wait for them before joining.
+    loadLeftPinnedCommunities(userId).then(() => {
+      pinnedCommunities.forEach((community) => {
+        if (community.isJoined) return;
+        if (hasLeftPinnedCommunity(userId, community.communityId)) return;
+        // Already attempted this session — don't re-fire on every re-render of
+        // the pinned query. Without this, a live-collection update would
+        // restart joins that are still in flight.
+        if (attemptedJoinsRef.current.has(community.communityId)) return;
+        attemptedJoinsRef.current.add(community.communityId);
+
+        // Retries transient network failures; a single dropped request used to
+        // leave the user silently un-joined with only a console error.
+        joinCommunityWithRetry(community.communityId, {
+          onFinalFailure: (err) => {
+            console.error(
+              `Auto-join failed for community ${community.communityId}:`,
+              err
+            );
+            // Allow a later attempt (next mount / natural refresh) to try again.
+            attemptedJoinsRef.current.delete(community.communityId);
+          },
+        });
       });
     });
-  }, [pinnedCommunities, isVisitorOrBot]);
+  }, [pinnedCommunities, isVisitorOrBot, userId]);
 
   // The visitor auto-join (after sign-in) may complete AFTER Explore has
   // already loaded, leaving the just-joined community in the list. Re-fetch

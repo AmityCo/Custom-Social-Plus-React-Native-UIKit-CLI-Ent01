@@ -1,4 +1,5 @@
 import { CommunityRepository } from '@amityco/ts-sdk-react-native';
+import { cancelPendingVisitorJoin } from '../../core/stores/pendingVisitorJoin';
 import { useState } from 'react';
 
 export const useLeaveCommunity = ({
@@ -17,6 +18,9 @@ export const useLeaveCommunity = ({
       // dropped, i.e. the leave did not take. Reporting success in that case
       // left the user still a member while the UI said otherwise.
       const didLeave = await CommunityRepository.leaveCommunity(communityId);
+      // Drop any pending visitor auto-join for this community, or the next
+      // session event would join the user straight back.
+      if (didLeave) cancelPendingVisitorJoin(communityId);
       setIsPending(false);
       if (!didLeave) {
         onError?.(new Error('Leave community did not take effect'));
