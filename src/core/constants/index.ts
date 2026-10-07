@@ -107,6 +107,26 @@ export const VISITOR_USAGE_LIMIT_MESSAGE = {
 export const VISITOR_USER_ACTION_TOAST =
   'Create an account or sign in to continue.';
 
+export const IMAGE_UPLOAD_ERROR_MESSAGE = {
+  INAPPROPRIATE: "This photo isn't allowed. Please choose a different one.",
+  GENERIC: 'Failed to upload image. Please try again.',
+};
+
+export const PROFILE_ERROR_MESSAGE = {
+  BLOCKED_WORD:
+    "Your profile wasn't saved as it contains an inappropriate word.",
+  BLOCKED_URL:
+    "Your profile wasn't saved as it contains a link that's not allowed.",
+  INAPPROPRIATE_IMAGE:
+    "Your profile wasn't saved as the photo isn't allowed. Please choose a different one.",
+  DISPLAY_NAME_NOT_ALLOWED:
+    'Only an administrator can update the display name.',
+  GLOBAL_BAN: 'Your account has been banned.',
+  RATE_LIMIT: 'Too many requests. Please wait a moment and try again.',
+  NETWORK: 'No connection. Check your internet and try again.',
+  GENERIC: 'Failed to save your profile. Please try again.',
+};
+
 export const COMMENT_ERROR_MESSAGE = {
   BLOCKED_WORD:
     'Your comment contains inappropriate word. Please review and delete it.',

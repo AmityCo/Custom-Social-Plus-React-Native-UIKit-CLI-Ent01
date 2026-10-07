@@ -6,7 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Client, UserRepository } from '@amityco/ts-sdk-react-native';
 import { useToast } from '../../../../../core/stores/slices/toastSlice';
-import { CHARACTER_LIMIT, ERROR_CODE } from '../../../../../core/constants';
+import {
+  CHARACTER_LIMIT,
+  PROFILE_ERROR_MESSAGE,
+} from '../../../../../core/constants';
+import { getProfileErrorMessage } from '../../../../utils/errors';
 import { PageID } from '../../../../enums';
 import { useAmityPage } from '../../../../hooks';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -297,23 +301,9 @@ export const useCreateProfile = ({
       onError?.(error instanceof Error ? error : new Error(String(error)));
 
       hideToast();
-      if (error.message?.includes(ERROR_CODE.BLOCKED_WORD)) {
-        showToast({
-          type: 'informative',
-          message: "Your profile wasn't saved as it contains a blocked word.",
-        });
-        return;
-      }
-      if (error.message?.includes(ERROR_CODE.RATE_LIMIT)) {
-        showToast({
-          type: 'informative',
-          message: 'Too many requests. Please wait a moment and try again.',
-        });
-        return;
-      }
       showToast({
         type: 'informative',
-        message: 'Failed to save your profile. Please try again.',
+        message: getProfileErrorMessage(error),
       });
     },
   });
@@ -324,7 +314,7 @@ export const useCreateProfile = ({
     if (isConnected === false) {
       showToast({
         type: 'informative',
-        message: 'Failed to save your profile. Please try again.',
+        message: PROFILE_ERROR_MESSAGE.GENERIC,
       });
       return;
     }

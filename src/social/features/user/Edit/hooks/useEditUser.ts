@@ -10,6 +10,7 @@ import { RootStackParamList } from '../../../../../core/routes/RouteParamList';
 import { useNavigation } from '@react-navigation/native';
 import { useToast } from '../../../../../core/stores/slices/toastSlice';
 import { ERROR_CODE } from '../../../../../core/constants';
+import { getProfileErrorMessage } from '../../../../utils/errors';
 import { PageID } from '../../../../enums';
 import { useAmityPage } from '../../../../hooks';
 import { useState } from 'react';
@@ -69,19 +70,18 @@ export const useEditUser = (userId: string) => {
       });
     },
     onError: (error) => {
+      // This one also changes the form, not just the message: the server owns
+      // the display name, so the field is locked and reset.
       if (error.message?.includes(ERROR_CODE.DISPLAY_NAME_UPDATE)) {
         setIsDisplayNameDisabled(true);
         resetField('displayName');
-        showToast({
-          type: 'informative',
-          message: 'Only administrator can update user display name.',
-        });
-      } else {
-        showToast({
-          type: 'informative',
-          message: 'Failed to save your profile. Please try again.',
-        });
       }
+      // Previously every other failure - a blocked word in the display name
+      // most of all - fell through to one generic line.
+      showToast({
+        type: 'informative',
+        message: getProfileErrorMessage(error),
+      });
     },
   });
 

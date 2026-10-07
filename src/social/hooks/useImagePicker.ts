@@ -10,6 +10,8 @@ import { isValidImageType } from '../utils';
 import { useCameraPermission } from './usePermissions';
 import { deleteAmityFile } from '../../core/legacy/file';
 import { useUpload } from '../../core/hooks';
+import { useToast } from '../../core/stores/slices/toastSlice';
+import { getImageUploadErrorMessage } from '../utils/errors';
 import {
   logPickerResult,
   logUpload,
@@ -58,6 +60,7 @@ const useImagePicker = (): UseImagePickerResponse => {
   const [uploadedImage, setUploadedImage] =
     useState<Amity.File<'image'> | null>(null);
   const { uploadImage, isImageUploading } = useUpload();
+  const { showToast } = useToast();
 
   const uploadFileToAmity = async (path: string, mimeType?: string) => {
     try {
@@ -74,6 +77,13 @@ const useImagePicker = (): UseImagePickerResponse => {
       // PDT-4769: explicit fields only — the raw axios error serialises
       // config.headers and leaked the bearer token into logcat.
       logUpload('6. swallowed, returning null', serializeUploadError(error));
+      // The error is swallowed so the picker can return null, so this is the
+      // only place the user hears about it. useUpload no longer shows a native
+      // Alert, which used to stack a second popup on top of the caller's toast.
+      showToast({
+        type: 'informative',
+        message: getImageUploadErrorMessage(error),
+      });
       return null;
     } finally {
       setProgress(0);

@@ -1,7 +1,5 @@
 import { FileRepository } from '@amityco/ts-sdk-react-native';
-import { Alert } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
-import { ERROR_CODE } from '../constants';
 import {
   appendFileToFormData,
   normalizeUploadPercent,
@@ -79,42 +77,19 @@ export function useUpload() {
       );
 
       stage = 'request';
-      const result = await mutateAsync(
-        {
-          file: formData,
-          onProgress: (rawPercent: number) => {
-            // The SDK can report >100 (its `total` under-counts the bytes
-            // sent), so clamp before anything renders it. `raw` stays in the
-            // log because the unclamped value is what identifies the cause.
-            const percent = normalizeUploadPercent(rawPercent);
-            lastProgress = percent;
-            logUpload('4. progress', { percent, raw: rawPercent });
-            onProgress?.(percent);
-          },
-          altText,
+      const result = await mutateAsync({
+        file: formData,
+        onProgress: (rawPercent: number) => {
+          // The SDK can report >100 (its `total` under-counts the bytes sent),
+          // so clamp before anything renders it. `raw` stays in the log because
+          // the unclamped value is what identifies the cause.
+          const percent = normalizeUploadPercent(rawPercent);
+          lastProgress = percent;
+          logUpload('4. progress', { percent, raw: rawPercent });
+          onProgress?.(percent);
         },
-        {
-          // Alerts only — the catch below is the SINGLE '5. error' log site.
-          // (Logging the raw error object here serialised config.headers and
-          // put the Authorization bearer token into logcat.)
-          onError: (error) => {
-            if (
-              error.message.includes(ERROR_CODE.INVALID_IMAGE) ||
-              error.message.includes(ERROR_CODE.VIOLENCE)
-            ) {
-              Alert.alert(
-                'Inappropriate image',
-                'Please choose a different image to upload.',
-                [{ text: 'OK' }]
-              );
-            } else {
-              Alert.alert('Upload failed', 'Please try again.', [
-                { text: 'OK' },
-              ]);
-            }
-          },
-        }
-      );
+        altText,
+      });
 
       logUpload('5. success', {
         fileId: result?.data?.[0]?.fileId,
