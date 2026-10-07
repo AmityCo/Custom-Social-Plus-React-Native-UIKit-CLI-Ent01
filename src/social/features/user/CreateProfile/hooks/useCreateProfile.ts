@@ -31,21 +31,6 @@ const schema = z.object({
   description: z.string().max(CHARACTER_LIMIT.USER_DESCRIPTION).optional(),
 });
 
-/**
- * Used when the host supplies no `defaultAvatarImageUrl`, which makes the
- * profile photo a mandatory field: the user must pick one before Save enables.
- *
- * With a default avatar configured the base schema applies instead — that URL
- * is uploaded as the user's avatar when they pick nothing, so every profile
- * still ends up with a photo and blocking Save would be pointless.
- */
-const requiredImageSchema = schema.extend({
-  image: z.custom<LocalImage>(
-    (value) => value != null,
-    'Profile photo is required'
-  ),
-});
-
 export type CreateProfileFormValues = z.infer<typeof schema>;
 
 export type CreatedUser = {
@@ -175,7 +160,7 @@ export const useCreateProfile = ({
     handleSubmit,
     formState: { isValid, isSubmitting },
   } = useForm<CreateProfileFormValues>({
-    resolver: zodResolver(defaultAvatarImageUrl ? schema : requiredImageSchema),
+    resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
       image: null,

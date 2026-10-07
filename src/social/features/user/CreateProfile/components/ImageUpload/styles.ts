@@ -15,6 +15,10 @@ export const useStyles = () => {
     choosePhotoLabel: {
       color: theme.colors.primary,
     },
+    // Same muted tone FormLabel uses for its '(Optional)' marker.
+    optionalLabel: {
+      color: theme.colors.baseShade3,
+    },
     disabled: {
       opacity: 0.5,
     },

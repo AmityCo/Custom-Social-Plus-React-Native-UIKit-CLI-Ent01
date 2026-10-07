@@ -191,9 +191,14 @@ export function ImageUpload({
         onPress={onPickImage}
       >
         <Typography.BodyBold style={styles.choosePhotoLabel}>
-          {hasImage ? 'Change a photo' : 'Choose a photo'}
+          {hasImage ? 'Change Photo' : 'Choose a photo'}
         </Typography.BodyBold>
       </TouchableOpacity>
+      {/* Marked the same way FormLabel marks an optional field, so the photo
+          reads consistently with the About field below it. */}
+      <Typography.Caption style={styles.optionalLabel}>
+        (Optional)
+      </Typography.Caption>
     </View>
   );
 }
