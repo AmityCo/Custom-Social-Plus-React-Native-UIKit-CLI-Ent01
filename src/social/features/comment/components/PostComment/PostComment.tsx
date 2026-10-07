@@ -11,6 +11,7 @@ import { isAmityAd } from '../../../../hooks/useCustomRankingGlobalFeed';
 import CommentAdComponent from '../../../../components/CommentAdComponent/CommentAdComponent';
 import { usePaginatorApi } from '../../../../hooks/usePaginator';
 import { useCommentAdImpression } from '../../../../hooks/useCommentAdImpression';
+import { isPendingComment, isVisibleComment } from '../../../../utils';
 import { useStyles } from './styles';
 
 export interface IComment {
@@ -28,6 +29,8 @@ export interface IComment {
   mentionees?: string[];
   mentionPosition?: IMentionPosition[];
   childrenNumber: number;
+  /** Sent, but not yet confirmed by the server. */
+  isPending?: boolean;
 }
 
 type AmityPostCommentComponentType = {
@@ -76,16 +79,18 @@ const AmityPostCommentComponent: FC<AmityPostCommentComponentType> = ({
 
   useEffect(() => {
     if (!postId) return () => {};
+    // No `dataTypes` filter here - see isVisibleComment.
     const unsubComment = CommentRepository.getComments(
       {
-        dataTypes: { matchType: 'any', values: ['text', 'image'] },
         referenceId: postId,
         referenceType: postType,
         limit: commentListLimit,
       },
       ({ loading, data, hasNextPage, onNextPage }) => {
         if (!loading) {
-          data && data.length > 0 && queryComment(data);
+          data &&
+            data.length > 0 &&
+            queryComment(data.filter(isVisibleComment));
           onNextPageRef.current = hasNextPage ? onNextPage : null;
           setTimeout(() => {
             setIsLoading(false);
@@ -111,7 +116,10 @@ const AmityPostCommentComponent: FC<AmityPostCommentComponentType> = ({
 
       return {
         targetType: item.targetType,
-        targetId: item.targetId,
+        // The SDK's optimistic comment has no targetId until the server
+        // answers. Fall back to the post's community so the row lays out as it
+        // will once confirmed, rather than growing when it does.
+        targetId: item.targetId || communityId,
         commentId: item.commentId,
         data: item.data as Record<string, any>,
         dataType: item?.dataType || 'text',
@@ -125,6 +133,7 @@ const AmityPostCommentComponent: FC<AmityPostCommentComponentType> = ({
         childrenNumber: item.childrenNumber,
         referenceId: item.referenceId,
         mentionPosition: item?.metadata?.mentioned ?? [],
+        isPending: isPendingComment(item),
       };
     });
     setCommentList([...formattedCommentList]);
@@ -175,13 +184,20 @@ const AmityPostCommentComponent: FC<AmityPostCommentComponentType> = ({
       }
 
       return (
-        <CommentListItem
-          onDelete={onDeleteComment}
-          commentDetail={item}
-          onClickReply={handleClickReply}
-          postType={postType}
-          disabledInteraction={disabledInteraction}
-        />
+        // A pending comment shows straight away, faded and untappable: until
+        // the server confirms it, a like or reply on it would fail.
+        <View
+          pointerEvents={item.isPending ? 'none' : 'auto'}
+          style={item.isPending && styles.pendingComment}
+        >
+          <CommentListItem
+            onDelete={onDeleteComment}
+            commentDetail={item}
+            onClickReply={handleClickReply}
+            postType={postType}
+            disabledInteraction={disabledInteraction}
+          />
+        </View>
       );
     },
     [
@@ -193,6 +209,7 @@ const AmityPostCommentComponent: FC<AmityPostCommentComponentType> = ({
       themeStyles.colors.baseShade2,
       themeStyles.colors.baseShade4,
       pageId,
+      styles.pendingComment,
     ]
   );
 
@@ -204,8 +221,12 @@ const AmityPostCommentComponent: FC<AmityPostCommentComponentType> = ({
         keyboardShouldPersistTaps="handled"
         data={itemWithAds}
         renderItem={renderCommentListItem}
+        // Comments key by id alone. With the index in the key, a new comment at
+        // the top shifted every key, so every row remounted - re-running its
+        // reply subscription and report check. An ad can repeat, so it keeps
+        // the index.
         keyExtractor={(item, index) =>
-          (isAmityAd(item) ? item.adId : item.commentId) + `_${index}`
+          isAmityAd(item) ? `${item.adId}_${index}` : item.commentId
         }
         onEndReachedThreshold={0.8}
         viewabilityConfig={{ viewAreaCoveragePercentThreshold: 60 }}

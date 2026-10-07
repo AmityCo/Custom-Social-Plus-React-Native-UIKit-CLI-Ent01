@@ -39,6 +39,11 @@ const PostContent: React.FC<IPostContent> = ({
   showedAllOptions,
   mentionPositionArr,
 }) => {
+  const isSameList = (a: string[], b: string[]) =>
+    a.length === b.length && a.every((item, i) => item === b[i]);
+  const videoKey = (video: IVideoPost) => video.videoFileId.original;
+  const pollKey = (poll: { pollId: string }) => poll.pollId;
+
   const { apiRegion } = useAuth();
   const [imagePosts, setImagePosts] = useState<string[]>([]);
   const [videoPosts, setVideoPosts] = useState<IVideoPost[]>([]);
@@ -81,62 +86,80 @@ const PostContent: React.FC<IPostContent> = ({
     }
   }, [imagePosts, videoPosts, apiRegion]);
 
-  const getPostInfo = useCallback(async () => {
-    try {
-      const response = await Promise.all(
-        childrenPosts.map(async (id) => {
-          const { data: childrenPost } = await getPostById(id);
-          return { dataType: childrenPost?.dataType, data: childrenPost?.data };
-        })
-      );
+  // The ids, not the array: every post update (a reaction, a new comment's
+  // count) hands down a new `children` array with the same ids.
+  const childrenKey = (childrenPosts ?? []).join(',');
 
-      const images: string[] = [];
-      const videos: IVideoPost[] = [];
-      const polls: { pollId: string }[] = [];
+  const getPostInfo = useCallback(
+    async (isStale: () => boolean) => {
+      try {
+        const response = await Promise.all(
+          (childrenKey ? childrenKey.split(',') : []).map(async (id) => {
+            const { data: childrenPost } = await getPostById(id);
+            return {
+              dataType: childrenPost?.dataType,
+              data: childrenPost?.data,
+            };
+          })
+        );
 
-      response.forEach((item) => {
-        if (item?.dataType === 'image' && item?.data?.fileId) {
-          const url: string = `https://api.${apiRegion}.amity.co/api/v3/files/${item?.data.fileId}/download?size=medium`;
-          if (!images.includes(url)) {
-            images.push(url);
+        const images: string[] = [];
+        const videos: IVideoPost[] = [];
+        const polls: { pollId: string }[] = [];
+
+        response.forEach((item) => {
+          if (item?.dataType === 'image' && item?.data?.fileId) {
+            const url: string = `https://api.${apiRegion}.amity.co/api/v3/files/${item?.data.fileId}/download?size=medium`;
+            if (!images.includes(url)) {
+              images.push(url);
+            }
+          } else if (
+            item?.dataType === 'video' &&
+            item?.data?.videoFileId.original
+          ) {
+            const isExisted = videos.some(
+              (video) =>
+                video.videoFileId.original === item.data.videoFileId.original
+            );
+            if (!isExisted) {
+              videos.push(item.data);
+            }
+          } else if (item?.dataType === 'poll') {
+            if (!polls.some((poll) => poll.pollId === item.data.pollId)) {
+              polls.push(item.data);
+            }
           }
-        } else if (
-          item?.dataType === 'video' &&
-          item?.data?.videoFileId.original
-        ) {
-          const isExisted = videos.some(
-            (video) =>
-              video.videoFileId.original === item.data.videoFileId.original
-          );
-          if (!isExisted) {
-            videos.push(item.data);
-          }
-        } else if (item?.dataType === 'poll') {
-          if (!polls.some((poll) => poll.pollId === item.data.pollId)) {
-            polls.push(item.data);
-          }
-        }
-      });
+        });
 
-      if (images.length > 0) {
-        setImagePosts(images);
+        if (isStale()) return;
+        // Swap in the new media only when it differs, keeping the same array
+        // otherwise, so the mounted images are left alone. Set even when empty,
+        // so media removed from the post is cleared.
+        setImagePosts((prev) => (isSameList(prev, images) ? prev : images));
+        setVideoPosts((prev) =>
+          isSameList(prev.map(videoKey), videos.map(videoKey)) ? prev : videos
+        );
+        setPollIds((prev) =>
+          isSameList(prev.map(pollKey), polls.map(pollKey)) ? prev : polls
+        );
+      } catch (error) {
+        reportSwallowed('PostContent', error);
       }
-      if (videos.length > 0) {
-        setVideoPosts(videos);
-      }
-      if (polls.length > 0) {
-        setPollIds(polls);
-      }
-    } catch (error) {
-      reportSwallowed('PostContent', error);
-    }
-  }, [apiRegion, childrenPosts]);
+    },
+    [apiRegion, childrenKey]
+  );
 
+  // Re-checks the media on the same triggers as before, but no longer clears it
+  // first: clearing unmounted the images, so the post's media blanked and
+  // collapsed on every post update - e.g. for the whole time a new comment was
+  // sending - until the refetch put them back.
   useEffect(() => {
-    setVideoPosts([]);
-    setImagePosts([]);
-    getPostInfo();
-  }, [childrenPosts, currentPostdetail, postList, postListGlobal, getPostInfo]);
+    let stale = false;
+    getPostInfo(() => stale);
+    return () => {
+      stale = true;
+    };
+  }, [currentPostdetail, postList, postListGlobal, getPostInfo]);
 
   function onClickImage(index: number): void {
     setIsVisibleFullImage(true);

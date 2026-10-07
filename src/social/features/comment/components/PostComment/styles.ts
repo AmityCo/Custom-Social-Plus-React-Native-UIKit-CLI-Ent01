@@ -52,6 +52,9 @@ export const useStyles = () => {
       paddingBottom: 40,
       marginTop: 8,
     },
+    pendingComment: {
+      opacity: 0.5,
+    },
     commentItem: {
       padding: 16,
       borderBottomWidth: 1,
