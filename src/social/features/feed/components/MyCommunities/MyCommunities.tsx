@@ -7,7 +7,7 @@ import {
   useCommunities,
 } from '../../../../hooks';
 import { PageID, ComponentID } from '../../../../enums';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useBehaviour } from '../../../../providers/BehaviourProvider';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../core/routes/RouteParamList';
@@ -36,7 +36,17 @@ const AmityMyCommunitiesComponent: FC<AmityMyCommunitiesComponentType> = ({
   // Community creation is restricted to global admins (see useCapabilities).
   const { canCreateCommunity } = useCapabilities();
   const styles = useStyles(themeStyles);
-  const { communities, onNextCommunityPage, loading } = useCommunities();
+  const { communities, onNextCommunityPage, loading, refresh } =
+    useCommunities();
+
+  // Leaving a community can happen on another screen (its settings page), and
+  // the SDK's live collection does not drop it from the `member` query, so a
+  // stale row survives. Refetch on every focus so the list reflects the leave.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   const onPressCommunity = useCallback(
     ({ communityId }: { communityId: string }) => {

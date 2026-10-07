@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CommunityRepository } from '@amityco/ts-sdk-react-native';
 
 export const useCommunities = ({
@@ -14,6 +14,17 @@ export const useCommunities = ({
   const [loading, setLoading] = useState(true);
   const [onNextCommunityPage, setOnNextCommunityPage] =
     useState<() => void | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  /**
+   * Re-subscribe to the collection.
+   *
+   * The SDK's live collection does not drop a community from a `member` query
+   * when the user leaves it, so the list keeps showing it until something tears
+   * the subscription down - which previously only happened when the tab
+   * remounted. Callers refresh on focus instead.
+   */
+  const refresh = useCallback(() => setReloadKey((key) => key + 1), []);
   useEffect(() => {
     const unsubscribe = CommunityRepository.getCommunities(
       { membership, limit, categoryId },
@@ -31,6 +42,7 @@ export const useCommunities = ({
       }
     );
     return unsubscribe;
-  }, [categoryId, membership, limit]);
-  return { communities, onNextCommunityPage, loading };
+  }, [categoryId, membership, limit, reloadKey]);
+
+  return { communities, onNextCommunityPage, loading, refresh };
 };

@@ -13,8 +13,15 @@ export const useLeaveCommunity = ({
   const leaveCommunity = async (communityId: string) => {
     setIsPending(true);
     try {
-      await CommunityRepository.leaveCommunity(communityId);
+      // Resolves `false` when the response does not report the membership as
+      // dropped, i.e. the leave did not take. Reporting success in that case
+      // left the user still a member while the UI said otherwise.
+      const didLeave = await CommunityRepository.leaveCommunity(communityId);
       setIsPending(false);
+      if (!didLeave) {
+        onError?.(new Error('Leave community did not take effect'));
+        return;
+      }
       if (onSuccess) {
         onSuccess();
       }

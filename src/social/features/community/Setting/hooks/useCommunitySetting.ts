@@ -28,8 +28,18 @@ export function useCommunitySetting(community: Amity.Community) {
   });
 
   const { mutate: leaveCommunity } = useMutation({
-    mutationFn: async () =>
-      await CommunityRepository.leaveCommunity(community.communityId),
+    mutationFn: async () => {
+      // leaveCommunity resolves `false` when the response does not report the
+      // membership as dropped - the leave did not take. react-query treats any
+      // resolved value as success, so without this the user was told
+      // "Successfully left the group" and stayed a member, which reads exactly
+      // like being auto-rejoined.
+      const didLeave = await CommunityRepository.leaveCommunity(
+        community.communityId
+      );
+      if (!didLeave) throw new Error('Leave community did not take effect');
+      return didLeave;
+    },
     onSuccess: () => {
       navigation.goBack();
       showToast({ message: 'Successfully left the group', type: 'success' });
