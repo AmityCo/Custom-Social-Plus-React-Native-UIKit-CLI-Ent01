@@ -12,6 +12,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useRef,
   useState,
   useLayoutEffect,
 } from 'react';
@@ -94,6 +95,14 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
     []
   );
   const [inputBarHeight, setInputBarHeight] = useState(0);
+  // The composer's current text. A send empties it synchronously, unlike the
+  // state: a fast double tap runs both handlers before the cleared input
+  // re-renders, and the second would send the same comment again. Also read
+  // after a failed send's await.
+  const inputMessageRef = useRef(inputMessage);
+  useEffect(() => {
+    inputMessageRef.current = inputMessage;
+  }, [inputMessage]);
 
   const [showLivestreamEndPopup, setShowLivestreamEndPopup] = useState<boolean>(
     showEndPopup || false
@@ -210,7 +219,10 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
   };
 
   const handleSend: () => Promise<void> = async () => {
-    if (inputMessage.trim() === '') {
+    // Checked against the ref, not the state, so a draft already sent by the
+    // first tap of a double tap is not sent twice. Not a lock on sending: a new
+    // comment can go out while an earlier one is still in flight.
+    if (inputMessageRef.current.trim() === '') {
       return;
     }
     const uniqueMentionIds = [...new Set(mentionNames.map((item) => item.id))];
@@ -226,40 +238,58 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
       inputMessage,
       ({ name }) => `@${name}`
     );
-    if (replyCommentId.length > 0) {
-      try {
+
+    // Clear the composer now, not once the server answers. The comment shows in
+    // the thread straight away as pending, so waiting only left the text in the
+    // input for the whole round trip - which read as lag and invited re-taps.
+    const draft = {
+      inputMessage,
+      mentionNames,
+      mentionsPosition,
+      replyCommentId,
+      replyUserName,
+    };
+    inputMessageRef.current = '';
+    setInputMessage('');
+    setMentionNames([]);
+    setMentionsPosition([]);
+    onCloseReply();
+    Keyboard.dismiss();
+
+    try {
+      if (draft.replyCommentId.length > 0) {
         await createReplyComment(
           comment,
           postId,
-          replyCommentId,
+          draft.replyCommentId,
           uniqueMentionIds,
-          mentionsPosition,
+          draft.mentionsPosition,
           'post'
         );
-      } catch (error) {
-        showCommentErrorToast(error);
-        return;
-      }
-    } else {
-      try {
+      } else {
         await createComment(
           comment,
           postId,
           uniqueMentionIds,
-          mentionsPosition,
+          draft.mentionsPosition,
           'post'
         );
-      } catch (error) {
-        showCommentErrorToast(error);
-        return;
+      }
+    } catch (error) {
+      showCommentErrorToast(error);
+      // Hand the text back so it is not lost - unless the user has already
+      // started typing something else.
+      if (inputMessageRef.current === '') {
+        setInputMessage(draft.inputMessage);
+        setMentionNames(draft.mentionNames);
+        setMentionsPosition(draft.mentionsPosition);
+        setReplyCommentId(draft.replyCommentId);
+        setReplyUserName(draft.replyUserName);
       }
     }
-    setInputMessage('');
-    Keyboard.dismiss();
-    setMentionNames([]);
-    setMentionsPosition([]);
-    onCloseReply();
   };
+
+  const canSend = inputMessage.length > 0;
 
   const renderFooterComponent = () => {
     return (
@@ -302,17 +332,13 @@ const AmityPostDetailPage: FC<AmityPostDetailPageType> = ({
               </View>
 
               <TouchableOpacity
-                disabled={inputMessage.length > 0 ? false : true}
+                disabled={!canSend}
                 onPress={handleSend}
                 style={styles.postBtn}
               >
                 <Text
                   allowFontScaling={false}
-                  style={
-                    inputMessage.length > 0
-                      ? styles.postBtnText
-                      : styles.postDisabledBtn
-                  }
+                  style={canSend ? styles.postBtnText : styles.postDisabledBtn}
                 >
                   Post
                 </Text>

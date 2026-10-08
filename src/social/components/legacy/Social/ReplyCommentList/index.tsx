@@ -29,7 +29,6 @@ import { Pressable } from 'react-native';
 import useAuth from '../../../../../core/hooks/useAuth';
 import {
   isReportTarget,
-  reportTargetById,
   unReportTargetById,
 } from '../../../../../core/legacy/feed';
 import EditCommentModal from '../../EditCommentModal';
@@ -47,6 +46,11 @@ import { useGlobalBehavior } from '../../../../hooks/useGlobalBehavior';
 import { useToast } from '../../../../../core/stores/slices/toastSlice';
 import AmityReactionListComponent from '../../../../features/reaction/components/List';
 import { Text } from '../../../../../core/components/Text';
+import {
+  ContentReportReason,
+  useReportReasonSheet,
+} from '../../../../features/report/ContentReportReason';
+import { ReportContentType } from '../../../../types';
 
 export interface IComment {
   commentId: string;
@@ -103,6 +107,12 @@ export default function ReplyCommentList({
   const [textComment, setTextComment] = useState<string>(data.text);
   const [isVisible, setIsVisible] = useState(false);
   const [isReportByMe, setIsReportByMe] = useState<boolean>(false);
+  const {
+    isReportReasonVisible,
+    openReportReason,
+    closeReportReason,
+    onMenuDismiss,
+  } = useReportReasonSheet();
   const [editCommentModal, setEditCommentModal] = useState<boolean>(false);
   const [isEditComment, setIsEditComment] = useState<boolean>(false);
   const slideAnimation = useRef(new Animated.Value(0)).current;
@@ -185,10 +195,9 @@ export default function ReplyCommentList({
       setIsVisible(false);
       setIsReportByMe(false);
     } else {
-      const reportPost = await reportTargetById('comment', commentId);
-      if (reportPost) {
-        showToast({ message: 'Reply unreported.', type: 'success' });
-      }
+      // Reporting now goes through the reason sheet, which submits the flag
+      // itself and reports back through onReported.
+      openReportReason();
       setIsVisible(false);
       setIsReportByMe(true);
     }
@@ -323,6 +332,7 @@ export default function ReplyCommentList({
         transparent={true}
         visible={isVisible}
         onRequestClose={closeModal}
+        onDismiss={onMenuDismiss}
       >
         <Pressable onPress={closeModal} style={styles.modalContainer}>
           <Animated.View
@@ -367,7 +377,12 @@ export default function ReplyCommentList({
               </View>
             ) : (
               <TouchableOpacity
-                onPress={reportCommentObject}
+                onPress={() => {
+                  // Close the options menu first: on iOS the report sheet
+                  // waits for this Modal's onDismiss before presenting.
+                  closeModal();
+                  reportCommentObject();
+                }}
                 style={styles.modalRow}
               >
                 <SvgXml
@@ -404,6 +419,14 @@ export default function ReplyCommentList({
           }
         }}
       />
+      {isReportReasonVisible && (
+        <ContentReportReason
+          contentType={ReportContentType.reply}
+          contentId={commentId}
+          onReported={() => setIsReportByMe(true)}
+          onClose={closeReportReason}
+        />
+      )}
     </View>
   );
 }

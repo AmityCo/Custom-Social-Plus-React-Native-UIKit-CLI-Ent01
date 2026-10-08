@@ -32,3 +32,5 @@ export * from './useRoomSubscription';
 export * from './queries/useFlagPost';
 export * from './queries/useClosePoll';
 export * from './useGlobalBehavior';
+export * from './useCapabilities';
+export * from './queries/useFlagContent';

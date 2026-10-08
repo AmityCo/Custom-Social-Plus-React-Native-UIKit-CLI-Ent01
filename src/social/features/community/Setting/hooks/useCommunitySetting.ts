@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import { cancelPendingVisitorJoin } from '../../../../../core/stores/pendingVisitorJoin';
 import { CommunityRepository } from '@amityco/ts-sdk-react-native';
 import { useBehaviour } from '../../../../providers/BehaviourProvider';
 import { useNavigation } from '@react-navigation/native';
@@ -28,8 +29,21 @@ export function useCommunitySetting(community: Amity.Community) {
   });
 
   const { mutate: leaveCommunity } = useMutation({
-    mutationFn: async () =>
-      await CommunityRepository.leaveCommunity(community.communityId),
+    mutationFn: async () => {
+      // leaveCommunity resolves `false` when the response does not report the
+      // membership as dropped - the leave did not take. react-query treats any
+      // resolved value as success, so without this the user was told
+      // "Successfully left the group" and stayed a member, which reads exactly
+      // like being auto-rejoined.
+      const didLeave = await CommunityRepository.leaveCommunity(
+        community.communityId
+      );
+      if (!didLeave) throw new Error('Leave community did not take effect');
+      // Drop any pending visitor auto-join for this community, or the next
+      // session event would join the user straight back.
+      cancelPendingVisitorJoin(community.communityId);
+      return didLeave;
+    },
     onSuccess: () => {
       navigation.goBack();
       showToast({ message: 'Successfully left the group', type: 'success' });

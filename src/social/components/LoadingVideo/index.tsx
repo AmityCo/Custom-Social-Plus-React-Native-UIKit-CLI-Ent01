@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  View,
-  TouchableOpacity,
-  Platform,
-  ImageStyle,
   Image,
+  ImageStyle,
+  Platform,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { SvgXml } from 'react-native-svg';
@@ -61,8 +61,16 @@ const LoadingVideo = ({
   const [progress, setProgress] = useState(0);
   const [isProcess, setIsProcess] = useState<boolean>(false);
   const [isUploadError, setIsUploadError] = useState(false);
+  const [isProgressTrusted, setIsProgressTrusted] = useState(true);
   const [thumbNailImage, setThumbNailImage] = useState(thumbNail ?? '');
   const styles = useStyles();
+
+  // Indeterminate until there is trustworthy, non-zero progress to show. At 0%
+  // Progress.Circle draws a thin unfilled outline with no motion, which reads
+  // as a broken indicator - the spinner is the honest state while we still know
+  // nothing. Also covers the tail (isProcess), where the bytes are sent and the
+  // server is still working.
+  const showDeterminate = isProgressTrusted && progress > 0 && !isProcess;
   const [playingUri, setPlayingUri] = useState<string>('');
   const [isPause, setIsPause] = useState<boolean>(true);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -93,8 +101,23 @@ const LoadingVideo = ({
     processThumbNail();
   }, [thumbNail]);
 
+  // The SDK's `total` can under-count the bytes sent, so `raw` sometimes runs
+  // past 100 (measured 0, 0, 47, 106, 177, 188 for one image). Progress.Circle
+  // clamps to full internally, so an overshooting stream slams the ring to
+  // 100% almost immediately - which reads as "no progress indicator at all".
+  // The first out-of-range value therefore drops this upload to an
+  // indeterminate spinner, which claims nothing it cannot deliver. Once the SDK
+  // reports honest totals, `raw` stays in range and the determinate ring is
+  // used again with no change here.
+  const handleProgress = useCallback((percent: number, raw: number) => {
+    if (!Number.isFinite(raw) || raw < 0 || raw > 100) {
+      setIsProgressTrusted(false);
+    }
+    setProgress(percent);
+  }, []);
+
   useEffect(() => {
-    if (progress === 100) {
+    if (progress >= 100) {
       setIsProcess(true);
     }
   }, [progress]);
@@ -105,9 +128,7 @@ const LoadingVideo = ({
     try {
       const file: Amity.File<any>[] = await uploadVideoFile(
         source,
-        (percent: number) => {
-          setProgress(percent);
-        }
+        handleProgress
       );
       if (file) {
         setIsProcess(false);
@@ -148,6 +169,7 @@ const LoadingVideo = ({
     onUploadError?.(false, source);
     setProgress(0);
     setIsProcess(false);
+    setIsProgressTrusted(true);
     if (isUploaded) {
       setLoading(false);
     } else {
@@ -195,18 +217,18 @@ const LoadingVideo = ({
 
       {loading ? (
         <View style={styles.overlay}>
-          {isProcess ? (
-            <Progress.CircleSnail
-              size={24}
-              borderColor="transparent"
-              thickness={2}
-            />
-          ) : (
+          {showDeterminate ? (
             <Progress.Circle
               progress={progress / 100}
               size={24}
               borderColor="transparent"
               unfilledColor="#ffffff"
+              thickness={2}
+            />
+          ) : (
+            <Progress.CircleSnail
+              size={24}
+              borderColor="transparent"
               thickness={2}
             />
           )}

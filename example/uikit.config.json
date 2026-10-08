@@ -28,7 +28,11 @@
       "live_color": "#FF305A"
     }
   },
-  "excludes": [],
+  "excludes": [
+    "social_home_page/empty_newsfeed/create_community_button",
+    "*/explore_community_empty/*",
+    "*/*/explore_create_community"
+  ],
   "customizations": {
     "camera_page/*/*": {
       "resolution": "720p"
@@ -812,6 +816,7 @@
     "community_posts_notification_page/*/*": {},
     "community_comments_notification_page/*/*": {},
     "community_stories_notification_page/*/*": {},
-    "community_livestreams_notification_page/*/*": {}
+    "community_livestreams_notification_page/*/*": {},
+    "*/content_report_reason/*": {}
   }
 }

@@ -42,7 +42,7 @@ const LoadingImage = ({
     setLoading(false);
   };
   useEffect(() => {
-    if (progress === 100) {
+    if (progress >= 100) {
       setIsProcess(true);
     }
   }, [progress]);

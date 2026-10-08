@@ -6,7 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Client, UserRepository } from '@amityco/ts-sdk-react-native';
 import { useToast } from '../../../../../core/stores/slices/toastSlice';
-import { CHARACTER_LIMIT, ERROR_CODE } from '../../../../../core/constants';
+import {
+  CHARACTER_LIMIT,
+  PROFILE_ERROR_MESSAGE,
+} from '../../../../../core/constants';
+import { getProfileErrorMessage } from '../../../../utils/errors';
 import { PageID } from '../../../../enums';
 import { useAmityPage } from '../../../../hooks';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -16,7 +20,7 @@ import useAuth from '../../../../../core/hooks/useAuth';
 // A visitor session is read-only, so the avatar cannot be uploaded while the
 // page is shown (still a visitor). Instead we hold the locally picked image
 // (just its uri) and upload it AFTER Client.login signs the user in.
-export type LocalImage = { uri: string };
+export type LocalImage = { uri: string; type?: string };
 
 // The success toast is hosted inside this page's tree. onCreated typically
 // tears that tree down (host swaps to the signed-in app), which would unmount
@@ -228,7 +232,10 @@ export const useCreateProfile = ({
       let avatarFileUrl: string | undefined;
       if (data.image?.uri) {
         // Local file → binary multipart upload (streams to the upload host).
-        const uploaded = await uploadImage({ file: data.image.uri });
+        const uploaded = await uploadImage({
+          file: data.image.uri,
+          mimeType: data.image.type,
+        });
         avatarFileId = uploaded?.data?.[0]?.fileId;
         avatarFileUrl = uploaded?.data?.[0]?.fileUrl;
       } else if (defaultAvatarImageUrl) {
@@ -294,23 +301,9 @@ export const useCreateProfile = ({
       onError?.(error instanceof Error ? error : new Error(String(error)));
 
       hideToast();
-      if (error.message?.includes(ERROR_CODE.BLOCKED_WORD)) {
-        showToast({
-          type: 'informative',
-          message: "Your profile wasn't saved as it contains a blocked word.",
-        });
-        return;
-      }
-      if (error.message?.includes(ERROR_CODE.RATE_LIMIT)) {
-        showToast({
-          type: 'informative',
-          message: 'Too many requests. Please wait a moment and try again.',
-        });
-        return;
-      }
       showToast({
         type: 'informative',
-        message: 'Failed to save your profile. Please try again.',
+        message: getProfileErrorMessage(error),
       });
     },
   });
@@ -321,7 +314,7 @@ export const useCreateProfile = ({
     if (isConnected === false) {
       showToast({
         type: 'informative',
-        message: 'Failed to save your profile. Please try again.',
+        message: PROFILE_ERROR_MESSAGE.GENERIC,
       });
       return;
     }

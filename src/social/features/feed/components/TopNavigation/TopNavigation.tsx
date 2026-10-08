@@ -9,6 +9,7 @@ import { RootStackParamList } from '../../../../../core/routes/RouteParamList';
 import {
   useConfigImageUri,
   useAmityComponent,
+  useCapabilities,
   useUiKitConfig,
 } from '../../../../hooks';
 import { ComponentID, ElementID, PageID } from '../../../../enums/enumUIKitID';
@@ -33,6 +34,8 @@ const AmitySocialHomeTopNavigationComponent: FC<
   const { AmitySocialHomeTopNavigationComponentBehaviour } = useBehaviour();
   const { isOpen, setIsOpen, toggle } = usePopup();
   const { isVisitorOrBot } = useAuth();
+  // Community creation is restricted to global admins (see useCapabilities).
+  const { canCreateCommunity } = useCapabilities();
 
   const [myCommunitiesTab] = useUiKitConfig({
     page: PageID.social_home_page,
@@ -166,6 +169,13 @@ const AmitySocialHomeTopNavigationComponent: FC<
     onToggleCreateComponent,
   ]);
 
+  // On the My Communities tab this button's only action is creating a
+  // community, so it has nothing to do for a user who cannot create one.
+  const showCreateButton =
+    !isVisitorOrBot &&
+    activeTab !== exploreTab &&
+    (activeTab !== myCommunitiesTab || canCreateCommunity);
+
   if (componentConfig?.isExcluded) return null;
 
   return (
@@ -209,7 +219,7 @@ const AmitySocialHomeTopNavigationComponent: FC<
           >
             <Image source={searchIcon} style={styles.icon} />
           </TouchableOpacity>
-          {!isVisitorOrBot && activeTab !== exploreTab && (
+          {showCreateButton && (
             <TouchableOpacity
               style={styles.iconBtn}
               onPress={onPressCreate}

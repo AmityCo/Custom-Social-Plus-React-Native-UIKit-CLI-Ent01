@@ -1,4 +1,5 @@
 import { PermissionsAndroid, Platform } from 'react-native';
+import { logUpload } from '../../core/utils/uploadDebugLog';
 
 export const useCameraPermission = () => {
   const requestCameraPermission = async () => {
@@ -11,7 +12,10 @@ export const useCameraPermission = () => {
         const alreadyGranted = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.CAMERA
         );
-        if (alreadyGranted) return true;
+        if (alreadyGranted) {
+          logUpload('0. permission', { camera: 'already-granted' });
+          return true;
+        }
 
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -23,19 +27,35 @@ export const useCameraPermission = () => {
             buttonPositive: 'OK',
           }
         );
+        // PDT-4769: log the RAW result string — 'granted' | 'denied' |
+        // 'never_ask_again'. 'never_ask_again' means the user (or an MDM
+        // policy) permanently blocked the permission: the decisive detail a
+        // boolean loses.
+        logUpload('0. permission', { camera: granted });
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       } catch (err) {
         // If the request path throws (host-specific permission setups), fall
         // back to a plain check rather than hard-failing the camera flow.
         try {
-          return await PermissionsAndroid.check(
+          const fallback = await PermissionsAndroid.check(
             PermissionsAndroid.PERMISSIONS.CAMERA
           );
-        } catch {
+          logUpload('0. permission', {
+            camera: fallback,
+            requestThrew: (err as any)?.message,
+          });
+          return fallback;
+        } catch (checkErr) {
+          logUpload('0. permission', {
+            camera: 'unknown',
+            requestThrew: (err as any)?.message,
+            checkThrew: (checkErr as any)?.message,
+          });
           return false;
         }
       }
     }
+    logUpload('0. permission', { camera: 'ios-delegated-to-plist' });
     return true; // iOS handles permissions automatically through Info.plist
   };
 

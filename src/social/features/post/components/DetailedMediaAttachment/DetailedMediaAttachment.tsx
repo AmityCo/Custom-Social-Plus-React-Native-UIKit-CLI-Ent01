@@ -6,7 +6,11 @@ import {
   ElementID,
   mediaAttachment,
 } from '../../../../enums';
-import { useAmityComponent, useAmityElement } from '../../../../hooks';
+import {
+  useAmityComponent,
+  useAmityElement,
+  useCapabilities,
+} from '../../../../hooks';
 import { useStyles } from './styles';
 import { SvgXml } from 'react-native-svg';
 import { camera, photo, video } from '../../../../../core/assets/icons';
@@ -50,6 +54,8 @@ const AmityDetailedMediaAttachmentComponent: FC<
     componentId,
     elementId: ElementID.video_button,
   });
+  // Video attachment is restricted to global admins (see useCapabilities).
+  const { canPostVideo } = useCapabilities();
   const styles = useStyles(themeStyles);
 
   const animatedBottom = useRef(new Animated.Value(-200)).current;
@@ -135,6 +141,7 @@ const AmityDetailedMediaAttachmentComponent: FC<
             </Pressable>
           )}
         {!videoElement.isExcluded &&
+          canPostVideo &&
           (!chosenMediaType || chosenMediaType === mediaAttachment.video) && (
             <Pressable
               testID={videoElement.accessibilityId}

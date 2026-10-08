@@ -16,6 +16,9 @@ export const useStyles = () => {
       width: '100%',
       paddingTop: 4,
     },
+    pendingReply: {
+      opacity: 0.5,
+    },
     headerSection: {
       paddingVertical: 4,
       flexDirection: 'row',

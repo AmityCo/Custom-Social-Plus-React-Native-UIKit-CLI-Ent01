@@ -100,3 +100,23 @@ export const onVisitorAutoJoinCompleted = (
 export const notifyVisitorAutoJoinCompleted = (): void => {
   joinCompletedListeners.forEach((listener) => listener());
 };
+
+/**
+ * Cancel a pending auto-join for a community the user has just left.
+ *
+ * The pending id is peeked rather than consumed, so it survives until a join
+ * is confirmed - deliberate, so a transient network failure cannot discard it.
+ * The gap that leaves: a join that committed on the server but reported failure
+ * (e.g. timed out on the way back) keeps the id on record, and the next session
+ * event (reconnect, foreground) would join the user back into a community they
+ * have since left.
+ *
+ * Leaving is an explicit statement that the pending join is no longer wanted,
+ * so the id is dropped - but only when it matches, since a pending join for a
+ * different community must still be honoured.
+ */
+export const cancelPendingVisitorJoin = (communityId: string): void => {
+  if (!communityId) return;
+  if (peekPendingVisitorJoin() !== communityId) return;
+  clearPendingVisitorJoin();
+};

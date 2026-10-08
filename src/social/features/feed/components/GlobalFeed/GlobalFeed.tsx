@@ -74,6 +74,7 @@ const AmityGlobalFeedComponent: FC<AmityGlobalFeedComponentType> = ({
       testID={accessibilityId}
       accessibilityLabel={accessibilityId}
       style={styles.feedWrap}
+      contentContainerStyle={styles.feedContent}
       data={itemWithAds}
       renderItem={({ item, index }) => {
         return (

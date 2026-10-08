@@ -1,5 +1,5 @@
 import { FC, memo, useCallback } from 'react';
-import { useAmityComponent } from '../../../../hooks';
+import { useAmityComponent, useCapabilities } from '../../../../hooks';
 import { PageID, ComponentID } from '../../../../enums';
 import { emptyCommunity } from '../../../../../core/assets/icons';
 import TitleElement from '../../../../elements/TitleElement/TitleElement';
@@ -25,6 +25,8 @@ const AmityExploreEmptyComponent: FC<AmityExploreEmptyComponentProps> = ({
     componentId,
   });
 
+  // Community creation is restricted to global admins (see useCapabilities).
+  const { canCreateCommunity } = useCapabilities();
   const styles = useStyles();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -48,12 +50,14 @@ const AmityExploreEmptyComponent: FC<AmityExploreEmptyComponentProps> = ({
         componentId={componentId}
         style={styles.description}
       />
-      <ExploreCreateCommunity
-        pageId={pageId}
-        componentId={componentId}
-        style={styles.createCommunityButton}
-        onPress={onPressCreateCommunity}
-      />
+      {canCreateCommunity && (
+        <ExploreCreateCommunity
+          pageId={pageId}
+          componentId={componentId}
+          style={styles.createCommunityButton}
+          onPress={onPressCreateCommunity}
+        />
+      )}
     </View>
   );
 };

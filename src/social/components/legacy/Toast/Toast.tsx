@@ -16,7 +16,7 @@ const Toast: FC = () => {
   const { toastMessage, showToastMessage, isLoadingToast, isSuccessToast } =
     useUIKitSelector((state: RootState) => state.ui);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     if (showToastMessage) {
       Animated.timing(fadeAnim, {

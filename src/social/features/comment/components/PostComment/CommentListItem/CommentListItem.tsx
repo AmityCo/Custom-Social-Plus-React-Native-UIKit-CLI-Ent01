@@ -34,7 +34,6 @@ import { Pressable } from 'react-native';
 import useAuth from '../../../../../../core/hooks/useAuth';
 import {
   isReportTarget,
-  reportTargetById,
   unReportTargetById,
 } from '../../../../../../core/legacy/feed';
 import EditCommentModal from '../../../../../components/legacy/EditCommentModal';
@@ -54,6 +53,12 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../../core/routes/RouteParamList';
 import { Text } from '../../../../../../core/components/Text';
+import { isPendingComment, isVisibleComment } from '../../../../../utils';
+import {
+  ContentReportReason,
+  useReportReasonSheet,
+} from '../../../../report/ContentReportReason';
+import { ReportContentType } from '../../../../../types';
 
 export interface IComment {
   commentId: string;
@@ -72,6 +77,8 @@ export interface IComment {
   childrenNumber: number;
   targetType?: string;
   targetId?: string;
+  /** Sent, but not yet confirmed by the server. */
+  isPending?: boolean;
 }
 export interface ICommentList {
   commentDetail: IComment;
@@ -131,6 +138,12 @@ const CommentListItem = ({
   const [textComment, setTextComment] = useState<string>(data?.text);
   const [isVisible, setIsVisible] = useState(false);
   const [isReportByMe, setIsReportByMe] = useState<boolean>(false);
+  const {
+    isReportReasonVisible,
+    openReportReason,
+    closeReportReason,
+    onMenuDismiss,
+  } = useReportReasonSheet();
   const [editCommentModal, setEditCommentModal] = useState<boolean>(false);
   const [isEditComment, setIsEditComment] = useState<boolean>(false);
   const slideAnimation = useRef(new Animated.Value(0)).current;
@@ -189,7 +202,8 @@ const CommentListItem = ({
 
           return {
             targetType: item.targetType,
-            targetId: item.targetId,
+            // An optimistic reply has no targetId yet; it shares its parent's.
+            targetId: item.targetId || targetId,
             commentId: item.commentId,
             data: item.data as Record<string, any>,
             dataType: item.dataType,
@@ -202,6 +216,7 @@ const CommentListItem = ({
             childrenComment: item.children,
             referenceId: item.referenceId,
             mentionPosition: item?.metadata?.mentioned,
+            isPending: isPendingComment(item),
           };
         })
       );
@@ -216,14 +231,14 @@ const CommentListItem = ({
     const getCommentsParams: Amity.CommentLiveCollection = {
       referenceType: postType,
       referenceId: referenceId, // post ID
-      dataTypes: { values: ['text', 'image'], matchType: 'any' },
+      // No `dataTypes` filter here - see isVisibleComment.
       limit: 5,
       parentId: commentId,
     };
 
     CommentRepository.getComments(getCommentsParams, (result) => {
       setReplyCommentCollection(result);
-      formatReplyComments(result.data);
+      formatReplyComments(result.data?.filter(isVisibleComment));
     });
   };
   const openReplyComment = () => {
@@ -274,17 +289,9 @@ const CommentListItem = ({
         );
       }
     } else {
-      const reportPost = await reportTargetById('comment', commentId);
-      setIsVisible(false);
-      setIsReportByMe(true);
-      if (reportPost) {
-        dispatch(
-          showToastMessage({
-            toastMessage: 'Comment reported',
-            isSuccessToast: true,
-          })
-        );
-      }
+      // Reporting now goes through the reason sheet, which submits the flag
+      // itself and reports back through onReported.
+      openReportReason();
     }
   };
   const modalStyle = {
@@ -478,11 +485,17 @@ const CommentListItem = ({
             <FlatList
               data={replyCommentList}
               renderItem={({ item }) => (
-                <ReplyCommentList
-                  commentId={item.commentId}
-                  commentDetail={item}
-                  onDelete={onDelete}
-                />
+                // Pending replies show faded and untappable, as comments do.
+                <View
+                  pointerEvents={item.isPending ? 'none' : 'auto'}
+                  style={item.isPending && styles.pendingReply}
+                >
+                  <ReplyCommentList
+                    commentId={item.commentId}
+                    commentDetail={item}
+                    onDelete={onDelete}
+                  />
+                </View>
               )}
               keyExtractor={(item) => item.commentId}
             />
@@ -518,6 +531,7 @@ const CommentListItem = ({
         transparent={true}
         visible={isVisible}
         onRequestClose={closeModal}
+        onDismiss={onMenuDismiss}
       >
         <Pressable onPress={closeModal} style={styles.modalContainer}>
           <Animated.View
@@ -562,7 +576,12 @@ const CommentListItem = ({
               </View>
             ) : (
               <TouchableOpacity
-                onPress={reportCommentObject}
+                onPress={() => {
+                  // Close the options menu first: on iOS the report sheet
+                  // waits for this Modal's onDismiss before presenting.
+                  closeModal();
+                  reportCommentObject();
+                }}
                 style={styles.modalRow}
               >
                 <SvgXml
@@ -590,6 +609,14 @@ const CommentListItem = ({
           referenceType="comment"
           isModalVisible={isReactionListVisible}
           onCloseModal={() => setIsReactionListVisible(false)}
+        />
+      )}
+      {isReportReasonVisible && (
+        <ContentReportReason
+          contentType={ReportContentType.comment}
+          contentId={commentId}
+          onReported={() => setIsReportByMe(true)}
+          onClose={closeReportReason}
         />
       )}
     </View>
