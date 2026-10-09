@@ -12,38 +12,16 @@ import { useStyles } from '../styles';
 
 // "Others" is not in this list: it is a row of its own that opens the free-text
 // view instead of being selected in place.
-const REPORT_REASONS: { value: ContentFlagReasonEnum; labelKey: string }[] = [
+const REPORT_REASONS: { value: Amity.ContentFlagReason; labelKey: string }[] = [
   {
     value: ContentFlagReasonEnum.CommunityGuidelines,
     labelKey: 'amity_social_label_report_reason_community_guidelines',
   },
   {
-    value: ContentFlagReasonEnum.HarassmentOrBullying,
-    labelKey: 'amity_social_label_report_reason_harassment_or_bullying',
-  },
-  {
-    value: ContentFlagReasonEnum.SelfHarmOrSuicide,
-    labelKey: 'amity_social_label_report_reason_self_harm_or_suicide',
-  },
-  {
-    value: ContentFlagReasonEnum.ViolenceOrThreateningContent,
-    labelKey: 'amity_social_label_report_reason_violence_or_threatening',
-  },
-  {
-    value: ContentFlagReasonEnum.SellingRestrictedItems,
-    labelKey: 'amity_social_label_report_reason_selling_restricted',
-  },
-  {
-    value: ContentFlagReasonEnum.SexualContentOrNudity,
-    labelKey: 'amity_social_label_report_reason_sexual_content_or_nudity',
-  },
-  {
-    value: ContentFlagReasonEnum.SpamOrScams,
-    labelKey: 'amity_social_label_report_reason_spam_or_scams',
-  },
-  {
-    value: ContentFlagReasonEnum.FalseInformation,
-    labelKey: 'amity_social_label_report_reason_false_information',
+    // Not one of the SDK's preset reasons. useFlagContent calls the flag API
+    // directly, so it is filed as its own reason rather than as Others.
+    value: 'Intellectual property infringement',
+    labelKey: 'amity_social_label_report_reason_intellectual_property',
   },
 ];
 
@@ -81,7 +59,8 @@ export function useContentReportReason({
   const [isSheetVisible, setIsSheetVisible] = useState(true);
   const [isShowOthersOption, setIsShowOthersOption] = useState(false);
   const [otherReasonText, setOtherReasonText] = useState('');
-  const [selectedReason, setSelectedReason] = useState<ContentFlagReasonEnum>();
+  const [selectedReason, setSelectedReason] =
+    useState<Amity.ContentFlagReason>();
 
   const reportReasonTitle = useString('amity_social_button_report_reason');
   const othersTitle = useString('amity_social_button_others');
@@ -140,14 +119,14 @@ export function useContentReportReason({
   const submitReport = () => {
     if (isSubmitDisabled) return;
 
-    // Others sends the free text, which may be empty since the description is
-    // optional. Every other reason sends itself.
-    const reason =
+    // Others carries the free text as its detail, which may be empty since the
+    // description is optional. Every other reason sends itself, with no detail.
+    const params =
       selectedReason === ContentFlagReasonEnum.Others
-        ? otherReasonText.trim()
-        : selectedReason;
+        ? { reason: selectedReason, detail: otherReasonText.trim() }
+        : { reason: selectedReason };
 
-    reportContent(reason, {
+    reportContent(params, {
       onSuccess: () => {
         onReported?.();
         requestClose();

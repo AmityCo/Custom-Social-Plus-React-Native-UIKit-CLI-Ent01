@@ -1,4 +1,3 @@
-import type { ContentFlagReasonEnum } from '@amityco/ts-sdk-react-native';
 import type { PageID } from '../../../../enums';
 import type { ReportContentType } from '../../../../types';
 
@@ -15,6 +14,6 @@ export type ContentReportReasonProps = {
 };
 
 export type ReportReasonOption = {
-  value: ContentFlagReasonEnum;
+  value: Amity.ContentFlagReason;
   label: string;
 };

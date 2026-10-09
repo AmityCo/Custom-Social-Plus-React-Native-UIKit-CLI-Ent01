@@ -24,7 +24,7 @@ const STRINGS: Record<string, string> = {
     'Failed to report post. Please try again.',
   amity_social_toast_reply_reported_toast_message: 'Reply reported.',
   amity_social_button_report_reason: 'Report reason',
-  amity_social_button_others: 'Others',
+  amity_social_button_others: 'Other',
   amity_social_report_list_screen_description:
     "Tell us why you're reporting this content. Your report will be reviewed by our moderators and kept confidential.",
   amity_social_label_report_other_reason_desc: 'Describe your reason',
@@ -39,18 +39,8 @@ const STRINGS: Record<string, string> = {
   amity_social_label_no_internet_connection: 'No internet connection.',
   amity_social_label_report_reason_community_guidelines:
     'Against community guidelines',
-  amity_social_label_report_reason_harassment_or_bullying:
-    'Harassment or bullying',
-  amity_social_label_report_reason_self_harm_or_suicide: 'Self-harm or suicide',
-  amity_social_label_report_reason_violence_or_threatening:
-    'Violence or threatening content',
-  amity_social_label_report_reason_selling_restricted:
-    'Selling and promoting restricted items',
-  amity_social_label_report_reason_sexual_content_or_nudity:
-    'Sexual content or nudity',
-  amity_social_label_report_reason_spam_or_scams: 'Spam or scams',
-  amity_social_label_report_reason_false_information:
-    'False information or misinformation',
+  amity_social_label_report_reason_intellectual_property:
+    'Intellectual property infringement',
 };
 
 /** Resolve a key outside a component (lists, maps, constants). */
