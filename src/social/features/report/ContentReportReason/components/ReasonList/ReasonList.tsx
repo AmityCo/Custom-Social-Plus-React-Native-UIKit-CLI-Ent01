@@ -1,6 +1,5 @@
 import { TouchableOpacity, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import type { ContentFlagReasonEnum } from '@amityco/ts-sdk-react-native';
 import { Radio } from '../../../../../../core/components/Radio';
 import { Typography } from '../../../../../../core/components/Typography/Typography';
 import { arrowRight } from '../../../../../../core/assets/icons';
@@ -11,9 +10,9 @@ type ReasonListProps = {
   description: string;
   reasons: ReportReasonOption[];
   othersLabel: string;
-  selectedReason?: ContentFlagReasonEnum;
+  selectedReason?: Amity.ContentFlagReason;
   disabled?: boolean;
-  onSelectReason: (reason: ContentFlagReasonEnum) => void;
+  onSelectReason: (reason: Amity.ContentFlagReason) => void;
   onPressOthers: () => void;
 };
 

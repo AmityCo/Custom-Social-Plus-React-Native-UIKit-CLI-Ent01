@@ -9,7 +9,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@amityco/react-native-social-uikit-ocean@workspace:."
   dependencies:
-    "@amityco/ts-sdk-react-native": 7.26.1-c29647b8.0
+    "@amityco/ts-sdk-react-native": 7.27.1
     "@babel/plugin-transform-export-namespace-from": ^7.27.1
     "@commitlint/config-conventional": ^17.0.2
     "@devvie/bottom-sheet": ^0.3.0
@@ -85,7 +85,7 @@ __metadata:
     typescript: ^5.8.3
     zod: ^4.1.1
   peerDependencies:
-    "@amityco/ts-sdk-react-native": 7.26.1-c29647b8.0
+    "@amityco/ts-sdk-react-native": 7.27.1
     "@react-native-async-storage/async-storage": ^1.19.3
     "@react-native-clipboard/clipboard": ^1.16.3
     "@react-native-community/datetimepicker": ^9.1.0
@@ -113,9 +113,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@amityco/ts-sdk-react-native@npm:7.26.1-c29647b8.0":
-  version: 7.26.1-c29647b8.0
-  resolution: "@amityco/ts-sdk-react-native@npm:7.26.1-c29647b8.0"
+"@amityco/ts-sdk-react-native@npm:7.27.1":
+  version: 7.27.1
+  resolution: "@amityco/ts-sdk-react-native@npm:7.27.1"
   dependencies:
     "@react-native-async-storage/async-storage": ^1.17.7
     "@react-native-community/netinfo": ^9.4.1
@@ -133,7 +133,7 @@ __metadata:
     ts-jest: ^28.0.3
   peerDependencies:
     react-native: ">=0.70.13"
-  checksum: 8bfea82741a74aa3c1aecbef413bec2244601276d52cab4c77d4c3bfb7947c27fe49dc8c188e69d31171caf0b9f30fcd5f2676546d609d74a7bd521bdd23f8f6
+  checksum: e44ce4ac214aa4ad350598e76aa93e5a62404088f86ed795b9002c470b45ba2bbd3efb9ee57375e94996c742c45364a52ad6c568c50bea23c83baa0af8be28c0
   languageName: node
   linkType: hard
 
