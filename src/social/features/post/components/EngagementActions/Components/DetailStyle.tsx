@@ -38,6 +38,7 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   const styles = useStyles(themeStyles);
   const { handleGlobalBehavior } = useGlobalBehavior();
   const [postData, setPostData] = useState<Amity.Post>(null);
+  const commentCount = postData?.getLocalCommentCount(true);
 
   const { shareLink, handleSharePress } = usePostShareAction({
     postId,
@@ -145,8 +146,7 @@ const DetailStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
           </Text>
         )}
         <Text allowFontScaling={false} style={styles.commentCountText}>
-          {formatNumber(postData?.localCommentCount)}{' '}
-          {renderCommentText(postData?.localCommentCount)}
+          {formatNumber(commentCount)} {renderCommentText(commentCount)}
         </Text>
       </View>
       <View style={[styles.actionSection, styles.detailActionSection]}>
