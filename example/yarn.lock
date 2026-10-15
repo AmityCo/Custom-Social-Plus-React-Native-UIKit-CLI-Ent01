@@ -5,9 +5,9 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@amityco/ts-sdk-react-native@npm:7.27.1":
-  version: 7.27.1
-  resolution: "@amityco/ts-sdk-react-native@npm:7.27.1"
+"@amityco/ts-sdk-react-native@npm:7.30.0":
+  version: 7.30.0
+  resolution: "@amityco/ts-sdk-react-native@npm:7.30.0"
   dependencies:
     "@react-native-async-storage/async-storage": ^1.17.7
     "@react-native-community/netinfo": ^9.4.1
@@ -23,9 +23,10 @@ __metadata:
     object-hash: ^3.0.0
     react-native-uuid: ^2.0.1
     ts-jest: ^28.0.3
+    ua-parser-js: ^2.0.10
   peerDependencies:
     react-native: ">=0.70.13"
-  checksum: e44ce4ac214aa4ad350598e76aa93e5a62404088f86ed795b9002c470b45ba2bbd3efb9ee57375e94996c742c45364a52ad6c568c50bea23c83baa0af8be28c0
+  checksum: b6a78086ebc5ba87235d48d670c29fbf7927cb4eb65c81566239358270951532ae41a1430c836e8f7ce265228907ba819609cb09950c15de79622ef3bee60f34
   languageName: node
   linkType: hard
 
@@ -3469,7 +3470,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "AmityReactNativeSocialUiKitExample@workspace:."
   dependencies:
-    "@amityco/ts-sdk-react-native": 7.27.1
+    "@amityco/ts-sdk-react-native": 7.30.0
     "@babel/core": ^7.25.2
     "@babel/plugin-transform-export-namespace-from": ^7.27.1
     "@babel/preset-env": ^7.25.3
@@ -4703,6 +4704,13 @@ __metadata:
   version: 1.2.0
   resolution: "destroy@npm:1.2.0"
   checksum: 0acb300b7478a08b92d810ab229d5afe0d2f4399272045ab22affa0d99dbaf12637659411530a6fcd597a9bdac718fc94373a61a95b4651bbc7b83684a565e38
+  languageName: node
+  linkType: hard
+
+"detect-europe-js@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "detect-europe-js@npm:0.1.2"
+  checksum: 5a69602302955f50d36dc880ccecb481f24976f2f242aa0b359b5a6477b7e5085bb9bc7bdefdbf3a5bb9fbc3a8e892adda23dc65b9304edac49807caf75446e3
   languageName: node
   linkType: hard
 
@@ -6243,6 +6251,13 @@ __metadata:
   dependencies:
     call-bound: ^1.0.3
   checksum: 1611fedc175796eebb88f4dfc393dd969a4a8e6c69cadaff424ee9d4464f9f026399a5f84a90f7c62d6d7ee04e3626a912149726de102b0bd6c1ee6a9868fa5a
+  languageName: node
+  linkType: hard
+
+"is-standalone-pwa@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "is-standalone-pwa@npm:0.1.1"
+  checksum: bbd2ee7cbea985139f66fe8785e7699f52311e9c14d74190659885222b79dd1e8845b02f69b9221a23a2b4b00e8d4bea0a5a2603b2f26cb6d2071d46093ccf84
   languageName: node
   linkType: hard
 
@@ -9336,6 +9351,26 @@ __metadata:
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
   checksum: 33b39f3d0e8463985eeaeeacc3cb2e28bc3dfaf2a5ed219628c0b629d5d7b810b0eb2165f9f607c34871d5daa92ba1dc69f49051cf7d578b4cbd26c340b9d1b1
+  languageName: node
+  linkType: hard
+
+"ua-is-frozen@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "ua-is-frozen@npm:0.1.2"
+  checksum: 139c89b175bd4e3aeed2ebd1c972ce078e9507ade5f9d704d4ac0a916b2a5e8ada0bc6f616a8c39415e6b602e967ab172d0c44f0dfe353ce8104139897472f48
+  languageName: node
+  linkType: hard
+
+"ua-parser-js@npm:^2.0.10":
+  version: 2.0.10
+  resolution: "ua-parser-js@npm:2.0.10"
+  dependencies:
+    detect-europe-js: ^0.1.2
+    is-standalone-pwa: ^0.1.1
+    ua-is-frozen: ^0.1.2
+  bin:
+    ua-parser-js: script/cli.js
+  checksum: 86ceaabff9cc7ae771ebea3e803480eb679f912145ddb8a8527ce067861b31f38d12ab8f6c671d9369eccd7fdbe6a1aaee24c866f1a6b27871a7ce177534a40c
   languageName: node
   linkType: hard
 
