@@ -39,9 +39,9 @@ const AmityMyCommunitiesComponent: FC<AmityMyCommunitiesComponentType> = ({
   const { communities, onNextCommunityPage, loading, refresh } =
     useCommunities();
 
-  // Leaving a community can happen on another screen (its settings page), and
-  // the SDK's live collection does not drop it from the `member` query, so a
-  // stale row survives. Refetch on every focus so the list reflects the leave.
+  // Joining or leaving often happens on another screen. useCommunities drops a
+  // left community as soon as the leave lands; refetching on focus also brings
+  // the list back in line with the server for anything no event reported.
   useFocusEffect(
     useCallback(() => {
       refresh();
