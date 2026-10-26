@@ -47,6 +47,7 @@ const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
   const [isLike, setIsLike] = useState(false);
   const [totalReactions, setTotalReactions] = useState(0);
   const unsubscribeRef = useRef<() => void>(null);
+  const commentCount = postData?.getLocalCommentCount(true);
 
   const { shareLink, handleSharePress } = usePostShareAction({
     postId,
@@ -142,7 +143,7 @@ const FeedStyle: FC<AmityPostEngagementActionsSubComponentType> = ({
             resizeMode="contain"
           />
           <Text allowFontScaling={false} style={styles.btnText}>
-            {postData?.localCommentCount}
+            {commentCount}
           </Text>
         </TouchableOpacity>
       </View>
