@@ -35,6 +35,12 @@ export enum UserRelationshipTab {
   follower = 'follower',
 }
 
+export enum CommunityPrivacyOption {
+  public = 'public',
+  privateVisible = 'private_visible',
+  privateHidden = 'private_hidden',
+}
+
 export enum ShareableLinkModel {
   posts = 'posts',
   communities = 'communities',

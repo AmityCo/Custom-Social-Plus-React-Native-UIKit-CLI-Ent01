@@ -4,9 +4,9 @@ import CoverImage from '../shared/components/CoverImageUpload';
 import { ElementID, PageID } from '../../../enums';
 import FormInput from '../../../components/FormInput';
 import Categories from '../shared/components/Categories';
-import { AmityCommunityPrivacyEnum } from '../shared/types';
-import Privacy from '../shared/components/Privacy';
 import Members from './components/Members';
+import { PrivacyOptions } from './components/PrivacyOptions';
+import { Membership } from './components/Membership';
 import { CHARACTER_LIMIT } from '../../../../core/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from './components/Header';
@@ -28,6 +28,9 @@ function CreateCommunity() {
     styles,
     navigation,
     values,
+    isPublic,
+    onChangePrivacy,
+    onChangeRequiresJoinApproval,
   } = useCreateCommunity();
 
   return (
@@ -92,14 +95,13 @@ function CreateCommunity() {
               />
             )}
           />
-          <Controller
-            name="privacy"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Privacy value={value} onChange={onChange} />
-            )}
+          <PrivacyOptions value={values.privacy} onChange={onChangePrivacy} />
+          <Membership
+            value={values.requiresJoinApproval}
+            onChange={onChangeRequiresJoinApproval}
+            hasDivider={!isPublic}
           />
-          {values.privacy === AmityCommunityPrivacyEnum.PRIVATE && (
+          {!isPublic && (
             <Controller
               name="members"
               control={control}

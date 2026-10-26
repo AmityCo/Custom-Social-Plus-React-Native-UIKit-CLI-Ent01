@@ -244,6 +244,15 @@ export enum ElementID {
   invitation_section_title = 'invitation_section_title',
   accept_invite_button = 'accept_invite_button',
   decline_invite_button = 'decline_invite_button',
+  community_privacy_private_and_visible_icon = 'community_privacy_private_and_visible_icon',
+  community_privacy_private_and_visible_title = 'community_privacy_private_and_visible_title',
+  community_privacy_private_and_visible_description = 'community_privacy_private_and_visible_description',
+  community_privacy_private_and_hidden_icon = 'community_privacy_private_and_hidden_icon',
+  community_privacy_private_and_hidden_title = 'community_privacy_private_and_hidden_title',
+  community_privacy_private_and_hidden_description = 'community_privacy_private_and_hidden_description',
+  community_membership_title = 'community_membership_title',
+  community_membership_description = 'community_membership_description',
+  community_membership_sub_description = 'community_membership_sub_description',
 }
 
 export interface UiKitConfigKeys {

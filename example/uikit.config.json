@@ -532,7 +532,7 @@
       "text": "Public"
     },
     "community_setup_page/*/community_privacy_public_description": {
-      "text": "Anyone can join, view, and search the posts in this community."
+      "text": "Community is discoverable by anyone. Content is visible to anyone."
     },
     "community_setup_page/*/community_add_member_title": {
       "text": "Member"
@@ -840,6 +840,33 @@
     },
     "notification_tray_page/invitation_section/decline_invite_button": {
       "text": "Decline"
+    },
+    "community_setup_page/*/community_privacy_private_and_visible_icon": {
+      "image": "value"
+    },
+    "community_setup_page/*/community_privacy_private_and_visible_title": {
+      "text": "Private & visible"
+    },
+    "community_setup_page/*/community_privacy_private_and_visible_description": {
+      "text": "Community is discoverable by anyone. Content is hidden from non-members."
+    },
+    "community_setup_page/*/community_privacy_private_and_hidden_icon": {
+      "image": "value"
+    },
+    "community_setup_page/*/community_privacy_private_and_hidden_title": {
+      "text": "Private & hidden"
+    },
+    "community_setup_page/*/community_privacy_private_and_hidden_description": {
+      "text": "Community and content are hidden from non-members, and cannot be discovered via search."
+    },
+    "community_setup_page/*/community_membership_title": {
+      "text": "Membership"
+    },
+    "community_setup_page/*/community_membership_description": {
+      "text": "Requires moderator approval"
+    },
+    "community_setup_page/*/community_membership_sub_description": {
+      "text": "Users will become members only when their join request is approved by a moderator of this community."
     }
   }
 }

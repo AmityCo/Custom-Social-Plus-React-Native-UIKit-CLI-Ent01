@@ -76,3 +76,4 @@ export { default as settings } from './settings';
 export { default as people } from './people';
 export { default as verticalMenu } from './verticalMenu';
 export { default as emptyNotification } from './emptyNotification';
+export { default as worldWithLock } from './worldWithLock';

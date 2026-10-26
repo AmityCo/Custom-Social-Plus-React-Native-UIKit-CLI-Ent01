@@ -7,7 +7,11 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AmityCommunityPrivacyEnum } from '../../shared/types';
+import { CommunityPrivacyOption } from '../../../../types';
+import {
+  defaultRequiresJoinApproval,
+  toCommunityPrivacySettings,
+} from '../utils';
 import { useStyles } from '../styles';
 import { useMutation } from '@tanstack/react-query';
 
@@ -16,7 +20,8 @@ const schema = z.object({
   displayName: z.string().trim().min(1).max(30),
   description: z.string().trim().max(180).optional(),
   categories: z.array(z.custom<Amity.Category>()),
-  privacy: z.enum(AmityCommunityPrivacyEnum),
+  privacy: z.enum(CommunityPrivacyOption),
+  requiresJoinApproval: z.boolean(),
   members: z.array(z.custom<Amity.User>()),
 });
 
@@ -47,7 +52,8 @@ export const useCreateCommunity = () => {
       displayName: '',
       description: '',
       categories: [],
-      privacy: AmityCommunityPrivacyEnum.PUBLIC,
+      privacy: CommunityPrivacyOption.public,
+      requiresJoinApproval: false,
       members: [],
     },
   });
@@ -85,15 +91,31 @@ export const useCreateCommunity = () => {
     },
   });
 
+  const isPublic = values.privacy === CommunityPrivacyOption.public;
+
+  const onChangePrivacy = (privacy: CommunityPrivacyOption) => {
+    setValue('privacy', privacy, { shouldDirty: true, shouldValidate: true });
+    // The switch can still change it afterwards.
+    setValue('requiresJoinApproval', defaultRequiresJoinApproval(privacy), {
+      shouldDirty: true,
+    });
+  };
+
+  const onChangeRequiresJoinApproval = (requiresJoinApproval: boolean) => {
+    setValue('requiresJoinApproval', requiresJoinApproval, {
+      shouldDirty: true,
+    });
+  };
+
   const onSubmit = async () => {
-    const isPublic = values.privacy === AmityCommunityPrivacyEnum.PUBLIC;
     const userIds = isPublic ? [] : values.members.map((item) => item.userId);
 
     await mutateAsync({
       userIds,
-      isPublic,
-      isDiscoverable: isPublic,
-      requiresJoinApproval: false,
+      ...toCommunityPrivacySettings(
+        values.privacy,
+        values.requiresJoinApproval
+      ),
       description: values.description,
       displayName: values.displayName,
       avatarFileId: values.image?.fileId,
@@ -109,6 +131,9 @@ export const useCreateCommunity = () => {
     setValue,
     control,
     onSubmit,
+    isPublic,
+    onChangePrivacy,
+    onChangeRequiresJoinApproval,
     openImageGallery,
     progress,
     openCamera,
