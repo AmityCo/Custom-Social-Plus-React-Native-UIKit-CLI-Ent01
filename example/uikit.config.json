@@ -817,6 +817,29 @@
     "community_comments_notification_page/*/*": {},
     "community_stories_notification_page/*/*": {},
     "community_livestreams_notification_page/*/*": {},
-    "*/content_report_reason/*": {}
+    "*/content_report_reason/*": {},
+    "social_home_page/top_navigation/notification_tray_button": {
+      "image": "value"
+    },
+    "notification_tray_page/*/*": {},
+    "notification_tray_page/*/back_button": {
+      "image": "value"
+    },
+    "notification_tray_page/*/title": {
+      "text": "Notifications"
+    },
+    "notification_tray_page/*/empty_notification": {
+      "text": "No notifications"
+    },
+    "notification_tray_page/invitation_section/*": {},
+    "notification_tray_page/invitation_section/invitation_section_title": {
+      "text": "Requests"
+    },
+    "notification_tray_page/invitation_section/accept_invite_button": {
+      "text": "Join"
+    },
+    "notification_tray_page/invitation_section/decline_invite_button": {
+      "text": "Decline"
+    }
   }
 }

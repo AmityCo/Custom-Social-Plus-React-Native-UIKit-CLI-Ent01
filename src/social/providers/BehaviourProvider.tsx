@@ -35,6 +35,7 @@ export const BehaviourProvider = ({
       AmityPostComposerPageBehavior: {},
       AmityUserProfilePageBehavior: {},
       AmityBlockedUsersPageBehavior: {},
+      AmityNotificationTrayPageBehavior: {},
       AmityUserRelationshipPageBehavior: {},
       AmityUserProfileHeaderComponentBehavior: {},
       AmityUserPendingFollowRequestsPageBehavior: {},

@@ -52,6 +52,7 @@ export interface IBehaviour {
      * home page is typically a root screen, so there is no default back action.
      */
     onBack?: () => void;
+    goToNotificationTrayPage?: () => void;
   };
   AmityGlobalFeedComponentBehavior?: {
     goToPostDetailPage?: (arg?: string) => void;
@@ -164,6 +165,14 @@ export interface IBehaviour {
   };
   AmityBlockedUsersPageBehavior?: {
     goToUserProfilePage?: (context: RootStackParamList['UserProfile']) => void;
+  };
+  AmityNotificationTrayPageBehavior?: {
+    goToPostDetailPage?: (context: RootStackParamList['PostDetail']) => void;
+    goToCommunityProfilePage?: (
+      context: RootStackParamList['CommunityProfilePage']
+    ) => void;
+    goToUserProfilePage?: (context: RootStackParamList['UserProfile']) => void;
+    goToEditUserPage?: (context: RootStackParamList['EditUser']) => void;
   };
   AmityUserRelationshipPageBehavior?: {
     goToUserProfilePage?: (context: RootStackParamList['UserProfile']) => void;

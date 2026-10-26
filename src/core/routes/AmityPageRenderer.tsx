@@ -15,6 +15,7 @@ import {
   UserRelationshipScreen,
   BlockedUsersScreen,
   UserPendingFollowRequests,
+  NotificationTrayScreen,
 } from '../../social/screens';
 import CreateCommunity from '../../social/screens/CreateCommunity';
 import type { MyMD3Theme } from '../providers/AmityUIKitProvider';
@@ -195,6 +196,12 @@ export default function PageRenderer({ children }: PageRendererProps) {
             <Stack.Screen
               name="UserPendingFollowRequests"
               component={UserPendingFollowRequests}
+            />
+
+            {/* --- Notification --- */}
+            <Stack.Screen
+              name="NotificationTray"
+              component={NotificationTrayScreen}
             />
           </Stack.Navigator>
         )}

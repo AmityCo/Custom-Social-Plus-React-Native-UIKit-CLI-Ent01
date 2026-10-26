@@ -116,6 +116,8 @@ export type RootStackParamList = {
 
   UserPendingFollowRequests: undefined;
 
+  NotificationTray: undefined;
+
   ImageViewer: {
     images: { uri: string }[];
   };

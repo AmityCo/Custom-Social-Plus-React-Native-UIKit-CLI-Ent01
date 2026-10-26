@@ -47,6 +47,7 @@ import {
   UserRelationshipScreen,
   BlockedUsersScreen,
   UserPendingFollowRequests,
+  NotificationTrayScreen,
 } from '../../social/screens';
 
 const Stack = createNativeStackNavigator<
@@ -206,6 +207,12 @@ export default function AmitySocialUIKitV4Navigator() {
           <Stack.Screen
             name="UserPendingFollowRequests"
             component={UserPendingFollowRequests}
+          />
+
+          {/* --- Notification --- */}
+          <Stack.Screen
+            name="NotificationTray"
+            component={NotificationTrayScreen}
           />
 
           {/* --- Image --- */}

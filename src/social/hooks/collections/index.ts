@@ -9,3 +9,4 @@ export * from './user/useUserCollection';
 export * from './user/useFollowerCollection';
 export * from './user/useFollowingCollection';
 export * from './user/useBlockedUsersCollection';
+export * from './notification/useNotificationTrayItemsCollection';

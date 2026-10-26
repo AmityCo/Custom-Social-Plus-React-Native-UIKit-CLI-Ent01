@@ -33,6 +33,7 @@ export enum PageID {
   community_comments_notification_page = 'community_comments_notification_page',
   community_stories_notification_page = 'community_stories_notification_page',
   community_livestreams_notification_page = 'community_livestreams_notification_page',
+  notification_tray_page = 'notification_tray_page',
 }
 export enum ComponentID {
   content_report_reason = 'content_report_reason',
@@ -68,6 +69,7 @@ export enum ComponentID {
   user_feed = 'user_feed',
   user_image_feed = 'user_image_feed',
   user_video_feed = 'user_video_feed',
+  invitation_section = 'invitation_section',
 }
 export enum ElementID {
   submit_button = 'submit_button',
@@ -237,6 +239,11 @@ export enum ElementID {
   blocked_user_video_feed_info = 'blocked_user_video_feed_info',
   copy_link = 'copy_link',
   share_link = 'share_link',
+  notification_tray_button = 'notification_tray_button',
+  empty_notification = 'empty_notification',
+  invitation_section_title = 'invitation_section_title',
+  accept_invite_button = 'accept_invite_button',
+  decline_invite_button = 'decline_invite_button',
 }
 
 export interface UiKitConfigKeys {

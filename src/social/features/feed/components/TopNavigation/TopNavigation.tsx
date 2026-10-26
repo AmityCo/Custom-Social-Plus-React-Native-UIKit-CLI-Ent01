@@ -16,6 +16,7 @@ import { ComponentID, ElementID, PageID } from '../../../../enums/enumUIKitID';
 import { useBehaviour } from '../../../../providers/BehaviourProvider';
 import AmityCreatePostMenuComponent from '../CreatePostMenu';
 import TextKeyElement from '../../../../elements/TextKeyElement/TextKeyElement';
+import { NotificationTrayButton } from '../../../../elements/NotificationTrayButton';
 import { usePopup } from '../../../../hooks/usePopup';
 import Popup from '../../../../components/PopupMenu/PopupMenu';
 import useAuth from '../../../../../core/hooks/useAuth';
@@ -211,6 +212,7 @@ const AmitySocialHomeTopNavigationComponent: FC<
         </View>
 
         <View style={styles.flexContainer}>
+          <NotificationTrayButton pageId={pageId} componentId={componentId} />
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={onPressSearch}

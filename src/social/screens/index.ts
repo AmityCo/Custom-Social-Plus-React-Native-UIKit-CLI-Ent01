@@ -6,3 +6,4 @@ export * from './UserProfile';
 export * from './UserRelationship';
 export * from './BlockedUsers';
 export * from './UserPendingFollowRequests';
+export * from './NotificationTray';

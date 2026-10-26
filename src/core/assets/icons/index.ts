@@ -75,3 +75,4 @@ export { default as link } from './link';
 export { default as settings } from './settings';
 export { default as people } from './people';
 export { default as verticalMenu } from './verticalMenu';
+export { default as emptyNotification } from './emptyNotification';

@@ -61,6 +61,7 @@ import {
   AmityCreateProfilePage,
   AmityUserRelationshipPage,
   AmityBlockedUsersPage,
+  AmityNotificationTrayPage,
   VisitorUsageLimit,
 } from './social';
 
@@ -126,6 +127,7 @@ export {
   AmityCreateProfilePage,
   AmityUserRelationshipPage,
   AmityBlockedUsersPage,
+  AmityNotificationTrayPage,
   AmityAllCategoriesPage,
   AmityCommunitiesByCategoryPage,
   CommunityProfilePage,

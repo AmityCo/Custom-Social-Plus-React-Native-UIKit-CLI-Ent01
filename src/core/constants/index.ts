@@ -94,6 +94,7 @@ export const ERROR_CODE = {
     'Amity SDK (500000): Image uploading failed: Request has invalid image format',
   DISPLAY_NAME_UPDATE: '400301',
   ITEM_NOT_FOUND: '400400',
+  INVITATION_UNAVAILABLE: '500000',
 };
 
 export const VISITOR_USAGE_LIMIT_MESSAGE = {
@@ -247,6 +248,25 @@ export const TOAST = {
       },
     },
   },
+  NOTIFICATION_TRAY: {
+    LOAD: {
+      FAILED: 'Oops, something went wrong.',
+    },
+    OPEN: {
+      FAILED: 'Oops, something went wrong.',
+    },
+  },
+  COMMUNITY_INVITATION: {
+    ACCEPT: {
+      SUCCESS: (communityName: string) => `You joined ${communityName}.`,
+      FAILED: 'Failed to accept invitation. Please try again.',
+    },
+    DECLINE: {
+      SUCCESS: 'Invitation declined.',
+      FAILED: 'Failed to decline invitation. Please try again.',
+    },
+    UNAVAILABLE: 'This invitation is no longer available.',
+  },
 } as const;
 
 export const ALERT = {
@@ -297,6 +317,13 @@ export const ALERT = {
     TOO_MANY: {
       TITLE: 'Too many users mentioned',
       MESSAGE: 'You can only mention up to %s users per post.',
+    },
+  },
+  COMMUNITY_INVITATION: {
+    DECLINE: {
+      TITLE: 'Decline invitation?',
+      MESSAGE: "If you change your mind, you'll have to request to join again.",
+      ACTION: 'Decline',
     },
   },
 } as const;

@@ -24,6 +24,9 @@ export { Feed as AmityUserFeedComponent } from './features/user/Profile/componen
 export { ImageFeed as AmityUserImageFeedComponent } from './features/user/Profile/components/ImageFeed';
 export { VideoFeed as AmityUserVideoFeedComponent } from './features/user/Profile/components/VideoFeed';
 
+// Notification
+export { NotificationTrayScreen as AmityNotificationTrayPage } from './screens';
+
 // Poll
 export { default as AmityPollTargetSelectionPage } from './features/poll/TargetSelection';
 export { default as AmityPollPostComposerPage } from './features/poll/Composer';
