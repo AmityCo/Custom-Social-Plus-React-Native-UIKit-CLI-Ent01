@@ -90,11 +90,17 @@ export const useEditCommunity = (community: Amity.Community) => {
 
   const onSubmit = async () => {
     const isPublic = values.privacy === AmityCommunityPrivacyEnum.PUBLIC;
+    // This page only offers public or private. Unless that choice changed,
+    // discoverability and join approval are left as they are, so a community
+    // created "Private & visible" or needing approval keeps it through an edit.
+    const privacyChanged = isPublic !== !!community.isPublic;
 
     await mutateAsync({
       isPublic,
-      isDiscoverable: isPublic,
-      requiresJoinApproval: false,
+      ...(privacyChanged && {
+        isDiscoverable: isPublic,
+        requiresJoinApproval: false,
+      }),
       description: values.description,
       displayName: values.displayName,
       avatarFileId: values.image?.fileId,
