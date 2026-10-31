@@ -6,6 +6,7 @@ import {
   normalizeUploadPercent,
   type UploadProgressCallback,
 } from '../utils/fileUpload';
+import { getUprightImageUri } from '../utils/imageOrientation';
 
 export async function uploadFile(
   filePath: string,
@@ -40,14 +41,15 @@ export async function uploadImageFile(
   return await new Promise(async (resolve, reject) => {
     try {
       const formData = new FormData();
-      const parts = filePath.split('/');
+      const uploadPath = await getUprightImageUri(filePath);
+      const parts = uploadPath.split('/');
       const fileName = parts[parts.length - 1];
       const fileType = Platform.OS === 'ios' ? 'image/jpeg' : 'image/jpg';
 
       await appendFileToFormData(
         formData,
         'files',
-        filePath,
+        uploadPath,
         fileName,
         fileType
       );

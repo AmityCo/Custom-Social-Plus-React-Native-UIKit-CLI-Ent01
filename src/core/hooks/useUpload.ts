@@ -5,6 +5,7 @@ import {
   normalizeUploadPercent,
   resolveImageMimeType,
 } from '../utils/fileUpload';
+import { getUprightImageUri } from '../utils/imageOrientation';
 import {
   logUpload,
   platformContext,
@@ -62,7 +63,10 @@ export function useUpload() {
 
     try {
       const formData = new FormData();
-      const parts = file.split('/');
+      const uploadFile = await getUprightImageUri(file);
+      // An upright copy is always a JPEG, whatever the picker reported.
+      const uploadMimeType = uploadFile === file ? mimeType : 'image/jpeg';
+      const parts = uploadFile.split('/');
       const fileName = parts[parts.length - 1];
 
       // Attach the file as a React-Native { uri, name, type } multipart part.
@@ -71,9 +75,9 @@ export function useUpload() {
       appendFileToFormData(
         formData,
         'files',
-        file,
+        uploadFile,
         fileName,
-        resolveImageMimeType(fileName, mimeType)
+        resolveImageMimeType(fileName, uploadMimeType)
       );
 
       stage = 'request';
