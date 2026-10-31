@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { transparentize } from 'polished';
 import type { MyMD3Theme } from '../../../core/providers/AmityUIKitProvider';
 
 export const useStyles = () => {
@@ -16,6 +17,13 @@ export const useStyles = () => {
     },
     bold: {
       fontWeight: '600',
+    },
+    keywordHighlight: {
+      fontWeight: '600',
+      backgroundColor: transparentize(
+        0.9,
+        theme.colors.primaryShade1 ?? theme.colors.primary
+      ),
     },
     moreLessButton: {
       fontWeight: 'normal',

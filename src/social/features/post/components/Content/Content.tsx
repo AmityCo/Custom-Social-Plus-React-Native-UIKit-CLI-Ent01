@@ -39,6 +39,8 @@ type AmityPostContentComponentProps = {
   isCommunityNameShown?: boolean;
   showedAllOptions?: boolean;
   category?: AmityPostCategory;
+  /** A search keyword to highlight in the post text. */
+  keyword?: string;
 };
 export interface MediaUri {
   uri: string;
@@ -56,6 +58,7 @@ const AmityPostContentComponent: FC<AmityPostContentComponentProps> = ({
   AmityPostContentComponentStyle = AmityPostContentComponentStyleEnum.detail,
   isCommunityNameShown = true,
   category = AmityPostCategory.GENERAL,
+  keyword,
 }) => {
   const theme = useTheme() as MyMD3Theme;
   const {
@@ -314,6 +317,7 @@ const AmityPostContentComponent: FC<AmityPostContentComponentProps> = ({
               showedAllOptions={showedAllOptions}
               mentionPositionArr={mentionPositionArr}
               disabledPoll={communityData?.isPublic && !communityData?.isJoined}
+              keyword={keyword}
             />
           </View>
           <AmityPostEngagementActionsComponent

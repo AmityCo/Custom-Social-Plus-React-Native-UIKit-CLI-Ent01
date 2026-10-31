@@ -21,6 +21,7 @@ export function PostSearchResult({
   const {
     isExcluded,
     accessibilityId,
+    query,
     posts,
     isSearching,
     isEmpty,
@@ -41,6 +42,7 @@ export function PostSearchResult({
           {index !== 0 && <Divider />}
           <AmityPostContentComponent
             post={item}
+            keyword={query}
             AmityPostContentComponentStyle={
               AmityPostContentComponentStyleEnum.feed
             }

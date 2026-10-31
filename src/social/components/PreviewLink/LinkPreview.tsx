@@ -11,10 +11,11 @@ import { Text } from '../../../core/components/Text';
 export interface LinkPreviewProps {
   text: string;
   mentionPositionArr: IMentionPosition[];
+  keyword?: string;
 }
 
 export const LinkPreview = React.memo(
-  ({ text, mentionPositionArr }: LinkPreviewProps) => {
+  ({ text, mentionPositionArr, keyword }: LinkPreviewProps) => {
     const [data, setData] = React.useState(null);
 
     const styles = useStyles();
@@ -84,6 +85,7 @@ export const LinkPreview = React.memo(
         <RenderTextWithMention
           textPost={text}
           mentionPositionArr={mentionPositionArr}
+          keyword={keyword}
         />
         {data?.link && (
           <TouchableOpacity

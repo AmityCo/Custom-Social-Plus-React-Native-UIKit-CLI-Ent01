@@ -29,6 +29,7 @@ interface IPostContent {
   onPressPost?: () => void;
   showedAllOptions?: boolean;
   mentionPositionArr?: IMentionPosition[];
+  keyword?: string;
 }
 const PostContent: React.FC<IPostContent> = ({
   post,
@@ -38,6 +39,7 @@ const PostContent: React.FC<IPostContent> = ({
   childrenPosts,
   showedAllOptions,
   mentionPositionArr,
+  keyword,
 }) => {
   const isSameList = (a: string[], b: string[]) =>
     a.length === b.length && a.every((item, i) => item === b[i]);
@@ -337,12 +339,14 @@ const PostContent: React.FC<IPostContent> = ({
           <LinkPreview
             text={textPost}
             mentionPositionArr={[...mentionPositionArr]}
+            keyword={keyword}
           />
         )}
         {textPost && childrenPosts?.length > 0 && (
           <RenderTextWithMention
             textPost={textPost}
             mentionPositionArr={[...mentionPositionArr]}
+            keyword={keyword}
           />
         )}
       </Pressable>

@@ -1,6 +1,6 @@
-import { Linking } from 'react-native';
+import { Linking, Text as RNText } from 'react-native';
 import { useStyles } from './styles';
-import { memo, useCallback } from 'react';
+import { Fragment, memo, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { IMentionPosition } from '../../../core/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,11 +8,14 @@ import { RootStackParamList } from '../../../core/routes/RouteParamList';
 import ReadMore from '@fawazahmed/react-native-read-more';
 import { createUrlRegex } from '../../../core/constants';
 import { Text } from '../../../core/components/Text';
+import { useFontFamily } from '../../../core/providers/FontProvider';
+import { splitByKeyword } from './utils/splitByKeyword';
 
 interface IrenderTextWithMention {
   mentionPositionArr: IMentionPosition[];
   textPost: string;
   isTitle?: boolean;
+  keyword?: string;
 }
 
 interface LinkInfo {
@@ -25,8 +28,10 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
   mentionPositionArr,
   textPost,
   isTitle,
+  keyword,
 }) => {
   const styles = useStyles();
+  const resolveFontFamily = useFontFamily();
   const navigation =
     useNavigation() as NativeStackNavigationProp<RootStackParamList>;
   const linkArr = useCallback((text: string): LinkInfo[] => {
@@ -74,6 +79,31 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
     [handleLinkClick, mentionClick]
   );
 
+  // React Native's own Text, not the UIKit's: ReadMore drops any other
+  // component from the text it cuts short.
+  const renderText = (text: string) => {
+    if (!keyword) return text;
+    const highlightFont = resolveFontFamily?.(
+      styles.keywordHighlight.fontWeight
+    );
+    return splitByKeyword(text, keyword).map((part, i) =>
+      part.isMatch ? (
+        <RNText
+          key={`keyword-${i}`}
+          allowFontScaling={false}
+          style={[
+            styles.keywordHighlight,
+            highlightFont && { fontFamily: highlightFont },
+          ]}
+        >
+          {part.text}
+        </RNText>
+      ) : (
+        part.text
+      )
+    );
+  };
+
   if (heightlightTextPositions.length === 0) {
     return (
       <ReadMore
@@ -84,7 +114,7 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
         seeLessStyle={styles.moreLessButton}
         seeLessText=""
       >
-        {textPost}
+        {renderText(textPost)}
       </ReadMore>
     );
   }
@@ -111,7 +141,10 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
       currentPosition = index + length;
 
       // Return an array of non-highlighted and highlighted text
-      return [nonHighlightedText, highlightedText];
+      return [
+        <Fragment key={`text-${i}`}>{renderText(nonHighlightedText)}</Fragment>,
+        highlightedText,
+      ];
     });
 
   // Add any remaining non-highlighted text after the mentions
@@ -123,7 +156,7 @@ const RenderTextWithMention: React.FC<IrenderTextWithMention> = ({
       key="nonHighlighted-last"
       style={[styles.inputText, isTitle && styles.bold]}
     >
-      {remainingText}
+      {renderText(remainingText)}
     </Text>,
   ]);
 
