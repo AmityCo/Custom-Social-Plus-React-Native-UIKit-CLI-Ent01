@@ -75,6 +75,8 @@ const AmityTopSearchBarComponent = ({
           placeholder={
             searchType === TabName.MyCommunities
               ? 'Search my community'
+              : searchType === TabName.Posts
+              ? 'Search'
               : 'Search community and user'
           }
           placeholderTextColor="grey"

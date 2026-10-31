@@ -11,4 +11,5 @@ export enum TabName {
   Videos = 'Videos',
   Photos = 'Photos',
   Users = 'Users',
+  Posts = 'Posts',
 }

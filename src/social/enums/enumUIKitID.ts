@@ -70,6 +70,7 @@ export enum ComponentID {
   user_image_feed = 'user_image_feed',
   user_video_feed = 'user_video_feed',
   invitation_section = 'invitation_section',
+  post_search_result = 'post_search_result',
 }
 export enum ElementID {
   submit_button = 'submit_button',

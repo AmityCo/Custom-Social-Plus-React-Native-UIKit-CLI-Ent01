@@ -867,6 +867,7 @@
     },
     "community_setup_page/*/community_membership_sub_description": {
       "text": "Users will become members only when their join request is approved by a moderator of this community."
-    }
+    },
+    "social_global_search_page/post_search_result/*": {}
   }
 }

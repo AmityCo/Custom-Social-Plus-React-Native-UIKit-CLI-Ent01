@@ -9,6 +9,7 @@ import AmityCommunitySearchResultComponent from '../../features/search/component
 import { PageID } from '../../enums';
 import { useAmityPage } from '../../hooks';
 import AmityUserSearchResultComponent from '../../features/search/components/UserSearchResult';
+import { PostSearchResult } from '../../features/search/components/PostSearchResult';
 import CommunityListSkeleton from '../../components/CommunityListSkeleton/CommunityListSkeleton';
 import { View } from 'react-native';
 
@@ -17,7 +18,7 @@ const AmitySocialGlobalSearchPage = () => {
   const { isExcluded, themeStyles } = useAmityPage({ pageId });
   const styles = useStyles(themeStyles);
   const [searchValue, setSearchValue] = useState('');
-  const [searchType, setSearchType] = useState(TabName.Communities);
+  const [searchType, setSearchType] = useState(TabName.Posts);
 
   const { searchResult, onNextCommunityPage, onNextUserPage, isLoading } =
     useAmityGlobalSearchViewModel(searchValue, searchType);
@@ -41,9 +42,11 @@ const AmitySocialGlobalSearchPage = () => {
       />
       <CustomTab
         onTabChange={setSearchType}
-        tabName={[TabName.Communities, TabName.Users]}
+        tabName={[TabName.Posts, TabName.Communities, TabName.Users]}
       />
-      {isCommunity ? (
+      {searchType === TabName.Posts ? (
+        <PostSearchResult pageId={pageId} keyword={searchValue} />
+      ) : isCommunity ? (
         <>
           {isLoading && !searchResult && renderCommunitySkeleton()}
           <AmityCommunitySearchResultComponent
