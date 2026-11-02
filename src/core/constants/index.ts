@@ -113,6 +113,11 @@ export const IMAGE_UPLOAD_ERROR_MESSAGE = {
   GENERIC: 'Failed to upload image. Please try again.',
 };
 
+export const VIDEO_UPLOAD_ERROR_MESSAGE = {
+  INAPPROPRIATE: "This video isn't allowed. Please choose a different one.",
+  GENERIC: 'Failed to upload video. Please try again.',
+};
+
 export const PROFILE_ERROR_MESSAGE = {
   BLOCKED_WORD:
     "Your profile wasn't saved as it contains an inappropriate word.",

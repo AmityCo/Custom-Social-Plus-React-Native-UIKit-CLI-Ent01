@@ -1,5 +1,13 @@
-import { PROFILE_ERROR_MESSAGE } from '../../../core/constants';
-import { getProfileErrorMessage } from '../errors';
+import {
+  IMAGE_UPLOAD_ERROR_MESSAGE,
+  PROFILE_ERROR_MESSAGE,
+  VIDEO_UPLOAD_ERROR_MESSAGE,
+} from '../../../core/constants';
+import {
+  getImageUploadErrorMessage,
+  getProfileErrorMessage,
+  getVideoUploadErrorMessage,
+} from '../errors';
 
 // Shaped like the SDK's ASCApiError / ASCUnknownError.
 const sdkError = (code: number, message: string, level = 'error') =>
@@ -59,6 +67,61 @@ describe('getProfileErrorMessage', () => {
   it('calls a lost connection what it is', () => {
     expect(getProfileErrorMessage(new Error('AxiosError: Network Error'))).toBe(
       PROFILE_ERROR_MESSAGE.NETWORK
+    );
+  });
+});
+
+describe('getImageUploadErrorMessage', () => {
+  it('recognises a photo refused by moderation', () => {
+    expect(getImageUploadErrorMessage(unsafeImage())).toBe(
+      IMAGE_UPLOAD_ERROR_MESSAGE.INAPPROPRIATE
+    );
+  });
+
+  it("looks inside uploadImageFile's wrapper", () => {
+    expect(
+      getImageUploadErrorMessage({
+        message: 'Upload failed',
+        details: unsafeImage().message,
+        originalError: unsafeImage(),
+      })
+    ).toBe(IMAGE_UPLOAD_ERROR_MESSAGE.INAPPROPRIATE);
+    expect(
+      getImageUploadErrorMessage({
+        message: 'Inappropriate image',
+        code: 'INVALID_IMAGE',
+      })
+    ).toBe(IMAGE_UPLOAD_ERROR_MESSAGE.INAPPROPRIATE);
+  });
+
+  it('uses the generic message for any other failure', () => {
+    expect(
+      getImageUploadErrorMessage({
+        message: 'Upload failed',
+        originalError: new Error('AxiosError: Network Error'),
+      })
+    ).toBe(IMAGE_UPLOAD_ERROR_MESSAGE.GENERIC);
+    expect(getImageUploadErrorMessage(undefined)).toBe(
+      IMAGE_UPLOAD_ERROR_MESSAGE.GENERIC
+    );
+  });
+});
+
+describe('getVideoUploadErrorMessage', () => {
+  it('recognises a video refused by moderation', () => {
+    expect(
+      getVideoUploadErrorMessage(
+        sdkError(400314, 'Video uploading failed: content is not permitted')
+      )
+    ).toBe(VIDEO_UPLOAD_ERROR_MESSAGE.INAPPROPRIATE);
+  });
+
+  it('uses the generic message for any other failure', () => {
+    expect(getVideoUploadErrorMessage(new Error('Network Error'))).toBe(
+      VIDEO_UPLOAD_ERROR_MESSAGE.GENERIC
+    );
+    expect(getVideoUploadErrorMessage('Upload error')).toBe(
+      VIDEO_UPLOAD_ERROR_MESSAGE.GENERIC
     );
   });
 });

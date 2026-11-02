@@ -4,6 +4,7 @@ import {
   IMAGE_UPLOAD_ERROR_MESSAGE,
   POST_ERROR_MESSAGE,
   PROFILE_ERROR_MESSAGE,
+  VIDEO_UPLOAD_ERROR_MESSAGE,
 } from '../../core/constants';
 
 // The SDK words a server refusal as "Amity SDK (<code>): <server message>".
@@ -136,15 +137,47 @@ export const getProfileErrorMessage = (error: Error): string => {
  * a community avatar or a community cover all share this path.
  */
 export const getImageUploadErrorMessage = (error: unknown): string => {
-  const message = (error as Error)?.message ?? '';
+  // uploadImageFile (the post composer's upload) wraps the SDK's error as
+  // { message, code, originalError }, so look inside the wrapper too.
+  const raw = error as {
+    message?: string;
+    code?: string | number;
+    originalError?: { message?: string; code?: string | number };
+  };
+  const haystack = [
+    raw?.message,
+    raw?.code,
+    raw?.originalError?.message,
+    raw?.originalError?.code,
+  ]
+    .filter((part) => part != null)
+    .join(' ');
 
   if (
-    message.includes(ERROR_CODE.INVALID_IMAGE) ||
-    message.includes(ERROR_CODE.IMAGE_NUDITY) ||
-    message.includes(ERROR_CODE.VIOLENCE)
+    raw?.code === 'INVALID_IMAGE' ||
+    haystack.includes(ERROR_CODE.INVALID_IMAGE) ||
+    haystack.includes(ERROR_CODE.IMAGE_NUDITY) ||
+    haystack.includes(ERROR_CODE.VIOLENCE)
   ) {
     return IMAGE_UPLOAD_ERROR_MESSAGE.INAPPROPRIATE;
   }
 
   return IMAGE_UPLOAD_ERROR_MESSAGE.GENERIC;
+};
+
+/**
+ * Message for a failed video upload in the post composer. AI moderation
+ * refuses unsafe content with 400314, the same code as for images.
+ */
+export const getVideoUploadErrorMessage = (error: unknown): string => {
+  const raw = error as { message?: string; code?: string | number };
+  const haystack = [raw?.message, raw?.code]
+    .filter((part) => part != null)
+    .join(' ');
+
+  if (haystack.includes(ERROR_CODE.VIOLENCE)) {
+    return VIDEO_UPLOAD_ERROR_MESSAGE.INAPPROPRIATE;
+  }
+
+  return VIDEO_UPLOAD_ERROR_MESSAGE.GENERIC;
 };

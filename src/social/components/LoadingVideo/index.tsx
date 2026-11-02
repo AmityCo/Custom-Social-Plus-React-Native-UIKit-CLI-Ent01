@@ -14,9 +14,9 @@ import { useStyles } from './styles';
 import Video from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import uiSlice from '../../../core/stores/slices/uiSlice';
 import { createVideoThumbnail } from 'react-native-compressor';
-import { useUIKitDispatch } from '../../../core/stores/store';
+import { useToast } from '../../../core/stores/slices/toastSlice';
+import { getVideoUploadErrorMessage } from '../../utils/errors';
 
 interface OverlayImageProps {
   source: string;
@@ -55,8 +55,12 @@ const LoadingVideo = ({
   postId,
   setIsUploading,
 }: OverlayImageProps) => {
-  const dispatch = useUIKitDispatch();
-  const { showToastMessage } = uiSlice.actions;
+  const { showToast } = useToast();
+  const showUploadError = (error?: unknown) =>
+    showToast({
+      type: 'informative',
+      message: getVideoUploadErrorMessage(error),
+    });
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [isProcess, setIsProcess] = useState<boolean>(false);
@@ -144,14 +148,14 @@ const LoadingVideo = ({
           );
       } else {
         handleLoadEnd();
-        dispatch(showToastMessage({ toastMessage: 'Failed to upload file' }));
+        showUploadError();
         setIsProcess(false);
         setIsUploadError(true);
         onUploadError?.(true, source);
       }
     } catch (error) {
       handleLoadEnd();
-      dispatch(showToastMessage({ toastMessage: 'Failed to upload file' }));
+      showUploadError(error);
       setIsProcess(false);
       setIsUploadError(true);
       onUploadError?.(true, source);

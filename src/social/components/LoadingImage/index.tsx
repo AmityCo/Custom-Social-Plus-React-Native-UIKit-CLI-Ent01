@@ -4,6 +4,8 @@ import * as Progress from 'react-native-progress';
 import { SvgXml } from 'react-native-svg';
 import { deleteAmityFile, uploadImageFile } from '../../../core/legacy/file';
 import { closeIcon, toastIcon } from '../../../core/assets/icons/xml';
+import { useToast } from '../../../core/stores/slices/toastSlice';
+import { getImageUploadErrorMessage } from '../../utils/errors';
 import { useStyles } from './styles';
 
 interface OverlayImageProps {
@@ -44,6 +46,15 @@ const LoadingImage = ({
   const [isUploadError, setIsUploadError] = useState(false);
   const [isProgressTrusted, setIsProgressTrusted] = useState(true);
   const styles = useStyles();
+  const { showToast } = useToast();
+
+  // The error icon alone does not say why, and a refused photo fails the
+  // same way on every retry.
+  const showUploadError = (error?: unknown) =>
+    showToast({
+      type: 'informative',
+      message: getImageUploadErrorMessage(error),
+    });
 
   // Indeterminate until there is trustworthy, non-zero progress to show. At 0%
   // Progress.Circle draws a thin unfilled outline with no motion, which reads
@@ -102,6 +113,7 @@ const LoadingImage = ({
         setIsProcess(false);
         setIsUploadError(true);
         onUploadError?.(true, source);
+        showUploadError();
       }
     } catch (error) {
       handleLoadEnd();
@@ -109,6 +121,7 @@ const LoadingImage = ({
       setIsUploading(false);
       setIsUploadError(true);
       onUploadError?.(true, source);
+      showUploadError(error);
     }
   }, [
     handleLoadEnd,
@@ -117,6 +130,7 @@ const LoadingImage = ({
     onLoadFinish,
     onUploadError,
     setIsUploading,
+    showUploadError,
     source,
   ]);
 
