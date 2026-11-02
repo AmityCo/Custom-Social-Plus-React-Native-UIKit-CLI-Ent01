@@ -25,6 +25,9 @@ export type CreateProfileProps = {
    * `communityId`). Receives the entered `displayName`; resolve the id the UIKit
    * signs in as. Throw to fail the flow — the host maps backend error codes
    * (banned / already-enrolled / retryable) and the UIKit shows a failure toast.
+   * A pre-hook refusal passed on as the error's `message` ("Deny from prehook:
+   * <reason>") shows the reason in the toast, e.g. a display name that is
+   * already taken.
    * Note: fields the backend owns (e.g. `deviceId`, which can be any id such as
    * a randomly generated UUID) are not passed from the client. Provide this OR
    * `userId`.

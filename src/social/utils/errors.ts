@@ -6,6 +6,27 @@ import {
   PROFILE_ERROR_MESSAGE,
 } from '../../core/constants';
 
+// The SDK words a server refusal as "Amity SDK (<code>): <server message>".
+const SDK_ERROR_PREFIX = /^Amity SDK \(\d+\): /;
+
+/**
+ * The server's own reason for refusing a request, or undefined when the error
+ * did not come from the server. A fatal SDK error is the SDK's own
+ * "Unexpected error", which says nothing to the user.
+ */
+const getServerMessage = (error?: { message?: string; level?: string }) => {
+  const message = error?.message;
+  if (!message || error.level === 'fatal' || !SDK_ERROR_PREFIX.test(message)) {
+    return undefined;
+  }
+  return message.replace(SDK_ERROR_PREFIX, '').trim() || undefined;
+};
+
+// social.plus words a pre-hook's refusal as "Deny from prehook: <reason>", with
+// code 400000 and no code of the host's own. The reason is the pre-hook's
+// message, written for the user.
+const PREHOOK_DENY = /Deny from prehook:([\s\S]*)/i;
+
 export const getCommentErrorMessage = (error: Error): string => {
   if (error.message.includes(ERROR_CODE.BLOCKED_WORD)) {
     return COMMENT_ERROR_MESSAGE.BLOCKED_WORD;
@@ -61,6 +82,14 @@ export const getProfileErrorMessage = (error: Error): string => {
     .filter((part) => part != null)
     .join(' ');
 
+  // First: the host's pre-hook said why (a display name another user already
+  // has, for one). Matched anywhere in the message, so an enrollProfile that
+  // passes the server's refusal on is covered too.
+  const prehookDeny = PREHOOK_DENY.exec(raw?.message ?? '');
+  if (prehookDeny) {
+    return prehookDeny[1].trim() || PROFILE_ERROR_MESSAGE.GENERIC;
+  }
+
   if (haystack.includes(ERROR_CODE.BLOCKED_WORD)) {
     return PROFILE_ERROR_MESSAGE.BLOCKED_WORD;
   }
@@ -97,7 +126,9 @@ export const getProfileErrorMessage = (error: Error): string => {
     return PROFILE_ERROR_MESSAGE.NETWORK;
   }
 
-  return PROFILE_ERROR_MESSAGE.GENERIC;
+  // Any other refusal: the server's reason (a display name the network does
+  // not accept, for one) tells the user more than "please try again".
+  return getServerMessage(raw) ?? PROFILE_ERROR_MESSAGE.GENERIC;
 };
 
 /**
