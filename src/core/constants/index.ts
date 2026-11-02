@@ -127,6 +127,7 @@ export const PROFILE_ERROR_MESSAGE = {
     "Your profile wasn't saved as the photo isn't allowed. Please choose a different one.",
   DISPLAY_NAME_NOT_ALLOWED:
     'Only an administrator can update the display name.',
+  DISPLAY_NAME_TOO_SHORT: 'Display name must be at least 3 characters.',
   GLOBAL_BAN: 'Your account has been banned.',
   RATE_LIMIT: 'Too many requests. Please wait a moment and try again.',
   NETWORK: 'No connection. Check your internet and try again.',
@@ -150,6 +151,8 @@ export const POST_ERROR_MESSAGE = {
 };
 
 export const CHARACTER_LIMIT = {
+  // Search needs a 3-character keyword, so a shorter name could never be found.
+  USER_DISPLAY_NAME_MIN: 3,
   USER_DISPLAY_NAME: 100,
   USER_DESCRIPTION: 180,
   COMMUNITY_NAME: 30,

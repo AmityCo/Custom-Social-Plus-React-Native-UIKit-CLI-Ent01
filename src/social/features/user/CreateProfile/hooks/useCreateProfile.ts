@@ -31,7 +31,11 @@ const ON_CREATED_DELAY = 800;
 
 const schema = z.object({
   image: z.custom<LocalImage>().nullish(),
-  displayName: z.string().min(1).max(CHARACTER_LIMIT.USER_DISPLAY_NAME),
+  displayName: z
+    .string()
+    .trim()
+    .min(CHARACTER_LIMIT.USER_DISPLAY_NAME_MIN)
+    .max(CHARACTER_LIMIT.USER_DISPLAY_NAME),
   description: z.string().max(CHARACTER_LIMIT.USER_DESCRIPTION).optional(),
 });
 
@@ -172,6 +176,14 @@ export const useCreateProfile = ({
       description: '',
     },
   });
+
+  // Save stays off for a name that is too short; this says why.
+  const displayNameLength = watch('displayName')?.trim().length ?? 0;
+  const displayNameError =
+    displayNameLength > 0 &&
+    displayNameLength < CHARACTER_LIMIT.USER_DISPLAY_NAME_MIN
+      ? PROFILE_ERROR_MESSAGE.DISPLAY_NAME_TOO_SHORT
+      : undefined;
 
   const sessionHandler: Amity.SessionHandler = {
     sessionWillRenewAccessToken(renewal) {
@@ -340,5 +352,6 @@ export const useCreateProfile = ({
     isSubmitting,
     isCreated,
     accessibilityId,
+    displayNameError,
   };
 };

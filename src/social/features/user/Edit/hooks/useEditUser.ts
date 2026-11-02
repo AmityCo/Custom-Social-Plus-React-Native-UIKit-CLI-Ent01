@@ -9,17 +9,29 @@ import { UserRepository } from '@amityco/ts-sdk-react-native';
 import { RootStackParamList } from '../../../../../core/routes/RouteParamList';
 import { useNavigation } from '@react-navigation/native';
 import { useToast } from '../../../../../core/stores/slices/toastSlice';
-import { ERROR_CODE } from '../../../../../core/constants';
+import {
+  CHARACTER_LIMIT,
+  ERROR_CODE,
+  PROFILE_ERROR_MESSAGE,
+} from '../../../../../core/constants';
 import { getProfileErrorMessage } from '../../../../utils/errors';
 import { PageID } from '../../../../enums';
 import { useAmityPage } from '../../../../hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const schema = z.object({
   image: z.custom<Amity.File<'image'>>().optional(),
-  displayName: z.string().min(1).max(100),
+  displayName: z
+    .string()
+    .trim()
+    .min(CHARACTER_LIMIT.USER_DISPLAY_NAME_MIN)
+    .max(CHARACTER_LIMIT.USER_DISPLAY_NAME),
   description: z.string().max(180).optional(),
 });
+
+// A locked display name is not sent, so it cannot hold the save up - even a
+// name too short to be found, which only an administrator can change then.
+const lockedDisplayNameSchema = schema.extend({ displayName: z.string() });
 
 type EditUserFormValues = z.infer<typeof schema>;
 
@@ -42,11 +54,14 @@ export const useEditUser = (userId: string) => {
   const {
     watch,
     control,
+    trigger,
     resetField,
     handleSubmit,
     formState: { isDirty, isSubmitting, isValid },
   } = useForm<EditUserFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(
+      isDisplayNameDisabled ? lockedDisplayNameSchema : schema
+    ),
     mode: 'onChange',
     values: {
       image: user?.avatar || null,
@@ -54,6 +69,21 @@ export const useEditUser = (userId: string) => {
       description: user?.description || '',
     },
   });
+
+  // The lock lands after the form was last checked, against the old schema.
+  useEffect(() => {
+    if (isDisplayNameDisabled) trigger();
+  }, [isDisplayNameDisabled, trigger]);
+
+  // Save stays off for a name that is too short; this says why. An existing
+  // name that short shows it straight away, as it has to change to be found.
+  const displayNameLength = watch('displayName')?.trim().length ?? 0;
+  const displayNameError =
+    !isDisplayNameDisabled &&
+    displayNameLength > 0 &&
+    displayNameLength < CHARACTER_LIMIT.USER_DISPLAY_NAME_MIN
+      ? PROFILE_ERROR_MESSAGE.DISPLAY_NAME_TOO_SHORT
+      : undefined;
 
   const { mutateAsync } = useMutation<
     UpdateUserResponse,
@@ -106,5 +136,6 @@ export const useEditUser = (userId: string) => {
     onSubmit,
     accessibilityId,
     isDisplayNameDisabled,
+    displayNameError,
   };
 };

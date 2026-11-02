@@ -92,6 +92,7 @@ export function CreateProfile({
     isCreated,
     handleSubmit,
     accessibilityId,
+    displayNameError,
   } = useCreateProfile({
     userId,
     enrollProfile,
@@ -141,6 +142,7 @@ export function CreateProfile({
                   pageId={PageID.create_user_profile_page}
                   maxLength={CHARACTER_LIMIT.USER_DISPLAY_NAME}
                   elementId={ElementID.user_display_name_title}
+                  errorMessage={displayNameError}
                 />
               )}
             />

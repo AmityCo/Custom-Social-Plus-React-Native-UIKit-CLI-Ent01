@@ -24,6 +24,7 @@ export function EditUser({ userId }: EditUserProps) {
     handleSubmit,
     accessibilityId,
     isDisplayNameDisabled,
+    displayNameError,
   } = useEditUser(userId);
 
   return (
@@ -56,6 +57,7 @@ export function EditUser({ userId }: EditUserProps) {
                   maxLength={CHARACTER_LIMIT.USER_DISPLAY_NAME}
                   elementId={ElementID.user_display_name_title}
                   editable={!isDisplayNameDisabled}
+                  errorMessage={displayNameError}
                 />
               )}
             />

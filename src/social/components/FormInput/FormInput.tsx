@@ -10,6 +10,8 @@ type FormInputProps = TextInputProps & {
   elementId?: ElementID;
   componentId?: ComponentID;
   optional?: boolean;
+  /** Shown in red under the field, which is outlined red too. */
+  errorMessage?: string;
 };
 
 /***
@@ -25,34 +27,47 @@ function FormInput({
   elementId = ElementID.WildCardElement,
   componentId = ComponentID.WildCardComponent,
   editable = true,
+  errorMessage,
   ...props
 }: FormInputProps) {
   const { styles, theme } = useStyles();
 
   return (
-    <View style={styles.inputContainer}>
-      <View style={styles.labelContainer}>
-        <FormLabel
-          optional={optional}
-          pageId={pageId}
-          elementId={elementId}
-          componentId={componentId}
+    <View>
+      <View
+        style={[
+          styles.inputContainer,
+          !!errorMessage && styles.inputContainerError,
+        ]}
+      >
+        <View style={styles.labelContainer}>
+          <FormLabel
+            optional={optional}
+            pageId={pageId}
+            elementId={elementId}
+            componentId={componentId}
+          />
+          {maxLength && (
+            <Typography.Caption style={styles.inputLength}>
+              {value?.length}/{maxLength}
+            </Typography.Caption>
+          )}
+        </View>
+        <TextInput
+          allowFontScaling={false}
+          {...props}
+          value={value}
+          editable={editable}
+          style={[styles.input, !editable && styles.inputDisabled]}
+          maxLength={maxLength}
+          placeholderTextColor={theme.colors.baseShade3}
         />
-        {maxLength && (
-          <Typography.Caption style={styles.inputLength}>
-            {value?.length}/{maxLength}
-          </Typography.Caption>
-        )}
       </View>
-      <TextInput
-        allowFontScaling={false}
-        {...props}
-        value={value}
-        editable={editable}
-        style={[styles.input, !editable && styles.inputDisabled]}
-        maxLength={maxLength}
-        placeholderTextColor={theme.colors.baseShade3}
-      />
+      {!!errorMessage && (
+        <Typography.Caption style={styles.errorText}>
+          {errorMessage}
+        </Typography.Caption>
+      )}
     </View>
   );
 }

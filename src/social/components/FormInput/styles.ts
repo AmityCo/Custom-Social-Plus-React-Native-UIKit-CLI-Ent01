@@ -11,6 +11,13 @@ export const useStyles = () => {
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.baseShade4,
     },
+    inputContainerError: {
+      borderBottomColor: theme.colors.alert,
+    },
+    errorText: {
+      marginTop: 4,
+      color: theme.colors.alert,
+    },
     labelContainer: {
       marginBottom: 16,
       flexDirection: 'row',
