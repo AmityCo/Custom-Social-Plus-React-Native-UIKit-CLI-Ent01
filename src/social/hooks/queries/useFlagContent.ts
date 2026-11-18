@@ -5,6 +5,7 @@ import { useToast } from '../../../core/stores/slices/toastSlice';
 import { useString } from '../../../core/localization';
 import { ERROR_CODE } from '../../../core/constants';
 import { ReportContentType } from '../../types';
+import { getReportErrorMessage } from '../../utils/errors';
 import { flagPostQueryKey } from './useFlagPost';
 
 export type FlagContentParam = {
@@ -87,7 +88,10 @@ export const useFlagContent = ({ contentType, contentId }: UseFlagContent) => {
           setIsContentDeleted(true);
           return;
         }
-        showToast({ type: 'informative', message: reportFailedText });
+        showToast({
+          type: 'informative',
+          message: getReportErrorMessage(error, reportFailedText),
+        });
       },
     });
   };

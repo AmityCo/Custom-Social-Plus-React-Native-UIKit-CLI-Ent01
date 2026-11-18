@@ -6,6 +6,7 @@ import {
 import {
   getImageUploadErrorMessage,
   getProfileErrorMessage,
+  getReportErrorMessage,
   getVideoUploadErrorMessage,
 } from '../errors';
 
@@ -123,5 +124,36 @@ describe('getVideoUploadErrorMessage', () => {
     expect(getVideoUploadErrorMessage('Upload error')).toBe(
       VIDEO_UPLOAD_ERROR_MESSAGE.GENERIC
     );
+  });
+});
+
+describe('getReportErrorMessage', () => {
+  const generic = 'Failed to report post. Please try again.';
+
+  it("shows the server's reason for a 403 refusal", () => {
+    expect(
+      getReportErrorMessage(
+        sdkError(400300, 'You have already flagged this post.'),
+        generic
+      )
+    ).toBe('You have already flagged this post.');
+  });
+
+  it('keeps the generic message for anything that is not a 403 refusal', () => {
+    // A dropped connection.
+    expect(
+      getReportErrorMessage(new Error('AxiosError: Network Error'), generic)
+    ).toBe(generic);
+    // A server error outside the 4003xx range.
+    expect(
+      getReportErrorMessage(sdkError(500000, 'Internal error'), generic)
+    ).toBe(generic);
+    // The SDK's own fatal error says nothing to the user.
+    expect(
+      getReportErrorMessage(
+        sdkError(400300, 'Unexpected error', 'fatal'),
+        generic
+      )
+    ).toBe(generic);
   });
 });

@@ -181,3 +181,23 @@ export const getVideoUploadErrorMessage = (error: unknown): string => {
 
   return VIDEO_UPLOAD_ERROR_MESSAGE.GENERIC;
 };
+
+/**
+ * Message for a failed report of a post, comment or reply.
+ *
+ * A refusal the server answers with 403 (codes 4003xx: already reported, banned,
+ * no permission) carries a reason written for the user - "You have already
+ * flagged this post." - which says more than "please try again". Anything else,
+ * such as a dropped connection, gets the caller's generic message.
+ */
+export const getReportErrorMessage = (
+  error: unknown,
+  fallback: string
+): string => {
+  const raw = error as { message?: string; level?: string; code?: unknown };
+  const code = Number(raw?.code);
+  if (code >= 400300 && code < 400400) {
+    return getServerMessage(raw) ?? fallback;
+  }
+  return fallback;
+};
