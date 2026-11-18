@@ -67,6 +67,10 @@ export const useStyles = () => {
       paddingVertical: 8,
       alignItems: 'center',
     },
+    // Straight under the content ID box when there is no Continue button.
+    cancelButtonAlone: {
+      marginTop: 12,
+    },
     cancelLabel: {
       color: theme.colors.primary,
     },

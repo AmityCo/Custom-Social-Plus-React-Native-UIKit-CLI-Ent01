@@ -26,6 +26,7 @@ export function ContentReportReason(props: ContentReportReasonProps) {
     intellectualPropertyPolicyButtonId,
     isSheetVisible,
     isIntellectualPropertyDialogVisible,
+    hasIntellectualPropertyPolicy,
     isContentIdCopied,
     contentId,
     isShowOthersOption,
@@ -123,7 +124,9 @@ export function ContentReportReason(props: ContentReportReasonProps) {
           copyButtonId={copyContentIdButtonId}
           continueButtonId={intellectualPropertyPolicyButtonId}
           onCopy={copyContentId}
-          onContinue={continueToPolicy}
+          onContinue={
+            hasIntellectualPropertyPolicy ? continueToPolicy : undefined
+          }
           onCancel={cancelIntellectualPropertyDialog}
           onDismiss={handleIntellectualPropertyDialogDismiss}
         />

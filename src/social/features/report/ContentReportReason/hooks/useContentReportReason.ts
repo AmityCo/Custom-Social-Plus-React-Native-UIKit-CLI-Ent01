@@ -216,12 +216,10 @@ export function useContentReportReason({
     reportContent(params, {
       onSuccess: () => {
         onReported?.();
-        // The claim itself is filed on the host's policy page, so the dialog
-        // hands the guest the content ID to paste there before the sheet goes.
-        if (
-          selectedReason === INTELLECTUAL_PROPERTY_REASON &&
-          goToIntellectualPropertyPolicy
-        ) {
+        // The claim itself is filed outside the UIKit, so the dialog hands the
+        // guest the content ID to copy before the sheet goes. Without the
+        // host's policy callback it offers only Copy and Close.
+        if (selectedReason === INTELLECTUAL_PROPERTY_REASON) {
           setIsIntellectualPropertyDialogVisible(true);
           return;
         }
@@ -243,6 +241,7 @@ export function useContentReportReason({
     intellectualPropertyPolicyButtonId,
     isSheetVisible,
     isIntellectualPropertyDialogVisible,
+    hasIntellectualPropertyPolicy: !!goToIntellectualPropertyPolicy,
     isContentIdCopied,
     contentId,
     isShowOthersOption,
@@ -273,7 +272,8 @@ export function useContentReportReason({
       continueToPolicy:
         (intellectualPropertyPolicyButtonConfig?.text as string) ??
         continueToPolicyText,
-      cancel: cancelText,
+      // With no Continue there is nothing to cancel: the button only closes.
+      cancel: goToIntellectualPropertyPolicy ? cancelText : closeText,
     },
     setSelectedReason,
     changeOtherReasonText,

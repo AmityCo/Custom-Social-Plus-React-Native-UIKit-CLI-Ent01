@@ -19,7 +19,8 @@ type IntellectualPropertyDialogProps = {
   copyButtonId?: string;
   continueButtonId?: string;
   onCopy: () => void;
-  onContinue: () => void;
+  /** Without it there is no Continue button: the guest copies and closes. */
+  onContinue?: () => void;
   onCancel: () => void;
   /** iOS only: called once the dialog has finished dismissing. */
   onDismiss?: () => void;
@@ -92,20 +93,25 @@ export function IntellectualPropertyDialog({
               </Typography.CaptionBold>
             </TouchableOpacity>
           </View>
-          <Button
-            testID={continueButtonId}
-            style={styles.continueButton}
-            accessibilityLabel={continueLabel}
-            onPress={onContinue}
-          >
-            {/* Not a plain string: Button keeps a string to one line, and this
-                label is long enough to need two. */}
-            <Typography.BodyBold style={styles.continueLabel}>
-              {continueLabel}
-            </Typography.BodyBold>
-          </Button>
+          {onContinue && (
+            <Button
+              testID={continueButtonId}
+              style={styles.continueButton}
+              accessibilityLabel={continueLabel}
+              onPress={onContinue}
+            >
+              {/* Not a plain string: Button keeps a string to one line, and
+                  this label is long enough to need two. */}
+              <Typography.BodyBold style={styles.continueLabel}>
+                {continueLabel}
+              </Typography.BodyBold>
+            </Button>
+          )}
           <TouchableOpacity
-            style={styles.cancelButton}
+            style={[
+              styles.cancelButton,
+              !onContinue && styles.cancelButtonAlone,
+            ]}
             onPress={onCancel}
             accessibilityRole="button"
             accessibilityLabel={cancelLabel}

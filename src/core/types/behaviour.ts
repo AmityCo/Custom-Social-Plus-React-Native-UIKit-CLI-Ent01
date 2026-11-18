@@ -204,8 +204,8 @@ export interface IBehaviour {
      * infringement. Open your policy page or claim form here; the guest pastes
      * the content ID into it. Called after the report sheet has closed.
      *
-     * Without it, an intellectual property report closes the sheet like any
-     * other reason, with no dialog.
+     * Without it, the dialog still shows the content ID to copy, with a Close
+     * button and no Continue.
      */
     goToIntellectualPropertyPolicy?: (
       context: IntellectualPropertyReportContext
