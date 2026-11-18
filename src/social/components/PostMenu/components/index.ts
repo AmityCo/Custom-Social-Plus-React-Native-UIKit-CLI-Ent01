@@ -1,0 +1,1 @@
+export { ReportPostAction } from './ReportPostAction';

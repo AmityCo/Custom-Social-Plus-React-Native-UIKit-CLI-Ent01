@@ -23,12 +23,19 @@ export const useFlagPost = ({ postId, enabled = true }: UseFlagPost) => {
   const {
     data: isFlaggedByMe,
     isLoading,
+    isFetchedAfterMount,
     refetch,
   } = useQuery<boolean>({
     queryKey: flagPostQueryKey(postId),
     queryFn: () => isReportedByMe('post', postId),
     enabled: enabled && !!postId,
+    // Ask the server every time this mounts, even with a cached answer.
+    refetchOnMount: 'always',
   });
+  // True until this mount has its own answer. A cached one is not trusted: the
+  // post may have been reported since, from the web app or another device, and
+  // reporting it again fails with "already flagged" (400300).
+  const isChecking = enabled && !!postId && !isFetchedAfterMount;
 
   const { mutate: flagPostMutate } = useMutation<boolean, Error, string>({
     mutationFn: (targetPostId: string) => createReport('post', targetPostId),
@@ -74,6 +81,7 @@ export const useFlagPost = ({ postId, enabled = true }: UseFlagPost) => {
 
   return {
     isLoading,
+    isChecking,
     isFlaggedByMe,
     reportPost,
     unreportPost,

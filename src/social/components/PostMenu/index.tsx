@@ -7,7 +7,7 @@ import { useFlagPost, isModerator } from '../../hooks';
 import { deletePostById } from '../../../core/legacy/feed';
 import useAuth from '../../../core/hooks/useAuth';
 import globalFeedSlice from '../../../core/stores/slices/globalfeedSlice';
-import { pen, poll, report, trash, unreport } from '../../../core/assets/icons';
+import { pen, poll, trash } from '../../../core/assets/icons';
 import { useToast } from '../../../core/stores/slices/toastSlice';
 import { RootStackParamList } from '../../../core/routes/RouteParamList';
 import { ComponentID, PageID } from '../../enums';
@@ -23,6 +23,7 @@ import { CopyLinkAction } from '../../elements/CopyLinkAction';
 import { ShareAction } from '../../elements/ShareAction';
 import { ContentReportReason } from '../../features/report/ContentReportReason';
 import { ReportContentType } from '../../types';
+import { ReportPostAction } from './components';
 
 type PostMenuProps = {
   pageId?: PageID;
@@ -45,8 +46,13 @@ export function PostMenu({ pageId, componentId, post }: PostMenuProps) {
     bottomSheetHeight,
     content: bottomSheetContent,
   } = useBottomSheet();
-  const { isFlaggedByMe, unreportPost } = useFlagPost({
+  // No check here: one ran for every post on screen, and its answer went out
+  // of date. ReportPostAction checks each time the menu opens. Unreporting
+  // stays here because the menu's content unmounts as the menu closes, before
+  // the request finishes and its toast shows.
+  const { unreportPost } = useFlagPost({
     postId: post?.postId,
+    enabled: false,
   });
   const [isReportReasonPending, setIsReportReasonPending] = useState(false);
   const [isReportReasonVisible, setIsReportReasonVisible] = useState(false);
@@ -142,29 +148,17 @@ export function PostMenu({ pageId, componentId, post }: PostMenuProps) {
 
   const actions = [
     {
-      show: post?.creator?.userId !== myId && !isFlaggedByMe,
+      // One row, Report or Unreport, decided when the menu opens.
+      show: post?.creator?.userId !== myId,
       action: (
-        <MenuAction
+        <ReportPostAction
           key="report"
-          gap="small"
-          label={'Report post'}
-          iconProps={{ xml: report() }}
-          onPress={() => {
+          postId={postId}
+          onReport={() => {
             closeBottomSheet();
             setIsReportReasonPending(true);
           }}
-        />
-      ),
-    },
-    {
-      show: post?.creator?.userId !== myId && isFlaggedByMe,
-      action: (
-        <MenuAction
-          key="unreport"
-          gap="small"
-          iconProps={{ xml: unreport() }}
-          label={'Unreport post'}
-          onPress={() => {
+          onUnreport={() => {
             closeBottomSheet();
             unreportPost(postId);
           }}

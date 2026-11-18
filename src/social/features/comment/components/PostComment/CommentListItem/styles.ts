@@ -130,6 +130,10 @@ export const useStyles = () => {
       padding: 5,
       marginVertical: 8,
     },
+    // Icon and label stand-ins while the menu checks the report state.
+    modalRowPlaceholder: {
+      gap: 6,
+    },
     handleBar: {
       alignSelf: 'center',
       width: 36,

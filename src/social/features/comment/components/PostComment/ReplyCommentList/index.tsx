@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import {
   View,
@@ -27,10 +27,8 @@ import { Pressable } from 'react-native';
 import useAuth from '../../../../../../core/hooks/useAuth';
 import { useTimeDifference } from '../../../../../hooks/useTimeDifference';
 import { useGlobalBehavior } from '../../../../../hooks/useGlobalBehavior';
-import {
-  isReportTarget,
-  unReportTargetById,
-} from '../../../../../../core/legacy/feed';
+import { unReportTargetById } from '../../../../../../core/legacy/feed';
+import Skeleton from '../../../../../../core/components/Skeleton/Skeleton';
 import EditCommentModal from '../../../../../components/legacy/EditCommentModal';
 import { useTheme } from 'react-native-paper';
 import type { MyMD3Theme } from '../../../../../../core/providers/AmityUIKitProvider';
@@ -48,6 +46,7 @@ import { RootStackParamList } from '../../../../../../core/routes/RouteParamList
 import { Text } from '../../../../../../core/components/Text';
 import {
   ContentReportReason,
+  useCommentReportedByMe,
   useReportReasonSheet,
 } from '../../../../report/ContentReportReason';
 import { ReportContentType } from '../../../../../types';
@@ -87,7 +86,6 @@ const ReplyCommentList = ({
     createdAt,
     reactions,
     myReactions,
-    childrenComment,
     editedAt,
     mentionPosition,
     targetType,
@@ -109,7 +107,12 @@ const ReplyCommentList = ({
   const [textComment, setTextComment] = useState<string>(data.text);
   const [isVisible, setIsVisible] = useState(false);
   const [isReactionListVisible, setIsReactionListVisible] = useState(false);
-  const [isReportByMe, setIsReportByMe] = useState<boolean>(false);
+  const {
+    isReportedByMe: isReportByMe,
+    isCheckingReportedByMe,
+    checkReportedByMe,
+    setIsReportedByMe: setIsReportByMe,
+  } = useCommentReportedByMe(commentId);
   const {
     isReportReasonVisible,
     openReportReason,
@@ -124,6 +127,8 @@ const ReplyCommentList = ({
 
   const openModal = () => {
     setIsVisible(true);
+    // Report or Unreport is decided now, not when the row appeared.
+    if (user?.userId !== (client as Amity.Client).userId) checkReportedByMe();
   };
 
   const closeModal = () => {
@@ -133,17 +138,6 @@ const ReplyCommentList = ({
       useNativeDriver: true,
     }).start(() => setIsVisible(false));
   };
-  const checkIsReport = async () => {
-    const isReport = await isReportTarget('comment', commentId);
-    if (isReport) {
-      setIsReportByMe(true);
-    }
-  };
-
-  useEffect(() => {
-    checkIsReport();
-  }, [childrenComment]);
-
   const addReactionToComment: () => Promise<void> = async () => {
     if (isLike && likeReaction) {
       setLikeReaction(likeReaction - 1);
@@ -392,6 +386,17 @@ const ReplyCommentList = ({
                     Delete reply
                   </Text>
                 </TouchableOpacity>
+              </View>
+            ) : isCheckingReportedByMe ? (
+              // Holds the row until the check answers, so Report can't be
+              // tapped on an out-of-date answer.
+              <View
+                style={[styles.modalRow, styles.modalRowPlaceholder]}
+                accessible
+                accessibilityLabel="Loading"
+              >
+                <Skeleton.Circle width={20} height={20} />
+                <Skeleton.Line width={120} height={12} />
               </View>
             ) : (
               <TouchableOpacity

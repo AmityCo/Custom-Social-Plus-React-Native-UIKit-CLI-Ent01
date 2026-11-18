@@ -32,10 +32,8 @@ import {
 import { getAmityUser } from '../../../../../../core/legacy/user';
 import { Pressable } from 'react-native';
 import useAuth from '../../../../../../core/hooks/useAuth';
-import {
-  isReportTarget,
-  unReportTargetById,
-} from '../../../../../../core/legacy/feed';
+import { unReportTargetById } from '../../../../../../core/legacy/feed';
+import Skeleton from '../../../../../../core/components/Skeleton/Skeleton';
 import EditCommentModal from '../../../../../components/legacy/EditCommentModal';
 import { useTheme } from 'react-native-paper';
 import type { MyMD3Theme } from '../../../../../../core/providers/AmityUIKitProvider';
@@ -56,6 +54,7 @@ import { Text } from '../../../../../../core/components/Text';
 import { isPendingComment, isVisibleComment } from '../../../../../utils';
 import {
   ContentReportReason,
+  useCommentReportedByMe,
   useReportReasonSheet,
 } from '../../../../report/ContentReportReason';
 import { ReportContentType } from '../../../../../types';
@@ -108,7 +107,6 @@ const CommentListItem = ({
     createdAt,
     reactions,
     myReactions,
-    childrenComment,
     editedAt,
     mentionPosition,
     referenceId,
@@ -137,7 +135,12 @@ const CommentListItem = ({
   const [isOpenReply, setIsOpenReply] = useState<boolean>(false);
   const [textComment, setTextComment] = useState<string>(data?.text);
   const [isVisible, setIsVisible] = useState(false);
-  const [isReportByMe, setIsReportByMe] = useState<boolean>(false);
+  const {
+    isReportedByMe: isReportByMe,
+    isCheckingReportedByMe,
+    checkReportedByMe,
+    setIsReportedByMe: setIsReportByMe,
+  } = useCommentReportedByMe(commentId);
   const {
     isReportReasonVisible,
     openReportReason,
@@ -161,6 +164,8 @@ const CommentListItem = ({
 
   const openModal = () => {
     setIsVisible(true);
+    // Report or Unreport is decided now, not when the row appeared.
+    if (user?.userId !== (client as Amity.Client).userId) checkReportedByMe();
   };
 
   const closeModal = () => {
@@ -170,13 +175,6 @@ const CommentListItem = ({
       useNativeDriver: true,
     }).start(() => setIsVisible(false));
   };
-  const checkIsReport = async () => {
-    const isReport = await isReportTarget('comment', commentId);
-    if (isReport) {
-      setIsReportByMe(true);
-    }
-  };
-
   const formatReplyComments = async (
     replyComments,
     isPreviewReply: boolean = false
@@ -245,9 +243,6 @@ const CommentListItem = ({
     setIsOpenReply(true);
     getReplyComments();
   };
-  useEffect(() => {
-    checkIsReport();
-  }, [childrenComment]);
 
   const addReactionToComment: () => Promise<void> = async () => {
     if (isLike && likeReaction) {
@@ -573,6 +568,17 @@ const CommentListItem = ({
                     Delete Comment
                   </Text>
                 </TouchableOpacity>
+              </View>
+            ) : isCheckingReportedByMe ? (
+              // Holds the row until the check answers, so Report can't be
+              // tapped on an out-of-date answer.
+              <View
+                style={[styles.modalRow, styles.modalRowPlaceholder]}
+                accessible
+                accessibilityLabel="Loading"
+              >
+                <Skeleton.Circle width={20} height={20} />
+                <Skeleton.Line width={120} height={12} />
               </View>
             ) : (
               <TouchableOpacity
