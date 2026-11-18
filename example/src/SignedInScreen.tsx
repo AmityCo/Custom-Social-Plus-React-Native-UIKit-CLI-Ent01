@@ -62,6 +62,15 @@ export default function SignedInScreen({
       // inferred type and the provider's expected type are nominally distinct.
       configs={config as any}
       fcmToken={fcmToken}
+      behaviour={{
+        AmitySocialHomeTopNavigationComponentBehaviour: {
+          // Renders the close button in the social home header. The UIKit only
+          // shows it when this callback is provided.
+          onBack: () => {
+            console.log('[example] social home close pressed');
+          },
+        },
+      }}
       // Every error the UIKit hits: render crashes, failed reads/writes, and
       // login / session / auth-token failures. Observer only - the UIKit still
       // shows its own toasts and fallback screens. `handled` tells the errors a

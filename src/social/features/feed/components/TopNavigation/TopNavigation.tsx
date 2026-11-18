@@ -1,7 +1,7 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FC, memo, useCallback } from 'react';
 import { SvgXml } from 'react-native-svg';
-import { arrowBack } from '../../../../../core/assets/icons';
+import { close } from '../../../../../core/assets/icons';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -198,7 +198,9 @@ const AmitySocialHomeTopNavigationComponent: FC<
               <SvgXml
                 width="24"
                 height="24"
-                xml={arrowBack()}
+                // A close icon, not a back arrow: the social home page is the
+                // first screen, so this leaves the UIKit rather than going back.
+                xml={close()}
                 color={theme.colors.base}
               />
             </TouchableOpacity>
