@@ -47,13 +47,16 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
   children,
   authToken,
   getAuthToken,
+  getAccessToken,
   fcmToken,
 }: IAmityUIkitProvider) => {
   const [error, setError] = useState('');
   const [isConnecting, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [sessionState, setSessionState] = useState('');
-  const client: Amity.Client = Client.createClient(apiKey, apiRegion, {
+  // An access-token login needs no API key: the SDK sends the backend-issued
+  // token instead. createClient still wants a string.
+  const client: Amity.Client = Client.createClient(apiKey ?? '', apiRegion, {
     apiEndpoint: { http: apiEndpoint },
   });
   const [isGlobalBan, setIsGlobalBan] = useState(false);
@@ -183,7 +186,23 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
 
   const handleConnect = useCallback(async () => {
     try {
-      if (userId) {
+      if (userId && getAccessToken) {
+        // Access-token login: the host's backend creates the social.plus
+        // session, so the app never handles an auth token. The handler must be
+        // registered before login, and the SDK calls it to renew the token.
+        Client.setAccessTokenHandler({
+          onTokenRenew: async (renewUserId) => getAccessToken(renewUserId),
+        });
+        const accessToken = await getAccessToken(userId);
+        const response = await Client.loginWithAccessToken(accessToken);
+        if (!response) return;
+      } else if (!apiKey) {
+        // Client.login and a visitor login both create the session with the
+        // API key, so without one they can only fail.
+        throw new Error(
+          'AmityUiKitProvider: apiKey is required unless you sign in with getAccessToken and a userId.'
+        );
+      } else if (userId) {
         let loginParam: Amity.ConnectClientParams = {
           userId: userId,
         };
@@ -233,13 +252,26 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
           userId,
           isVisitorLogin: !userId,
           usesAuthTokenCallback: !!getAuthToken,
+          usesAccessTokenCallback: !!getAccessToken,
+          hasApiKey: !!apiKey,
           hasStaticAuthToken: !!authToken,
         },
         handled: isGloballyBanned,
       });
     }
 
-    if (fcmToken) {
+    // Push registration sends the API key. Without one the server answers
+    // 400100, which the SDK takes for a revoked token and ends the session, so
+    // skip it: the host's backend registers the device instead.
+    if (fcmToken && !apiKey) {
+      reportError({
+        source: 'sdk',
+        message:
+          'registerPushNotification skipped: it needs apiKey. Without apiKey, register the device from your backend.',
+        context: { userId, phase: 'registerPushNotification' },
+        handled: false,
+      });
+    } else if (fcmToken) {
       try {
         await Client.registerPushNotification(fcmToken);
       } catch (err) {
@@ -258,7 +290,15 @@ export const AuthContextProvider: FC<IAmityUIkitProvider> = ({
     // switches a visitor session to a signed-in one by passing a userId, this
     // callback re-reads the new value and calls Client.login instead of
     // re-using the stale (undefined) userId and re-connecting as a visitor.
-  }, [userId, displayName, authToken, getAuthToken, fcmToken]);
+  }, [
+    userId,
+    displayName,
+    apiKey,
+    authToken,
+    getAuthToken,
+    getAccessToken,
+    fcmToken,
+  ]);
 
   const login = async () => {
     setError('');

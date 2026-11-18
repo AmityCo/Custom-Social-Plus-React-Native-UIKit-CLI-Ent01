@@ -39,7 +39,13 @@ export interface IAmityUIkitProvider {
   /** Omit to connect as a visitor (read-only session). */
   userId?: string;
   displayName?: string;
-  apiKey: string;
+  /**
+   * Your network's API key. Required for a visitor session, for the default
+   * login and for push registration (`fcmToken`). With `getAccessToken` and a
+   * `userId` the session comes from your backend instead, so the app can leave
+   * this out; your backend then registers the device for push.
+   */
+  apiKey?: string;
   apiRegion?: string;
   apiEndpoint?: string;
   children: any;
@@ -53,6 +59,14 @@ export interface IAmityUIkitProvider {
    * over the static `authToken` prop when both are provided.
    */
   getAuthToken?: (userId: string) => Promise<string> | string;
+  /**
+   * Access-token login. Given the `userId`, return an access token your backend
+   * got from the social.plus session API (`POST /api/v4/sessions`). The UIKit
+   * signs in with it (`Client.loginWithAccessToken`) instead of `Client.login`,
+   * and calls it again whenever the SDK renews the token. Takes precedence over
+   * `getAuthToken` / `authToken`, which this login does not use.
+   */
+  getAccessToken?: (userId: string) => Promise<string> | string;
   configs?: IConfigRaw;
   behaviour?: IBehaviour;
   fcmToken?: string;
@@ -141,6 +155,7 @@ export default function AmityUiKitProvider({
   children,
   authToken,
   getAuthToken,
+  getAccessToken,
   configs,
   behaviour,
   fcmToken,
@@ -261,6 +276,7 @@ export default function AmityUiKitProvider({
                 apiEndpoint={apiEndpoint}
                 authToken={authToken}
                 getAuthToken={getAuthToken}
+                getAccessToken={getAccessToken}
                 fcmToken={fcmToken}
               >
                 <AdEngineProvider>
