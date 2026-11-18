@@ -10,9 +10,8 @@ import { SvgXml } from 'react-native-svg';
 import { useStyles } from './styles';
 import useAuth from '../../../core/hooks/useAuth';
 import { IVideoPost, MediaUri } from '../legacy/Social/PostList';
-import { getPostById } from '../../../core/legacy/feed';
+import { fetchPostOnce } from '../../utils/fetchPostOnce';
 import ImageView from '../legacy/react-native-image-viewing/dist';
-import { RootState, useUIKitSelector } from '../../../core/stores/store';
 import { playBtn } from '../../../core/assets/icons/xml';
 import { LinkPreview } from '../PreviewLink';
 import RenderTextWithMention from '../RenderTextWithMention/RenderTextWithMention';
@@ -59,13 +58,6 @@ const PostContent: React.FC<IPostContent> = ({
   const styles = useStyles();
   let imageStyle: any = styles.imageLargePost;
   let colStyle: any = styles.col2;
-  const { currentPostdetail } = useUIKitSelector(
-    (state: RootState) => state.postDetail
-  );
-  const { postList: postListGlobal } = useUIKitSelector(
-    (state: RootState) => state.globalFeed
-  );
-  const { postList } = useUIKitSelector((state: RootState) => state.feed);
 
   useEffect(() => {
     setImagePostsFullSize([]);
@@ -97,10 +89,11 @@ const PostContent: React.FC<IPostContent> = ({
       try {
         const response = await Promise.all(
           (childrenKey ? childrenKey.split(',') : []).map(async (id) => {
-            const { data: childrenPost } = await getPostById(id);
+            const childrenPost = await fetchPostOnce(id);
             return {
               dataType: childrenPost?.dataType,
-              data: childrenPost?.data,
+              // Read per dataType below; as loosely typed as getPostById was.
+              data: childrenPost?.data as any,
             };
           })
         );
@@ -151,17 +144,20 @@ const PostContent: React.FC<IPostContent> = ({
     [apiRegion, childrenKey]
   );
 
-  // Re-checks the media on the same triggers as before, but no longer clears it
-  // first: clearing unmounted the images, so the post's media blanked and
-  // collapsed on every post update - e.g. for the whole time a new comment was
-  // sending - until the refetch put them back.
+  // Loads the media when the post's children change: on mount, and when an
+  // edit adds or removes some. Not on every feed update - a child's image,
+  // video or poll never changes in place, and reloading them each time sent a
+  // GET /posts/{id} per child of every post on screen after any update (a
+  // reaction, a comment, a report), queueing every other request behind them
+  // on Android. Never clears the media first: that unmounted the images, so
+  // they blanked until the reload put them back.
   useEffect(() => {
     let stale = false;
     getPostInfo(() => stale);
     return () => {
       stale = true;
     };
-  }, [currentPostdetail, postList, postListGlobal, getPostInfo]);
+  }, [getPostInfo]);
 
   function onClickImage(index: number): void {
     setIsVisibleFullImage(true);
