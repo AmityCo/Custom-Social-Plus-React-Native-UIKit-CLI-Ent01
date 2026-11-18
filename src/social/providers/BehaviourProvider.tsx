@@ -40,6 +40,7 @@ export const BehaviourProvider = ({
       AmityUserProfileHeaderComponentBehavior: {},
       AmityUserPendingFollowRequestsPageBehavior: {},
       AmityUserFeedComponentBehavior: {},
+      AmityContentReportReasonComponentBehavior: {},
     }),
     []
   );

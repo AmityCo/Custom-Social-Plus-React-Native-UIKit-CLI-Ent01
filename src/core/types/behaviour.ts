@@ -1,4 +1,5 @@
 import { TabName } from '../../social/enums';
+import type { ReportContentType } from '../../social/types';
 import { UserProfilePageProps } from '../../social/features/user/Profile/Profile';
 import { RootStackParamList } from '../routes/RouteParamList';
 
@@ -14,6 +15,13 @@ export type AddMemberPageContext = {
 
 export type CommunitySettingPageContext = {
   community: Amity.Community;
+};
+
+export type IntellectualPropertyReportContext = {
+  /** The postId or commentId of the reported content. */
+  contentId: string;
+  /** A reply is reported as a comment, but keeps its own type here. */
+  contentType: ReportContentType;
 };
 
 export interface IBehaviour {
@@ -188,5 +196,19 @@ export interface IBehaviour {
   };
   AmityUserFeedComponentBehavior?: {
     goToPostDetailPage?: (arg?: string) => void;
+  };
+  AmityContentReportReasonComponentBehavior?: {
+    /**
+     * Called when "Continue to Intellectual Property Policy" is pressed, once a
+     * post, comment or reply has been reported for intellectual property
+     * infringement. Open your policy page or claim form here; the guest pastes
+     * the content ID into it. Called after the report sheet has closed.
+     *
+     * Without it, an intellectual property report closes the sheet like any
+     * other reason, with no dialog.
+     */
+    goToIntellectualPropertyPolicy?: (
+      context: IntellectualPropertyReportContext
+    ) => void;
   };
 }

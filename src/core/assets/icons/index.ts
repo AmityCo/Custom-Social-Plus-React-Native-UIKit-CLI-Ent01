@@ -13,6 +13,7 @@ export { default as thumbnail } from './thumbnail';
 export { default as rotate } from './rotate';
 export { default as trash } from './trash';
 export { default as close } from './close';
+export { default as copy } from './copy';
 export { default as arrowDown } from './arrowDown';
 export { default as startLivestream } from './startLivestream';
 export { default as feed } from './feed';

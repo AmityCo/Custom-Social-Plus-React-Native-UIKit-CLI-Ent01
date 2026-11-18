@@ -254,6 +254,9 @@ export enum ElementID {
   community_membership_title = 'community_membership_title',
   community_membership_description = 'community_membership_description',
   community_membership_sub_description = 'community_membership_sub_description',
+  intellectual_property_description = 'intellectual_property_description',
+  copy_content_id_button = 'copy_content_id_button',
+  intellectual_property_policy_button = 'intellectual_property_policy_button',
 }
 
 export interface UiKitConfigKeys {

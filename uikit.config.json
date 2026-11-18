@@ -780,6 +780,12 @@
     "community_setup_page/*/community_membership_sub_description": {
       "text": "Users will become members only when their join request is approved by a moderator of this community."
     },
-    "social_global_search_page/post_search_result/*": {}
+    "social_global_search_page/post_search_result/*": {},
+    "*/content_report_reason/intellectual_property_description": {
+      "text": "To report this content, please review the Celebrity Community Intellectual Property Policy. Before you continue, you can copy this content ID below to help identify the content. Check that all information is correct before you submit the report."
+    },
+    "*/content_report_reason/intellectual_property_policy_button": {
+      "text": "Continue to Intellectual Property Policy"
+    }
   }
 }

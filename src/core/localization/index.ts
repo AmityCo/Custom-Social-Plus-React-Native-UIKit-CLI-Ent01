@@ -41,6 +41,17 @@ const STRINGS: Record<string, string> = {
     'Against community guidelines',
   amity_social_label_report_reason_intellectual_property:
     'Intellectual property infringement',
+  amity_social_report_ip_dialog_title_post: 'Report a Post',
+  amity_social_report_ip_dialog_title_comment: 'Report a Comment',
+  amity_social_report_ip_dialog_title_reply: 'Report a Reply',
+  amity_social_report_ip_dialog_description:
+    'To report this content, please review our Intellectual Property Policy. Before you continue, you can copy this content ID below to help identify the content. Check that all information is correct before you submit the report.',
+  amity_social_report_ip_dialog_content_id: 'Content ID',
+  amity_social_report_ip_dialog_copy: 'Copy',
+  amity_social_report_ip_dialog_copied: 'Copied',
+  amity_social_report_ip_dialog_continue:
+    'Continue to Intellectual Property Policy',
+  amity_social_report_ip_dialog_cancel: 'Cancel',
 };
 
 /** Resolve a key outside a component (lists, maps, constants). */

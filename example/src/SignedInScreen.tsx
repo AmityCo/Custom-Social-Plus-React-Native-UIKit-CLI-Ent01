@@ -70,6 +70,12 @@ export default function SignedInScreen({
             console.log('[example] social home close pressed');
           },
         },
+        AmityContentReportReasonComponentBehavior: {
+          // After an intellectual property report, open your own policy page
+          // or claim form here; you get `{ contentId, contentType }`. A
+          // placeholder for now: Continue only closes the dialog.
+          goToIntellectualPropertyPolicy: () => {},
+        },
       }}
       // Every error the UIKit hits: render crashes, failed reads/writes, and
       // login / session / auth-token failures. Observer only - the UIKit still

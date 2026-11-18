@@ -219,6 +219,12 @@ export default function VisitorScreen({
             console.log('[example] social home back pressed');
           },
         },
+        AmityContentReportReasonComponentBehavior: {
+          // After an intellectual property report, open your own policy page
+          // or claim form here; you get `{ contentId, contentType }`. A
+          // placeholder for now: Continue only closes the dialog.
+          goToIntellectualPropertyPolicy: () => {},
+        },
       }}
     >
       <View style={styles.root}>

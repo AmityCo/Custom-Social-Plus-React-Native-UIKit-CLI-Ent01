@@ -3,7 +3,12 @@ import { BottomSheet } from '../../../../core/design/components/BottomSheet';
 import { Button } from '../../../components/Button';
 import ErrorComponent from '../../../components/ErrorComponent/ErrorComponent';
 import Toast from '../../../components/Toast';
-import { Header, OtherReasonField, ReasonList } from './components';
+import {
+  Header,
+  IntellectualPropertyDialog,
+  OtherReasonField,
+  ReasonList,
+} from './components';
 import { useContentReportReason } from './hooks';
 import type { ContentReportReasonProps } from './types';
 
@@ -16,7 +21,13 @@ export function ContentReportReason(props: ContentReportReasonProps) {
     accessibilityId,
     submitButtonId,
     closeButtonId,
+    intellectualPropertyDescriptionId,
+    copyContentIdButtonId,
+    intellectualPropertyPolicyButtonId,
     isSheetVisible,
+    isIntellectualPropertyDialogVisible,
+    isContentIdCopied,
+    contentId,
     isShowOthersOption,
     isContentDeleted,
     isPending,
@@ -33,6 +44,10 @@ export function ContentReportReason(props: ContentReportReasonProps) {
     requestClose,
     handleSheetClose,
     submitReport,
+    copyContentId,
+    continueToPolicy,
+    cancelIntellectualPropertyDialog,
+    handleIntellectualPropertyDialogDismiss,
   } = useContentReportReason(props);
 
   return (
@@ -94,6 +109,24 @@ export function ContentReportReason(props: ContentReportReasonProps) {
               shows its own while it is up (a failed report keeps it open). */}
           {isSheetVisible && <Toast />}
         </View>
+        <IntellectualPropertyDialog
+          visible={isIntellectualPropertyDialogVisible}
+          title={texts.intellectualPropertyTitle}
+          description={texts.intellectualPropertyDescription}
+          contentIdLabel={texts.contentIdLabel}
+          contentId={contentId}
+          copyLabel={texts.copyContentId}
+          isCopied={isContentIdCopied}
+          continueLabel={texts.continueToPolicy}
+          cancelLabel={texts.cancel}
+          descriptionId={intellectualPropertyDescriptionId}
+          copyButtonId={copyContentIdButtonId}
+          continueButtonId={intellectualPropertyPolicyButtonId}
+          onCopy={copyContentId}
+          onContinue={continueToPolicy}
+          onCancel={cancelIntellectualPropertyDialog}
+          onDismiss={handleIntellectualPropertyDialogDismiss}
+        />
         <View style={styles.footer}>
           {isContentDeleted ? (
             <Button
